@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#f5f5f2">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data: blob:; media-src 'self' data: blob:; worker-src 'self' blob:; connect-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Pomodoro Timer</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2316624f'/%3E%3Ccircle cx='32' cy='35' r='17' fill='none' stroke='white' stroke-width='4'/%3E%3Cpath d='M32 18v-5M25 13h14M32 35l8-7' fill='none' stroke='white' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg:#f5f5f2;--surface:#fff;--surface-muted:#f0f0ed;--surface-hover:#e9e9e5;
+      --text:#20211f;--muted:#686b65;--line:#dadbd6;--line-strong:#bfc1ba;
+      --accent:#16624f;--accent-hover:#0e503f;--accent-soft:#e3f1ec;
+      --focus:#c35448;--focus-soft:#f8eae7;--break:#28775e;--break-soft:#e6f2ed;
+      --danger:#b3261e;--warning:#a15f00;--focus-ring:#4d8bc7;
+      --shadow-sm:0 1px 2px rgba(25,28,24,.08),0 1px 6px rgba(25,28,24,.04);
+      --shadow-md:0 18px 50px rgba(25,28,24,.14);--radius:16px;--header-height:66px;
+    }
+    *{box-sizing:border-box}
+    html{min-height:100%;background:var(--bg);scroll-behavior:smooth}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP","Yu Gothic UI","Hiragino Kaku Gothic ProN",Meiryo,sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+    button,input{font:inherit}button{color:inherit}button,input{touch-action:manipulation}
+    button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid color-mix(in srgb,var(--focus-ring) 55%,transparent);outline-offset:2px}
+    .app-header{position:sticky;z-index:30;top:0;min-height:var(--header-height);border-bottom:1px solid color-mix(in srgb,var(--line) 82%,transparent);background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(16px) saturate(1.2)}
+    .header-inner{width:min(1180px,100%);min-height:var(--header-height);margin:0 auto;padding:10px clamp(14px,2.8vw,30px);display:flex;align-items:center;gap:14px}
+    .brand{display:flex;align-items:center;gap:10px;min-width:0}.brand-mark{display:grid;place-items:center;width:38px;height:38px;flex:0 0 auto;border-radius:11px;background:var(--accent);color:#fff;box-shadow:var(--shadow-sm)}
+    .brand-mark svg{width:21px;height:21px}.brand-copy{min-width:0}.brand-name{margin:0;font-size:17px;line-height:1.2;letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .version-badge{display:inline-flex;align-items:center;margin-left:7px;padding:1px 6px;border:1px solid var(--line);border-radius:999px;color:var(--muted);background:var(--surface-muted);font-size:10px;font-weight:650;vertical-align:2px}
+    .brand-meta{margin:2px 0 0;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.header-actions{margin-left:auto;display:flex;align-items:center;gap:12px}
+    .language-button,.header-icon-button{min-width:0;padding:5px 1px;border:0;background:transparent;color:var(--muted);font-size:12px;font-weight:750;letter-spacing:.02em;cursor:pointer;transition:color .16s ease,opacity .16s ease}
+    .language-button:hover,.header-icon-button:hover{color:var(--text)}.language-button:active,.header-icon-button:active{opacity:.65}.header-icon-button{display:grid;place-items:center}.header-icon-button svg{width:20px;height:20px}
+    .main{width:min(1180px,100%);margin:0 auto;padding:22px clamp(14px,2.8vw,30px) 54px}.page-intro{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding:0 2px 18px}
+    .page-intro h2{margin:0;font-size:clamp(21px,3vw,27px);line-height:1.3;letter-spacing:-.025em}.page-intro p{margin:5px 0 0;max-width:760px;color:var(--muted);font-size:13px}
+    .local-badge{display:inline-flex;align-items:center;gap:7px;flex:0 0 auto;margin-top:3px;padding:7px 10px;border:1px solid color-mix(in srgb,var(--accent) 24%,var(--line));border-radius:999px;color:var(--accent);background:var(--accent-soft);font-size:12px;font-weight:700;white-space:nowrap}.local-badge svg{width:15px;height:15px}
+    .hero-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(290px,.72fr);gap:16px;align-items:start}.card{border:1px solid var(--line);border-radius:18px;background:var(--surface);box-shadow:var(--shadow-sm)}
+    .timer-card{position:relative;overflow:hidden;min-height:570px;padding:18px 22px 22px}.timer-card::before{content:"";position:absolute;inset:0 0 auto;height:4px;background:var(--phase,var(--focus))}
+    .timer-top{display:flex;align-items:center;justify-content:space-between;gap:12px}.phase-chip{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border-radius:999px;background:var(--phase-soft,var(--focus-soft));color:var(--phase,var(--focus));font-size:11px;font-weight:850;letter-spacing:.08em}.phase-dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+    .rounds{display:flex;align-items:center;gap:6px}.round-dot{width:8px;height:8px;border-radius:50%;border:1px solid var(--line-strong);background:transparent}.round-dot.done,.round-dot.current{border-color:var(--phase,var(--focus));background:var(--phase,var(--focus))}.round-dot.current{box-shadow:0 0 0 3px var(--phase-soft,var(--focus-soft))}
+    .timer-center{display:grid;place-items:center;padding:25px 0 12px}.timer-ring{--progress:0deg;position:relative;width:min(320px,72vw);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--phase,var(--focus)) var(--progress),var(--surface-muted) 0)}
+    .timer-ring::before{content:"";position:absolute;inset:10px;border-radius:50%;background:var(--surface);box-shadow:inset 0 0 0 1px rgba(0,0,0,.025)}.timer-face{position:relative;z-index:1;text-align:center;padding:20px;max-width:100%}
+    .timer-time{font-variant-numeric:tabular-nums;letter-spacing:-.055em;font-size:clamp(66px,9vw,92px);font-weight:720;line-height:.94}.timer-status{margin-top:12px;color:var(--muted);font-size:12px;font-weight:700}.flow-pill{display:none;margin:10px auto 0;width:max-content;padding:4px 8px;border-radius:999px;background:#fff3dc;color:var(--warning);font-size:10px;font-weight:800}.flow-pill.show{display:block}
+    .intention-wrap{max-width:590px;margin:0 auto}.intention-label{display:flex;justify-content:space-between;gap:10px;margin-bottom:7px;color:var(--muted);font-size:11px;font-weight:750}.intention-count{font-variant-numeric:tabular-nums}
+    .intention-input{width:100%;height:50px;padding:0 15px;border:1px solid var(--line);border-radius:13px;background:#fbfbf9;color:var(--text);font-size:15px}.intention-input:hover{border-color:var(--line-strong)}
+    .timer-actions{display:flex;justify-content:center;align-items:center;gap:9px;flex-wrap:wrap;margin:17px auto 0}.btn{min-height:44px;border:1px solid var(--line);border-radius:12px;padding:9px 15px;background:var(--surface);font-weight:760;cursor:pointer;transition:background .16s ease,border-color .16s ease,transform .16s ease,opacity .16s ease}.btn:hover{background:var(--surface-hover);border-color:var(--line-strong)}.btn:active{transform:translateY(1px)}.btn.primary{min-width:140px;border-color:var(--accent);background:var(--accent);color:#fff}.btn.primary:hover{background:var(--accent-hover);border-color:var(--accent-hover)}.btn.ghost{background:transparent}.btn.icon-text{display:inline-flex;align-items:center;justify-content:center;gap:7px}.btn svg{width:17px;height:17px}.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+    .timer-foot{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:14px}.text-action{border:0;background:transparent;color:var(--muted);padding:5px 3px;font-size:12px;font-weight:720;cursor:pointer}.text-action:hover{color:var(--text)}
+    .distraction-btn{display:inline-flex;align-items:center;gap:7px;border:0;border-radius:999px;padding:7px 10px;background:var(--surface-muted);color:var(--muted);font-size:11px;font-weight:750;cursor:pointer}.distraction-btn:hover{background:var(--surface-hover);color:var(--text)}.distraction-btn.bump{animation:bump .22s ease}
+    .side-stack{display:grid;gap:16px}.panel{padding:17px}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.panel-title{margin:0;font-size:15px;letter-spacing:-.01em}.panel-sub{color:var(--muted);font-size:11px}
+    .today-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.metric{min-width:0;padding:12px 9px;border-radius:12px;background:var(--surface-muted);text-align:center}.metric strong{display:block;font-size:21px;line-height:1.15;font-variant-numeric:tabular-nums}.metric span{display:block;margin-top:4px;color:var(--muted);font-size:9px;font-weight:700;line-height:1.3}
+    .pip-card{padding:17px;background:linear-gradient(145deg,#fff 0%,#f6faf8 100%)}.pip-row{display:flex;align-items:flex-start;gap:11px}.pip-icon{display:grid;place-items:center;width:38px;height:38px;flex:0 0 auto;border-radius:11px;background:var(--accent-soft);color:var(--accent)}.pip-icon svg{width:20px;height:20px}.pip-copy{min-width:0;flex:1}.pip-copy strong{display:block;font-size:13px}.pip-copy p{margin:4px 0 0;color:var(--muted);font-size:11px;line-height:1.55}.pip-button{width:100%;margin-top:13px}.support-note{display:flex;align-items:center;gap:6px;margin-top:8px;color:var(--muted);font-size:10px}.support-dot{width:6px;height:6px;border-radius:50%;background:var(--line-strong)}.support-dot.ok{background:var(--break)}.support-dot.fallback{background:#c68b22}
+    .quick-settings{display:grid;gap:1px}.quick-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 72%,transparent)}.quick-row:last-child{border-bottom:0;padding-bottom:0}.quick-row:first-child{padding-top:0}.quick-copy strong{display:block;font-size:12px}.quick-copy span{display:block;color:var(--muted);font-size:10px;margin-top:1px}
+    .switch{position:relative;width:43px;height:25px;flex:0 0 auto}.switch input{position:absolute;opacity:0;pointer-events:none}.switch span{position:absolute;inset:0;border-radius:999px;background:#cfd1cc;cursor:pointer;transition:.18s}.switch span::after{content:"";position:absolute;width:19px;height:19px;left:3px;top:3px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.18);transition:.18s}.switch input:checked+span{background:var(--accent)}.switch input:checked+span::after{transform:translateX(18px)}.switch input:focus-visible+span{outline:3px solid color-mix(in srgb,var(--focus-ring) 55%,transparent);outline-offset:2px}
+    .section{padding:28px 0 0}.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:12px}.section-title{margin:0;font-size:19px;letter-spacing:-.02em}.section-head p{margin:3px 0 0;color:var(--muted);font-size:12px}.history-card{overflow:hidden}.history-list{list-style:none;margin:0;padding:0}.history-item{display:grid;grid-template-columns:58px minmax(0,1fr) auto;gap:12px;align-items:center;padding:13px 16px;border-bottom:1px solid color-mix(in srgb,var(--line) 75%,transparent)}.history-item:last-child{border-bottom:0}.history-time{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}.history-main{min-width:0}.history-main strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}.history-main span{display:block;margin-top:2px;color:var(--muted);font-size:10px}.history-duration{font-weight:800;font-variant-numeric:tabular-nums;font-size:12px}.empty{padding:28px 18px;text-align:center;color:var(--muted);font-size:12px}.history-tools{display:flex;gap:9px;flex-wrap:wrap}.small-btn{min-height:34px;padding:6px 10px;border:1px solid var(--line);border-radius:9px;background:var(--surface);font-size:10px;font-weight:750;cursor:pointer}.small-btn:hover{background:var(--surface-hover)}.small-btn.danger{color:var(--danger)}
+    footer{width:min(1180px,100%);margin:0 auto;padding:24px clamp(14px,2.8vw,30px) 34px;color:var(--muted);font-size:11px}.build-line{display:flex;gap:10px;flex-wrap:wrap}.build-line span::after{content:"·";margin-left:10px}.build-line span:last-child::after{display:none}
+    .toast{position:fixed;right:18px;bottom:18px;z-index:70;display:flex;align-items:center;gap:13px;max-width:min(390px,calc(100vw - 36px));padding:11px 13px;border:1px solid var(--line);border-radius:12px;background:var(--surface);box-shadow:var(--shadow-md);opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity .18s ease,transform .18s ease}.toast.show{opacity:1;transform:translateY(0);pointer-events:auto}.toast-message{font-size:12px}.toast-action{margin-left:auto;border:0;background:transparent;color:var(--accent);font-size:11px;font-weight:800;cursor:pointer}
+    dialog{width:min(650px,calc(100% - 28px));max-height:min(780px,calc(100dvh - 28px));padding:0;overflow:hidden;border:1px solid var(--line);border-radius:17px;background:var(--surface);color:var(--text);box-shadow:var(--shadow-md)}dialog::backdrop{background:rgba(15,17,14,.52);backdrop-filter:blur(4px)}
+    .dialog-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line)}.dialog-header h2{margin:0;font-size:17px}.dialog-close{display:grid;place-items:center;width:34px;height:34px;border:0;border-radius:9px;background:transparent;color:var(--muted);cursor:pointer}.dialog-close:hover{background:var(--surface-muted);color:var(--text)}.dialog-close svg{width:18px;height:18px}.dialog-body{padding:19px 20px 25px;overflow:auto;max-height:calc(100dvh - 96px)}.dialog-body h3{margin:23px 0 8px;padding-top:18px;border-top:1px solid var(--line);font-size:14px}.dialog-body h3:first-child{margin-top:0;padding-top:0;border-top:0}.dialog-body p,.dialog-body li{color:var(--muted);font-size:12px;line-height:1.7}.dialog-body ul{padding-left:20px}.dialog-body code{padding:2px 5px;border-radius:5px;background:var(--surface-muted);font-size:11px}
+    .settings-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.field label{display:block;margin-bottom:5px;color:var(--muted);font-size:10px;font-weight:750}.field input{width:100%;height:42px;padding:0 10px;border:1px solid var(--line);border-radius:10px;background:#fbfbf9}.settings-block{margin-top:18px}.settings-block h3{margin:0 0 6px;padding:0;border:0}.settings-note{margin:0;color:var(--muted);font-size:10px}.settings-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+    .confirm-dialog{width:min(430px,calc(100% - 28px))}.confirm-body{padding:20px}.confirm-body h2{margin:0;font-size:17px}.confirm-body p{margin:8px 0 20px;color:var(--muted);font-size:12px}.confirm-actions{display:flex;justify-content:flex-end;gap:9px}.btn.danger-solid{border-color:var(--danger);background:var(--danger);color:#fff}
+    .mobile-dock{display:none}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @keyframes bump{50%{transform:scale(1.045)}}
+    @media(max-width:860px){.hero-grid{grid-template-columns:1fr}.side-stack{grid-template-columns:repeat(2,1fr)}.side-stack .panel:last-child{grid-column:1/-1}.timer-card{min-height:auto}.timer-ring{width:min(310px,66vw)}}
+    @media(max-width:620px){:root{--header-height:58px}.app-header{background:color-mix(in srgb,var(--bg) 95%,transparent)}.header-inner{padding:8px 14px}.brand-mark{width:34px;height:34px;border-radius:10px}.brand-name{font-size:15px}.brand-meta{display:none}.version-badge{font-size:9px}.header-actions{gap:11px}.main{padding:14px 10px calc(110px + env(safe-area-inset-bottom))}.page-intro{padding:0 5px 12px}.page-intro h2{font-size:19px}.page-intro p{font-size:11px;margin-top:3px}.local-badge{display:none}.timer-card{padding:15px 13px 18px;border-radius:22px;box-shadow:none}.timer-center{padding:22px 0 10px}.timer-ring{width:min(285px,79vw)}.timer-ring::before{inset:9px}.timer-time{font-size:clamp(62px,20vw,78px)}.timer-status{font-size:11px}.intention-wrap{padding:0 2px}.intention-input{height:48px;font-size:14px}.timer-actions{display:none}.timer-foot{margin-top:12px}.side-stack{grid-template-columns:1fr;gap:10px;margin-top:10px}.side-stack .panel:last-child{grid-column:auto}.panel,.pip-card{padding:14px;border-radius:16px}.today-grid{gap:6px}.metric{padding:10px 6px}.metric strong{font-size:19px}.section{padding-top:22px}.section-head{align-items:flex-start}.history-tools{gap:6px}.history-item{grid-template-columns:48px minmax(0,1fr) auto;padding:12px 13px;gap:9px}.mobile-dock{position:fixed;left:10px;right:10px;bottom:max(10px,env(safe-area-inset-bottom));z-index:45;display:grid;grid-template-columns:56px 1fr 56px;gap:8px;padding:8px;border:1px solid color-mix(in srgb,var(--line) 86%,transparent);border-radius:18px;background:color-mix(in srgb,var(--surface) 94%,transparent);box-shadow:0 14px 38px rgba(25,28,24,.2);backdrop-filter:blur(18px) saturate(1.2)}.dock-btn{height:52px;border:0;border-radius:13px;background:var(--surface-muted);font-weight:800;cursor:pointer}.dock-btn svg{width:19px;height:19px;vertical-align:-4px}.dock-btn.primary{background:var(--accent);color:#fff;font-size:14px}.toast{left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom));max-width:none}dialog{width:calc(100% - 16px);max-height:calc(100dvh - 16px);border-radius:20px}.settings-grid{grid-template-columns:1fr}.dialog-body{padding:17px}.confirm-dialog{margin:auto 8px 8px;width:calc(100% - 16px);border-radius:20px}.confirm-dialog::backdrop{background:rgba(15,17,14,.42)}footer{padding-bottom:110px}}
+    @media(max-width:380px){.brand-name{max-width:155px}.page-intro p{max-width:310px}.timer-ring{width:min(260px,78vw)}.timer-time{font-size:60px}.rounds{gap:4px}.round-dot{width:7px;height:7px}.history-item{grid-template-columns:45px minmax(0,1fr) auto}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="13" r="7.2" stroke="currentColor" stroke-width="1.8"/><path d="M12 5.8V3.5M8.8 3.5h6.4M12 13l3.4-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+        <div class="brand-copy"><h1 class="brand-name"><span id="brandName">ポモドーロタイマー</span><span class="version-badge" id="versionBadge">v1.0.0</span></h1><p class="brand-meta" id="brandMeta">作業中も、画面の隅に。</p></div>
+      </div>
+      <div class="header-actions">
+        <button class="language-button" id="languageButton" type="button" aria-label="Switch language">EN</button>
+        <button class="header-icon-button" id="helpButton" type="button" aria-label="使い方と注意事項"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M9.8 9.3a2.35 2.35 0 0 1 4.55.85c0 1.85-2.35 2.05-2.35 3.65" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="17.2" r="1" fill="currentColor"/></svg></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="page-intro">
+      <div><h2 id="introTitle">この25分だけに集中。</h2><p id="introText">やることを1つ決めて開始。必要ならPiPでタイマーを画面の隅に置いたまま作業できます。</p></div>
+      <div class="local-badge"><svg viewBox="0 0 24 24" fill="none"><path d="M7 10V8a5 5 0 0 1 10 0v2M6 10h12v10H6z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span id="localBadge">すべてローカル処理</span></div>
+    </section>
+
+    <div class="hero-grid">
+      <section class="card timer-card" id="timerCard">
+        <div class="timer-top"><div class="phase-chip"><span class="phase-dot"></span><span id="phaseLabel">FOCUS</span></div><div class="rounds" id="rounds" aria-label="Round 1 of 4"></div></div>
+        <div class="timer-center">
+          <div class="timer-ring" id="timerRing"><div class="timer-face"><div class="timer-time" id="timerTime">25:00</div><div class="timer-status" id="timerStatus">準備できたらスタート</div><div class="flow-pill" id="flowPill">FLOW +0:00</div></div></div>
+        </div>
+        <div class="intention-wrap">
+          <div class="intention-label"><label for="intentionInput" id="intentionLabel">この25分でやること</label><span class="intention-count" id="intentionCount">0 / 60</span></div>
+          <input class="intention-input" id="intentionInput" maxlength="60" autocomplete="off" placeholder="例: READMEの使い方を書く">
+        </div>
+        <div class="timer-actions">
+          <button class="btn" id="addFiveButton" type="button">+5 min</button>
+          <button class="btn primary icon-text" id="mainToggleButton" type="button"><span id="mainToggleIcon"></span><span id="mainToggleText">スタート</span></button>
+          <button class="btn" id="finishButton" type="button">完了して次へ</button>
+        </div>
+        <div class="timer-foot">
+          <button class="distraction-btn" id="distractionButton" type="button"><svg viewBox="0 0 24 24" fill="none" width="15" height="15"><path d="M12 3v7M8.5 6.5 12 10l3.5-3.5M5 13a7 7 0 1 0 14 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="distractionText">気が散った</span><strong id="distractionCount">0</strong></button>
+          <button class="text-action" id="resetTimerButton" type="button">リセット</button>
+        </div>
+      </section>
+
+      <aside class="side-stack">
+        <section class="card panel">
+          <div class="panel-head"><div><h2 class="panel-title" id="todayTitle">今日</h2><span class="panel-sub" id="todayDate"></span></div></div>
+          <div class="today-grid"><div class="metric"><strong id="todayMinutes">0</strong><span id="todayMinutesLabel">集中した分</span></div><div class="metric"><strong id="todaySessions">0</strong><span id="todaySessionsLabel">完了セッション</span></div><div class="metric"><strong id="todayDistractions">0</strong><span id="todayDistractionsLabel">脱線</span></div></div>
+        </section>
+
+        <section class="card pip-card">
+          <div class="pip-row"><div class="pip-icon"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="11" y="11" width="8" height="6" rx="1" fill="currentColor"/></svg></div><div class="pip-copy"><strong id="pipTitle">Picture in Picture</strong><p id="pipText">別のタブやアプリで作業していても、タイマーを画面の隅に表示します。</p></div></div>
+          <button class="btn primary pip-button icon-text" id="pipButton" type="button"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="12" y="11" width="7" height="6" rx="1" fill="currentColor"/></svg><span id="pipButtonText">PiPで表示</span></button>
+          <div class="support-note"><span class="support-dot" id="pipSupportDot"></span><span id="pipSupportText">対応状況を確認中</span></div>
+        </section>
+
+        <section class="card panel">
+          <div class="panel-head"><h2 class="panel-title" id="quickTitle">集中スタイル</h2><button class="small-btn" id="settingsButton" type="button">設定</button></div>
+          <div class="quick-settings">
+            <div class="quick-row"><div class="quick-copy"><strong id="flowTitle">Flow延長</strong><span id="flowDesc">25分後も集中を続けて計測</span></div><label class="switch"><input id="flowToggle" type="checkbox"><span></span></label></div>
+            <div class="quick-row"><div class="quick-copy"><strong id="soundTitle">サウンド</strong><span id="soundDesc">区切りを短い音で通知</span></div><label class="switch"><input id="soundToggle" type="checkbox"><span></span></label></div>
+            <div class="quick-row"><div class="quick-copy"><strong id="notifyTitle">通知</strong><span id="notifyDesc">バックグラウンドでも通知</span></div><label class="switch"><input id="notifyToggle" type="checkbox"><span></span></label></div>
+          </div>
+        </section>
+      </aside>
+    </div>
+
+    <section class="section">
+      <div class="section-head"><div><h2 class="section-title" id="historyTitle">最近の集中</h2><p id="historyDesc">このブラウザにだけ保存されます。</p></div><div class="history-tools"><button class="small-btn" id="exportButton" type="button">JSONを書き出す</button><button class="small-btn danger" id="clearHistoryButton" type="button">履歴を消去</button></div></div>
+      <div class="card history-card"><ul class="history-list" id="historyList"></ul><div class="empty" id="historyEmpty">まだ完了した集中セッションはありません。</div></div>
+    </section>
+  </main>
+
+  <footer><div class="build-line"><span id="footerPrivacy">データは外部送信されません</span><span id="footerBuild">Build -</span><span id="footerDeps">Dependencies 0</span></div></footer>
+
+  <div class="mobile-dock" aria-label="Timer controls"><button class="dock-btn" id="mobileAddButton" type="button" aria-label="Add five minutes">+5</button><button class="dock-btn primary" id="mobileToggleButton" type="button">スタート</button><button class="dock-btn" id="mobileFinishButton" type="button" aria-label="Complete and advance"><svg viewBox="0 0 24 24" fill="none"><path d="m6 12 4 4 8-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"><span class="toast-message" id="toastMessage"></span><button class="toast-action" id="toastAction" type="button"></button></div>
+
+  <dialog id="helpDialog"><div class="dialog-header"><h2 id="helpTitle">使い方と注意事項</h2><button class="dialog-close" id="helpClose" type="button" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div><div class="dialog-body" id="helpBody"></div></dialog>
+
+  <dialog id="settingsDialog"><div class="dialog-header"><h2 id="settingsTitle">タイマー設定</h2><button class="dialog-close" id="settingsClose" type="button" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div><div class="dialog-body">
+    <div class="settings-grid"><div class="field"><label for="focusMinutesInput" id="focusMinutesLabel">集中（分）</label><input id="focusMinutesInput" type="number" min="1" max="180" inputmode="numeric"></div><div class="field"><label for="shortMinutesInput" id="shortMinutesLabel">短い休憩（分）</label><input id="shortMinutesInput" type="number" min="1" max="60" inputmode="numeric"></div><div class="field"><label for="longMinutesInput" id="longMinutesLabel">長い休憩（分）</label><input id="longMinutesInput" type="number" min="1" max="120" inputmode="numeric"></div></div>
+    <div class="settings-block"><h3 id="autoTitle">自動で次へ</h3><div class="quick-row"><div class="quick-copy"><strong id="autoBreakTitle">休憩を自動開始</strong><span id="autoBreakDesc">集中終了後に休憩を開始</span></div><label class="switch"><input id="autoBreakToggle" type="checkbox"><span></span></label></div><div class="quick-row"><div class="quick-copy"><strong id="autoFocusTitle">集中を自動開始</strong><span id="autoFocusDesc">休憩終了後に次の集中を開始</span></div><label class="switch"><input id="autoFocusToggle" type="checkbox"><span></span></label></div></div>
+    <p class="settings-note" id="settingsNote">進行中のセッション時間は変更せず、次のセッションから新しい設定を使います。</p>
+    <div class="settings-actions"><button class="btn" id="settingsCancel" type="button">キャンセル</button><button class="btn primary" id="settingsSave" type="button">保存</button></div>
+  </div></dialog>
+
+  <dialog class="confirm-dialog" id="confirmDialog"><div class="confirm-body"><h2 id="confirmTitle"></h2><p id="confirmMessage"></p><div class="confirm-actions"><button class="btn" id="confirmCancel" type="button">キャンセル</button><button class="btn danger-solid" id="confirmOk" type="button">実行</button></div></div></dialog>
+
+  <video id="pipVideo" muted playsinline style="position:fixed;width:1px;height:1px;opacity:0;pointer-events:none"></video>
+  <canvas id="pipCanvas" width="560" height="315" style="display:none"></canvas>
+
+  <script>
+  (()=>{
+    'use strict';
+    const APP_CONFIG=__APP_CONFIG_JSON__;
+    const BUILD_MANIFEST=__BUILD_MANIFEST_JSON__;
+    const EMBEDDED_ASSETS_B64="__EMBEDDED_ASSET_BUNDLE_BASE64__";
+    void EMBEDDED_ASSETS_B64;
+
+    const $=(id)=>document.getElementById(id);
+    const STORAGE_KEY='bk-pomodoro-v1';
+    const MAX_HISTORY=300;
+    const ROUND_COUNT=4;
+    const clamp=(n,min,max)=>Math.min(max,Math.max(min,n));
+    const deepCopy=(v)=>JSON.parse(JSON.stringify(v));
+    const now=()=>Date.now();
+
+    const TEXT={
+      ja:{
+        brand:'ポモドーロタイマー',tagline:'作業中も、画面の隅に。',introTitle:'この25分だけに集中。',introText:'やることを1つ決めて開始。必要ならPiPでタイマーを画面の隅に置いたまま作業できます。',local:'すべてローカル処理',
+        focus:'FOCUS',short:'SHORT BREAK',long:'LONG BREAK',ready:'準備できたらスタート',running:'集中中',paused:'一時停止中',breakRunning:'休憩中',flowing:'Flowで集中を継続中',start:'スタート',pause:'一時停止',resume:'再開',finish:'完了して次へ',skipBreak:'休憩を終了',reset:'リセット',intention:'この25分でやること',placeholder:'例: READMEの使い方を書く',distraction:'気が散った',
+        today:'今日',minutes:'集中した分',sessions:'完了セッション',distractions:'脱線',pipTitle:'Picture in Picture',pipText:'別のタブやアプリで作業していても、タイマーを画面の隅に表示します。',pipOpen:'PiPで表示',pipClose:'PiPを閉じる',pipInteractive:'操作できるPiPに対応',pipFallback:'表示用PiPに対応',pipUnsupported:'このブラウザではPiPを利用できません',pipOpenedInteractive:'操作できるPiPを開きました。',pipOpenedFallback:'表示用PiPを開きました。操作は元の画面から行えます。',
+        quick:'集中スタイル',settings:'設定',flowTitle:'Flow延長',flowDesc:'25分後も集中を続けて計測',soundTitle:'サウンド',soundDesc:'区切りを短い音で通知',notifyTitle:'通知',notifyDesc:'バックグラウンドでも通知',history:'最近の集中',historyDesc:'このブラウザにだけ保存されます。',export:'JSONを書き出す',clearHistory:'履歴を消去',historyEmpty:'まだ完了した集中セッションはありません。',untitled:'やること未入力',minSuffix:'分',round:'ラウンド',flow:'Flow',
+        distractionAdded:'脱線を1回記録しました。',undo:'元に戻す',undoDone:'記録を元に戻しました。',sessionDone:'集中セッションを記録しました。',breakDone:'休憩が終わりました。',focusDone:'集中時間が終わりました。',flowStarted:'25分終了。Flow計測を続けます。',resetTitle:'現在のタイマーをリセットしますか？',resetMsg:'進行中の時間と脱線回数は記録せず、現在のモードを最初からやり直します。',resetOk:'リセット',historyClearTitle:'集中履歴をすべて消去しますか？',historyClearMsg:'今日の集計を含む、このブラウザに保存された集中履歴を削除します。設定は残ります。',clear:'消去',cancel:'キャンセル',saved:'設定を保存しました。',exported:'ローカルデータを書き出しました。',notificationDenied:'通知が許可されていません。ブラウザの設定を確認してください。',notificationUnsupported:'このブラウザは通知に対応していません。',
+        settingsTitle:'タイマー設定',focusMinutes:'集中（分）',shortMinutes:'短い休憩（分）',longMinutes:'長い休憩（分）',auto:'自動で次へ',autoBreak:'休憩を自動開始',autoBreakDesc:'集中終了後に休憩を開始',autoFocus:'集中を自動開始',autoFocusDesc:'休憩終了後に次の集中を開始',settingsNote:'進行中のセッション時間は変更せず、次のセッションから新しい設定を使います。',save:'保存',invalidMinutes:'時間は入力範囲内の整数にしてください。',
+        privacy:'データは外部送信されません',helpTitle:'使い方と注意事項',close:'閉じる',complete:'完了',addFive:'5分追加',keyboard:'キーボード',pipTaskEmpty:'やることを1つ決める',notificationFocus:'集中時間が終わりました',notificationBreak:'休憩が終わりました',notificationFlow:'予定時間を超えて集中を続けています',
+        help:`<h3>基本の使い方</h3><ol><li>「この25分でやること」を1つ入力します。</li><li>スタートして集中します。脱線したときは「気が散った」を1回押すだけで記録できます。</li><li>集中が終わると短い休憩へ進み、4回目の後は長い休憩になります。</li></ol><h3>Picture in Picture</h3><p>対応ブラウザでは、他のタブやアプリより前に小さなタイマーを表示できます。Document Picture-in-Picture対応環境では、一時停止・5分追加・完了をPiP内から操作できます。非対応の場合はVideo PiPへフォールバックし、表示のみ行います。</p><p>PiP APIはブラウザやOSによって利用可否が異なります。PiPが使えなくても通常のタイマー機能はそのまま利用できます。</p><h3>Flow延長</h3><p>ONにすると、集中時間が0になっても休憩へ強制移行せず、<code>+00:01</code> のように超過時間を計測します。集中の波をタイマーで切りたくないときに使います。</p><h3>保存とプライバシー</h3><p>設定・現在のタイマー・集中履歴はこのブラウザのLocalStorageに保存されます。サーバー送信、ログイン、分析、追跡はありません。ブラウザデータを削除すると履歴も消えるため、必要ならJSONを書き出してください。</p><h3>キーボードショートカット</h3><ul><li><code>Space</code>：開始 / 一時停止</li><li><code>P</code>：PiPを開く / 閉じる</li><li><code>D</code>：脱線を記録</li><li><code>N</code>：完了して次へ</li></ul><h3>通知について</h3><p>通知は許可したブラウザでのみ動作します。OSの集中モードやブラウザ設定により表示されない場合があります。サウンドは外部音源を使わずブラウザ内で生成します。</p>`
+      },
+      en:{
+        brand:'Pomodoro Timer',tagline:'Keep it in the corner while you work.',introTitle:'Focus on just this session.',introText:'Choose one thing to finish, start the timer, and keep it visible in Picture-in-Picture while you work.',local:'Local-only processing',
+        focus:'FOCUS',short:'SHORT BREAK',long:'LONG BREAK',ready:'Ready when you are',running:'Focusing',paused:'Paused',breakRunning:'On a break',flowing:'Continuing in Flow',start:'Start',pause:'Pause',resume:'Resume',finish:'Finish & next',skipBreak:'End break',reset:'Reset',intention:'One thing for this session',placeholder:'e.g. Write the README usage section',distraction:'Distracted',
+        today:'Today',minutes:'focus min',sessions:'sessions done',distractions:'distractions',pipTitle:'Picture in Picture',pipText:'Keep the timer in a small always-on-top window while working in another tab or app.',pipOpen:'Open PiP',pipClose:'Close PiP',pipInteractive:'Interactive PiP supported',pipFallback:'Display-only PiP supported',pipUnsupported:'PiP is unavailable in this browser',pipOpenedInteractive:'Interactive PiP opened.',pipOpenedFallback:'Display-only PiP opened. Use the main window for controls.',
+        quick:'Focus style',settings:'Settings',flowTitle:'Flow overtime',flowDesc:'Keep counting after focus time ends',soundTitle:'Sound',soundDesc:'Play a short local chime at transitions',notifyTitle:'Notifications',notifyDesc:'Notify even when the tab is in background',history:'Recent focus',historyDesc:'Saved only in this browser.',export:'Export JSON',clearHistory:'Clear history',historyEmpty:'No completed focus sessions yet.',untitled:'No intention',minSuffix:'min',round:'Round',flow:'Flow',
+        distractionAdded:'Recorded one distraction.',undo:'Undo',undoDone:'The distraction was removed.',sessionDone:'Focus session recorded.',breakDone:'Break finished.',focusDone:'Focus time finished.',flowStarted:'Focus target reached. Flow overtime is still counting.',resetTitle:'Reset the current timer?',resetMsg:'Current elapsed time and distractions will not be recorded. This phase will restart from the beginning.',resetOk:'Reset',historyClearTitle:'Clear all focus history?',historyClearMsg:'This removes focus history and today totals saved in this browser. Settings are kept.',clear:'Clear',cancel:'Cancel',saved:'Settings saved.',exported:'Local data exported.',notificationDenied:'Notifications are not allowed. Check your browser settings.',notificationUnsupported:'Notifications are not supported in this browser.',
+        settingsTitle:'Timer settings',focusMinutes:'Focus (min)',shortMinutes:'Short break (min)',longMinutes:'Long break (min)',auto:'Auto advance',autoBreak:'Auto-start breaks',autoBreakDesc:'Start a break when focus ends',autoFocus:'Auto-start focus',autoFocusDesc:'Start focus when a break ends',settingsNote:'An active session keeps its current duration. New durations apply from the next session.',save:'Save',invalidMinutes:'Enter whole minutes within the allowed ranges.',
+        privacy:'No data is sent outside this page',helpTitle:'How to use & notes',close:'Close',complete:'Complete',addFive:'Add 5 min',keyboard:'Keyboard',pipTaskEmpty:'Choose one thing to finish',notificationFocus:'Focus time finished',notificationBreak:'Break finished',notificationFlow:'Flow overtime is still counting',
+        help:`<h3>Basic flow</h3><ol><li>Enter one thing to finish in this focus session.</li><li>Start the timer. If your attention breaks, tap “Distracted” once.</li><li>After focus, the timer moves to a short break; every fourth focus round is followed by a long break.</li></ol><h3>Picture in Picture</h3><p>Supported browsers can keep a compact timer above other tabs and desktop apps. With Document Picture-in-Picture you can pause, add five minutes, and finish from inside the PiP window. Otherwise the app falls back to display-only Video PiP when available.</p><p>PiP capability varies by browser and operating system. The normal timer remains fully usable when PiP is unavailable.</p><h3>Flow overtime</h3><p>When enabled, reaching zero does not force a break. The timer starts counting upward as <code>+00:01</code> until you choose to finish, preserving a good concentration streak.</p><h3>Storage & privacy</h3><p>Settings, the active timer, and focus history are stored in LocalStorage in this browser. There is no server upload, account, analytics, or tracking. Browser-data cleanup can erase history, so export JSON if you want a backup.</p><h3>Keyboard shortcuts</h3><ul><li><code>Space</code>: start / pause</li><li><code>P</code>: open / close PiP</li><li><code>D</code>: record a distraction</li><li><code>N</code>: finish and advance</li></ul><h3>Notifications</h3><p>Notifications require browser permission and may still be suppressed by OS focus modes. Sounds are synthesized locally; no external audio is loaded.</p>`
+      }
+    };
+
+    const defaults=()=>({
+      lang:'',settings:{focus:25,short:5,long:15,flow:true,sound:true,notify:false,autoBreak:false,autoFocus:false},
+      timer:{mode:'focus',round:1,running:false,plannedMs:25*60000,remainingMs:25*60000,endAt:null,startedAt:null,flowOvertime:false,flowElapsedMs:0,flowStartAt:null,distractions:0,intention:''},
+      history:[]
+    });
+
+    function loadState(){
+      const base=defaults();
+      try{
+        const raw=localStorage.getItem(STORAGE_KEY); if(!raw) return base;
+        const saved=JSON.parse(raw);
+        if(saved&&typeof saved==='object'){
+          if(saved.settings) Object.assign(base.settings,saved.settings);
+          if(saved.timer) Object.assign(base.timer,saved.timer);
+          if(Array.isArray(saved.history)) base.history=saved.history.slice(0,MAX_HISTORY);
+          if(saved.lang==='ja'||saved.lang==='en') base.lang=saved.lang;
+        }
+      }catch(e){}
+      const t=base.timer;
+      t.round=clamp(Number(t.round)||1,1,ROUND_COUNT); t.distractions=Math.max(0,Number(t.distractions)||0);
+      t.plannedMs=Math.max(60000,Number(t.plannedMs)||durationFor(t.mode,base.settings));
+      t.remainingMs=Math.max(0,Number(t.remainingMs)||0); t.flowElapsedMs=Math.max(0,Number(t.flowElapsedMs)||0);
+      if(t.running){
+        if(t.flowOvertime){ if(!t.flowStartAt) t.flowStartAt=now(); }
+        else if(!t.endAt) t.endAt=now()+t.remainingMs;
+      }
+      return base;
+    }
+
+    let state=loadState();
+    let lang=state.lang||(navigator.language&&navigator.language.toLowerCase().startsWith('ja')?'ja':'en');
+    let toastTimer=0,toastUndo=null,pipWin=null,pipKind='',pipDrawTimer=0,audioCtx=null,confirmResolver=null;
+    const T=()=>TEXT[lang];
+
+    function saveState(){
+      state.lang=lang;
+      try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){}
+    }
+    function durationFor(mode,settings=state.settings){const m=mode==='focus'?settings.focus:mode==='short'?settings.short:settings.long;return clamp(Math.round(Number(m)||1),1,180)*60000;}
+    function currentRemaining(){if(state.timer.flowOvertime)return 0;if(state.timer.running&&state.timer.endAt)return Math.max(0,state.timer.endAt-now());return Math.max(0,state.timer.remainingMs);}
+    function currentFlowElapsed(){if(!state.timer.flowOvertime)return 0;return state.timer.flowElapsedMs+(state.timer.running&&state.timer.flowStartAt?Math.max(0,now()-state.timer.flowStartAt):0);}
+    function currentElapsed(){return state.timer.flowOvertime?state.timer.plannedMs+currentFlowElapsed():Math.max(0,state.timer.plannedMs-currentRemaining());}
+    function pad(n){return String(n).padStart(2,'0');}
+    function formatMs(ms){const s=Math.max(0,Math.ceil(ms/1000));return `${Math.floor(s/60)}:${pad(s%60)}`;}
+    function formatFlow(ms){const s=Math.max(0,Math.floor(ms/1000));return `+${Math.floor(s/60)}:${pad(s%60)}`;}
+    function isoDay(ts){const d=new Date(ts);return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;}
+    function todayKey(){return isoDay(now());}
+
+    function phaseTheme(){return state.timer.mode==='focus'?{color:'var(--focus)',soft:'var(--focus-soft)'}:{color:'var(--break)',soft:'var(--break-soft)'};}
+    function phaseText(){return state.timer.mode==='focus'?T().focus:state.timer.mode==='short'?T().short:T().long;}
+    function timerStatusText(){if(state.timer.flowOvertime)return state.timer.running?T().flowing:T().paused;if(state.timer.running)return state.timer.mode==='focus'?T().running:T().breakRunning;if(currentElapsed()>1200)return T().paused;return T().ready;}
+
+    function render(){
+      const t=state.timer,theme=phaseTheme();
+      $('timerCard').style.setProperty('--phase',theme.color);$('timerCard').style.setProperty('--phase-soft',theme.soft);$('timerRing').style.setProperty('--phase',theme.color);$('timerRing').style.setProperty('--phase-soft',theme.soft);
+      $('phaseLabel').textContent=phaseText();
+      const remain=currentRemaining(),flow=currentFlowElapsed();
+      $('timerTime').textContent=t.flowOvertime?formatFlow(flow):formatMs(remain);
+      $('timerStatus').textContent=timerStatusText();$('flowPill').classList.toggle('show',t.flowOvertime);$('flowPill').textContent=`FLOW ${formatFlow(flow)}`;
+      let progress=t.flowOvertime?1:clamp((t.plannedMs-remain)/Math.max(1,t.plannedMs),0,1);$('timerRing').style.setProperty('--progress',`${progress*360}deg`);
+      renderRounds();
+      const toggleText=t.running?T().pause:(currentElapsed()>1200||t.flowOvertime?T().resume:T().start);$('mainToggleText').textContent=toggleText;$('mobileToggleButton').textContent=toggleText;
+      $('mainToggleIcon').innerHTML=t.running?'<svg viewBox="0 0 24 24" fill="none" width="17" height="17"><path d="M9 7v10M15 7v10" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>':'<svg viewBox="0 0 24 24" fill="none" width="17" height="17"><path d="m9 7 8 5-8 5z" fill="currentColor"/></svg>';
+      $('finishButton').textContent=t.mode==='focus'?T().finish:T().skipBreak;$('distractionButton').disabled=t.mode!=='focus';$('distractionCount').textContent=t.distractions;
+      $('addFiveButton').disabled=t.mode!=='focus'&&t.mode!=='short'&&t.mode!=='long';
+      document.title=`${t.running||t.flowOvertime?`[${t.flowOvertime?formatFlow(flow):formatMs(remain)}] `:''}${T().brand}`;
+      updatePip();
+    }
+
+    function renderRounds(){const el=$('rounds');el.textContent='';for(let i=1;i<=ROUND_COUNT;i++){const d=document.createElement('span');d.className='round-dot';if(i<state.timer.round)d.classList.add('done');if(i===state.timer.round)d.classList.add('current');el.appendChild(d);}el.setAttribute('aria-label',`${T().round} ${state.timer.round} / ${ROUND_COUNT}`);}
+
+    function applyLanguage(){
+      document.documentElement.lang=lang;const t=T();
+      $('brandName').textContent=t.brand;$('brandMeta').textContent=t.tagline;$('introTitle').textContent=t.introTitle;$('introText').textContent=t.introText;$('localBadge').textContent=t.local;$('languageButton').textContent=lang==='ja'?'EN':'JA';
+      $('intentionLabel').textContent=t.intention;$('intentionInput').placeholder=t.placeholder;$('distractionText').textContent=t.distraction;$('resetTimerButton').textContent=t.reset;
+      $('todayTitle').textContent=t.today;$('todayMinutesLabel').textContent=t.minutes;$('todaySessionsLabel').textContent=t.sessions;$('todayDistractionsLabel').textContent=t.distractions;
+      $('pipTitle').textContent=t.pipTitle;$('pipText').textContent=t.pipText;$('quickTitle').textContent=t.quick;$('settingsButton').textContent=t.settings;$('flowTitle').textContent=t.flowTitle;$('flowDesc').textContent=t.flowDesc;$('soundTitle').textContent=t.soundTitle;$('soundDesc').textContent=t.soundDesc;$('notifyTitle').textContent=t.notifyTitle;$('notifyDesc').textContent=t.notifyDesc;
+      $('historyTitle').textContent=t.history;$('historyDesc').textContent=t.historyDesc;$('exportButton').textContent=t.export;$('clearHistoryButton').textContent=t.clearHistory;$('historyEmpty').textContent=t.historyEmpty;$('footerPrivacy').textContent=t.privacy;
+      $('helpTitle').textContent=t.helpTitle;$('helpButton').setAttribute('aria-label',t.helpTitle);$('helpClose').setAttribute('aria-label',t.close);$('helpBody').innerHTML=t.help;
+      $('settingsTitle').textContent=t.settingsTitle;$('focusMinutesLabel').textContent=t.focusMinutes;$('shortMinutesLabel').textContent=t.shortMinutes;$('longMinutesLabel').textContent=t.longMinutes;$('autoTitle').textContent=t.auto;$('autoBreakTitle').textContent=t.autoBreak;$('autoBreakDesc').textContent=t.autoBreakDesc;$('autoFocusTitle').textContent=t.autoFocus;$('autoFocusDesc').textContent=t.autoFocusDesc;$('settingsNote').textContent=t.settingsNote;$('settingsCancel').textContent=t.cancel;$('settingsSave').textContent=t.save;
+      $('confirmCancel').textContent=t.cancel;$('intentionInput').value=state.timer.intention||'';updateIntentionCount();renderPipSupport();renderToday();renderHistory();render();
+      saveState();
+    }
+
+    function renderToday(){const key=todayKey();const rows=state.history.filter(x=>isoDay(x.endedAt||x.startedAt||0)===key);const total=rows.reduce((a,x)=>a+(Number(x.durationMs)||0),0);$('todayMinutes').textContent=String(Math.round(total/60000));$('todaySessions').textContent=String(rows.length);$('todayDistractions').textContent=String(rows.reduce((a,x)=>a+(Number(x.distractions)||0),0));$('todayDate').textContent=new Intl.DateTimeFormat(lang==='ja'?'ja-JP':'en-US',{month:'short',day:'numeric',weekday:'short'}).format(new Date());}
+
+    function renderHistory(){
+      const list=$('historyList');list.textContent='';const rows=state.history.slice(0,12);$('historyEmpty').hidden=rows.length>0;
+      for(const row of rows){const li=document.createElement('li');li.className='history-item';const d=new Date(row.endedAt||row.startedAt);const time=document.createElement('span');time.className='history-time';time.textContent=`${pad(d.getHours())}:${pad(d.getMinutes())}`;const main=document.createElement('div');main.className='history-main';const strong=document.createElement('strong');strong.textContent=row.intention||T().untitled;const sub=document.createElement('span');sub.textContent=`${T().round} ${row.round||1} · ${T().distractions} ${row.distractions||0}${row.overtimeMs>0?` · ${T().flow} ${formatFlow(row.overtimeMs)}`:''}`;main.append(strong,sub);const dur=document.createElement('span');dur.className='history-duration';dur.textContent=`${Math.max(1,Math.round((row.durationMs||0)/60000))} ${T().minSuffix}`;li.append(time,main,dur);list.appendChild(li);}
+    }
+
+    function updateIntentionCount(){const value=$('intentionInput').value;$('intentionCount').textContent=`${value.length} / 60`;}
+
+    function startTimer(){const t=state.timer;if(t.running)return;if(t.flowOvertime){t.flowStartAt=now();t.running=true;}else{if(t.remainingMs<=0)t.remainingMs=durationFor(t.mode);t.endAt=now()+t.remainingMs;t.running=true;if(!t.startedAt)t.startedAt=now();}saveState();render();}
+    function pauseTimer(){const t=state.timer;if(!t.running)return;if(t.flowOvertime){t.flowElapsedMs=currentFlowElapsed();t.flowStartAt=null;}else{t.remainingMs=currentRemaining();t.endAt=null;}t.running=false;saveState();render();}
+    function toggleTimer(){state.timer.running?pauseTimer():startTimer();}
+
+    function addFive(){const t=state.timer;const add=5*60000;if(t.flowOvertime){const wasRunning=t.running;t.flowOvertime=false;t.flowElapsedMs=0;t.flowStartAt=null;t.remainingMs=add;t.plannedMs+=add;t.endAt=wasRunning?now()+add:null;t.running=wasRunning;}else{t.remainingMs=currentRemaining()+add;t.plannedMs+=add;if(t.running)t.endAt=now()+t.remainingMs;}saveState();render();showToast(T().addFive);}
+
+    function enterFlow(){const t=state.timer;if(t.flowOvertime)return;const threshold=t.endAt||now();t.flowOvertime=true;t.flowElapsedMs=0;t.flowStartAt=threshold;t.remainingMs=0;t.endAt=null;t.running=true;playChime('focus');notify(T().notificationFlow,T().flowStarted);saveState();render();showToast(T().flowStarted);}
+
+    function completeFocus({natural=false}={}){const t=state.timer;const elapsed=natural?t.plannedMs:currentElapsed();const overtime=t.flowOvertime?currentFlowElapsed():Math.max(0,elapsed-t.plannedMs);state.history.unshift({id:`${now()}-${Math.random().toString(36).slice(2,8)}`,startedAt:t.startedAt||now()-elapsed,endedAt:now(),durationMs:Math.max(0,elapsed),plannedMs:t.plannedMs,overtimeMs:overtime,round:t.round,intention:t.intention.trim(),distractions:t.distractions});state.history=state.history.slice(0,MAX_HISTORY);playChime('focus');notify(T().notificationFocus,t.intention.trim()||T().focusDone);const next=t.round===ROUND_COUNT?'long':'short';loadPhase(next,t.round,false);if(state.settings.autoBreak)startTimer();saveState();renderToday();renderHistory();render();showToast(T().sessionDone);}
+
+    function completeBreak(){const oldRound=state.timer.round;playChime('break');notify(T().notificationBreak,T().breakDone);const nextRound=state.timer.mode==='long'?1:clamp(oldRound+1,1,ROUND_COUNT);loadPhase('focus',nextRound,false);if(state.settings.autoFocus)startTimer();saveState();render();showToast(T().breakDone);}
+    function finishCurrent(){state.timer.mode==='focus'?completeFocus():completeBreak();}
+
+    function loadPhase(mode,round,keepIntention){const intention=keepIntention?state.timer.intention:'';const planned=durationFor(mode);state.timer={mode,round,running:false,plannedMs:planned,remainingMs:planned,endAt:null,startedAt:null,flowOvertime:false,flowElapsedMs:0,flowStartAt:null,distractions:0,intention};$('intentionInput').value=intention;updateIntentionCount();}
+
+    function handleExpiry(){const t=state.timer;if(!t.running||t.flowOvertime)return;if(currentRemaining()>0)return;if(t.mode==='focus'){if(state.settings.flow){enterFlow();return;}completeFocus({natural:true});}else completeBreak();}
+
+    function recordDistraction(){if(state.timer.mode!=='focus')return;state.timer.distractions+=1;saveState();render();$('distractionButton').classList.remove('bump');void $('distractionButton').offsetWidth;$('distractionButton').classList.add('bump');let active=true;toastUndo=()=>{if(!active)return;active=false;state.timer.distractions=Math.max(0,state.timer.distractions-1);saveState();render();showToast(T().undoDone);};showToast(T().distractionAdded,T().undo,toastUndo);}
+
+    function showToast(message,actionLabel='',action=null){clearTimeout(toastTimer);toastUndo=action;$('toastMessage').textContent=message;$('toastAction').textContent=actionLabel;$('toastAction').hidden=!action;$('toast').classList.add('show');toastTimer=setTimeout(()=>{$('toast').classList.remove('show');toastUndo=null;},3800);}
+
+    function playChime(kind){if(!state.settings.sound)return;try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();const base=kind==='break'?520:660;[0,.12].forEach((delay,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='sine';o.frequency.value=base+(i*120);g.gain.setValueAtTime(.0001,audioCtx.currentTime+delay);g.gain.exponentialRampToValueAtTime(.055,audioCtx.currentTime+delay+.015);g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+delay+.18);o.connect(g);g.connect(audioCtx.destination);o.start(audioCtx.currentTime+delay);o.stop(audioCtx.currentTime+delay+.2);});}catch(e){}}
+    function notify(title,body){if(!state.settings.notify||!('Notification'in window)||Notification.permission!=='granted')return;try{new Notification(title,{body,silent:true});}catch(e){}}
+
+    async function toggleNotification(value){if(!value){state.settings.notify=false;saveState();return;}if(!('Notification'in window)){state.settings.notify=false;$('notifyToggle').checked=false;showToast(T().notificationUnsupported);return;}let permission=Notification.permission;if(permission==='default'){try{permission=await Notification.requestPermission();}catch(e){permission='denied';}}state.settings.notify=permission==='granted';$('notifyToggle').checked=state.settings.notify;saveState();if(!state.settings.notify)showToast(T().notificationDenied);}
+
+    function pipCapability(){if('documentPictureInPicture'in window&&window.documentPictureInPicture&&typeof window.documentPictureInPicture.requestWindow==='function')return'interactive';const v=$('pipVideo');if(document.pictureInPictureEnabled&&v&&typeof v.requestPictureInPicture==='function')return'fallback';return'none';}
+    function renderPipSupport(){const cap=pipCapability(),dot=$('pipSupportDot');dot.className='support-dot '+(cap==='interactive'?'ok':cap==='fallback'?'fallback':'');$('pipSupportText').textContent=cap==='interactive'?T().pipInteractive:cap==='fallback'?T().pipFallback:T().pipUnsupported;$('pipButton').disabled=cap==='none';$('pipButtonText').textContent=(pipWin||document.pictureInPictureElement)?T().pipClose:T().pipOpen;}
+
+    async function togglePip(){try{if(pipWin&&!pipWin.closed){pipWin.close();pipWin=null;pipKind='';renderPipSupport();return;}if(document.pictureInPictureElement){await document.exitPictureInPicture();renderPipSupport();return;}const cap=pipCapability();if(cap==='interactive')await openDocumentPip();else if(cap==='fallback')await openVideoPip();}catch(e){showToast(T().pipUnsupported);}}
+
+    async function openDocumentPip(){
+      pipWin=await window.documentPictureInPicture.requestWindow({width:420,height:260});pipKind='document';const d=pipWin.document;d.documentElement.lang=lang;d.title=T().brand;
+      d.head.innerHTML=`<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#f7f7f4;color:#20211f;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}body{display:flex;align-items:stretch}.pip{width:100%;min-height:100%;padding:15px 16px;display:grid;grid-template-rows:auto 1fr auto;gap:9px}.top{display:flex;align-items:center;justify-content:space-between;gap:10px}.mode{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:850;letter-spacing:.08em;color:#c35448}.dot{width:6px;height:6px;border-radius:50%;background:currentColor}.round{color:#74766f;font-size:10px}.center{display:grid;align-content:center;justify-items:center;min-width:0}.time{font-size:54px;font-weight:720;letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums}.task{margin-top:8px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#666963;font-size:11px}.actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}button{height:37px;border:1px solid #dadbd6;border-radius:10px;background:#fff;color:#20211f;font:700 11px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer}button.primary{border-color:#16624f;background:#16624f;color:#fff}@media(max-width:250px),(max-height:150px){.pip{padding:9px 10px;grid-template-rows:auto 1fr}.time{font-size:37px}.task,.actions{display:none}}@media(min-width:520px) and (min-height:290px){.pip{padding:18px 20px}.time{font-size:66px}.task{font-size:13px}.actions button{height:42px;font-size:12px}}</style>`;
+      d.body.innerHTML=`<div class="pip"><div class="top"><div class="mode" id="pMode"><span class="dot"></span><span></span></div><div class="round" id="pRound"></div></div><div class="center"><div class="time" id="pTime"></div><div class="task" id="pTask"></div></div><div class="actions"><button id="pAdd">+5</button><button class="primary" id="pToggle"></button><button id="pFinish"></button></div></div>`;
+      d.getElementById('pToggle').addEventListener('click',toggleTimer);d.getElementById('pAdd').addEventListener('click',addFive);d.getElementById('pFinish').addEventListener('click',finishCurrent);pipWin.addEventListener('pagehide',()=>{pipWin=null;pipKind='';renderPipSupport();});updateDocumentPip();renderPipSupport();showToast(T().pipOpenedInteractive);
+    }
+
+    function updateDocumentPip(){if(!pipWin||pipWin.closed||pipKind!=='document')return;const d=pipWin.document;const mode=d.getElementById('pMode');if(!mode)return;mode.style.color=state.timer.mode==='focus'?'#c35448':'#28775e';mode.querySelector('span:last-child').textContent=phaseText();d.getElementById('pRound').textContent=`${T().round} ${state.timer.round}/${ROUND_COUNT}`;d.getElementById('pTime').textContent=state.timer.flowOvertime?formatFlow(currentFlowElapsed()):formatMs(currentRemaining());d.getElementById('pTask').textContent=state.timer.intention.trim()||T().pipTaskEmpty;d.getElementById('pToggle').textContent=state.timer.running?T().pause:(currentElapsed()>1200||state.timer.flowOvertime?T().resume:T().start);d.getElementById('pAdd').textContent='+5';d.getElementById('pFinish').textContent=state.timer.mode==='focus'?T().complete:T().skipBreak;}
+
+    async function openVideoPip(){const canvas=$('pipCanvas'),video=$('pipVideo');drawVideoPip();if(!video.srcObject){const stream=canvas.captureStream(4);video.srcObject=stream;await video.play();}await video.requestPictureInPicture();pipKind='video';clearInterval(pipDrawTimer);pipDrawTimer=setInterval(drawVideoPip,250);video.addEventListener('leavepictureinpicture',()=>{clearInterval(pipDrawTimer);pipKind='';renderPipSupport();},{once:true});renderPipSupport();showToast(T().pipOpenedFallback);}
+
+    function drawVideoPip(){const c=$('pipCanvas'),ctx=c.getContext('2d');if(!ctx)return;const focus=state.timer.mode==='focus';ctx.fillStyle='#f7f7f4';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle=focus?'#c35448':'#28775e';ctx.fillRect(0,0,c.width,8);ctx.fillStyle=focus?'#c35448':'#28775e';ctx.font='700 20px system-ui';ctx.fillText(phaseText(),28,45);ctx.fillStyle='#72756f';ctx.font='500 17px system-ui';ctx.textAlign='right';ctx.fillText(`${T().round} ${state.timer.round}/${ROUND_COUNT}`,c.width-28,45);ctx.textAlign='center';ctx.fillStyle='#20211f';ctx.font='700 98px system-ui';ctx.fillText(state.timer.flowOvertime?formatFlow(currentFlowElapsed()):formatMs(currentRemaining()),c.width/2,168);ctx.fillStyle='#666963';ctx.font='500 21px system-ui';const task=(state.timer.intention.trim()||T().pipTaskEmpty);const display=task.length>42?task.slice(0,41)+'…':task;ctx.fillText(display,c.width/2,218);ctx.font='600 17px system-ui';ctx.fillStyle='#8a8c86';ctx.fillText(timerStatusText(),c.width/2,260);}
+
+    function updatePip(){if(pipKind==='document')updateDocumentPip();if(pipKind==='video')drawVideoPip();renderPipSupport();}
+
+    const AppConfirm={ask({title,message,okLabel}){return new Promise(resolve=>{confirmResolver=resolve;$('confirmTitle').textContent=title;$('confirmMessage').textContent=message;$('confirmOk').textContent=okLabel||T().clear;$('confirmDialog').showModal();});},finish(value){if(!$('confirmDialog').open)return;$('confirmDialog').close();const r=confirmResolver;confirmResolver=null;if(r)r(value);}};
+
+    async function resetCurrent(){if(currentElapsed()<1200&&!state.timer.running&&state.timer.distractions===0){const mode=state.timer.mode,round=state.timer.round;loadPhase(mode,round,true);saveState();render();return;}const ok=await AppConfirm.ask({title:T().resetTitle,message:T().resetMsg,okLabel:T().resetOk});if(!ok)return;const mode=state.timer.mode,round=state.timer.round;loadPhase(mode,round,true);saveState();render();}
+
+    async function clearHistory(){if(!state.history.length)return;const ok=await AppConfirm.ask({title:T().historyClearTitle,message:T().historyClearMsg,okLabel:T().clear});if(!ok)return;state.history=[];saveState();renderToday();renderHistory();}
+
+    function exportData(){const payload={schemaVersion:1,exportedAt:new Date().toISOString(),app:{name:APP_CONFIG.name,version:APP_CONFIG.version},data:state};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`pomodoro-${todayKey()}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);showToast(T().exported);}
+
+    function openSettings(){const s=state.settings;$('focusMinutesInput').value=s.focus;$('shortMinutesInput').value=s.short;$('longMinutesInput').value=s.long;$('autoBreakToggle').checked=s.autoBreak;$('autoFocusToggle').checked=s.autoFocus;$('settingsDialog').showModal();}
+    function saveSettings(){const f=Number($('focusMinutesInput').value),s=Number($('shortMinutesInput').value),l=Number($('longMinutesInput').value);if(!Number.isInteger(f)||f<1||f>180||!Number.isInteger(s)||s<1||s>60||!Number.isInteger(l)||l<1||l>120){showToast(T().invalidMinutes);return;}const old=deepCopy(state.settings);Object.assign(state.settings,{focus:f,short:s,long:l,autoBreak:$('autoBreakToggle').checked,autoFocus:$('autoFocusToggle').checked});const untouched=!state.timer.running&&!state.timer.flowOvertime&&currentElapsed()<1200;if(untouched&&((state.timer.mode==='focus'&&old.focus!==f)||(state.timer.mode==='short'&&old.short!==s)||(state.timer.mode==='long'&&old.long!==l))){state.timer.plannedMs=durationFor(state.timer.mode);state.timer.remainingMs=state.timer.plannedMs;}saveState();$('settingsDialog').close();render();showToast(T().saved);}
+
+    function bind(){
+      $('languageButton').addEventListener('click',()=>{lang=lang==='ja'?'en':'ja';applyLanguage();});$('helpButton').addEventListener('click',()=>$('helpDialog').showModal());$('helpClose').addEventListener('click',()=>$('helpDialog').close());
+      $('mainToggleButton').addEventListener('click',toggleTimer);$('mobileToggleButton').addEventListener('click',toggleTimer);$('addFiveButton').addEventListener('click',addFive);$('mobileAddButton').addEventListener('click',addFive);$('finishButton').addEventListener('click',finishCurrent);$('mobileFinishButton').addEventListener('click',finishCurrent);$('resetTimerButton').addEventListener('click',resetCurrent);$('distractionButton').addEventListener('click',recordDistraction);$('pipButton').addEventListener('click',togglePip);
+      $('intentionInput').addEventListener('input',(e)=>{state.timer.intention=e.target.value;updateIntentionCount();saveState();updatePip();});
+      $('flowToggle').addEventListener('change',(e)=>{state.settings.flow=e.target.checked;saveState();});$('soundToggle').addEventListener('change',(e)=>{state.settings.sound=e.target.checked;saveState();if(e.target.checked)playChime('break');});$('notifyToggle').addEventListener('change',(e)=>toggleNotification(e.target.checked));
+      $('settingsButton').addEventListener('click',openSettings);$('settingsClose').addEventListener('click',()=>$('settingsDialog').close());$('settingsCancel').addEventListener('click',()=>$('settingsDialog').close());$('settingsSave').addEventListener('click',saveSettings);$('exportButton').addEventListener('click',exportData);$('clearHistoryButton').addEventListener('click',clearHistory);
+      $('confirmCancel').addEventListener('click',()=>AppConfirm.finish(false));$('confirmOk').addEventListener('click',()=>AppConfirm.finish(true));$('confirmDialog').addEventListener('cancel',(e)=>{e.preventDefault();AppConfirm.finish(false)});
+      $('toastAction').addEventListener('click',()=>{const fn=toastUndo;$('toast').classList.remove('show');toastUndo=null;if(fn)fn();});
+      $('pipVideo').addEventListener('enterpictureinpicture',renderPipSupport);
+      document.addEventListener('keydown',(e)=>{const tag=(e.target&&e.target.tagName||'').toLowerCase();if(tag==='input'||tag==='textarea'||tag==='button'||e.metaKey||e.ctrlKey||e.altKey)return;if(e.code==='Space'){e.preventDefault();toggleTimer();}else if(e.key.toLowerCase()==='p'){e.preventDefault();togglePip();}else if(e.key.toLowerCase()==='d'){e.preventDefault();recordDistraction();}else if(e.key.toLowerCase()==='n'){e.preventDefault();finishCurrent();}});
+      document.addEventListener('visibilitychange',()=>{handleExpiry();render();});window.addEventListener('pagehide',saveState);
+    }
+
+    function init(){
+      $('versionBadge').textContent=`v${APP_CONFIG.version}`;$('footerBuild').textContent=`Build ${new Date(BUILD_MANIFEST.generatedAtUtc).toLocaleString()}`;$('footerDeps').textContent=`Dependencies ${(BUILD_MANIFEST.dependencies||[]).length}`;
+      $('flowToggle').checked=state.settings.flow;$('soundToggle').checked=state.settings.sound;$('notifyToggle').checked=state.settings.notify&&'Notification'in window&&Notification.permission==='granted';if(!$('notifyToggle').checked)state.settings.notify=false;
+      $('intentionInput').value=state.timer.intention||'';bind();applyLanguage();handleExpiry();render();renderToday();renderHistory();renderPipSupport();
+      setInterval(()=>{handleExpiry();render();},250);
+    }
+    init();
+  })();
+  </script>
+</body>
+</html>

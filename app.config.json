@@ -1,0 +1,22 @@
+{
+  "$schema": "./schemas/app-config.schema.json",
+  "name": "Pomodoro Timer",
+  "nameJa": "ポモドーロタイマー",
+  "slug": "pomodoro-timer",
+  "version": "1.0.0",
+  "description": "A local-first Pomodoro timer designed around an interactive Picture-in-Picture mini panel.",
+  "descriptionJa": "操作できるPicture-in-Pictureミニパネルを中心に設計した、ローカル完結のポモドーロタイマーです。",
+  "defaultLanguage": "auto",
+  "repository": {
+    "owner": "ttomohisa",
+    "name": "htmlapps-pomodoro-timer"
+  },
+  "build": {
+    "output": "dist/index.html",
+    "blockRuntimeNetwork": true,
+    "selfExtract": {
+      "enabled": true,
+      "output": "dist/index.self-extract.html"
+    }
+  }
+}
