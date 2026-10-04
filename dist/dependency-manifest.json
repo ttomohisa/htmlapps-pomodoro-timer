@@ -1,13 +1,11 @@
 {
-    "schemaVersion":  1,
-    "builder":  "single-html-app-template-compatible/1.0",
-    "generatedAtUtc":  "2026-08-16T07:07:53.9879762Z",
-    "app":  {
-                "name":  "Pomodoro Timer",
-                "slug":  "pomodoro-timer",
-                "version":  "1.0.0"
-            },
-    "dependencies":  [
-
-                     ]
+  "schemaVersion": 1,
+  "builder": "single-html-app-template-compatible/1.0",
+  "generatedAtUtc": "2026-10-04T09:25:37.2777169Z",
+  "app": {
+    "name": "Pomodoro Timer",
+    "slug": "pomodoro-timer",
+    "version": "1.0.0"
+  },
+  "dependencies": []
 }

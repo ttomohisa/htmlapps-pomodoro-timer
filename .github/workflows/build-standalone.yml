@@ -8,6 +8,7 @@ on:
     paths:
       - "src/**"
       - "scripts/**"
+      - "tests/**"
       - "app.config.json"
       - "dependencies.json"
       - "build-standalone.ps1"
@@ -24,6 +25,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
 
       - name: Build and verify standalone HTML
         shell: pwsh
