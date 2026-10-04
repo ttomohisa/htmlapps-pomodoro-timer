@@ -65,6 +65,8 @@ foreach ($entry in $replacements.GetEnumerator()) {
 
 $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
 [System.IO.File]::WriteAllText($OutputPath, $template, $utf8NoBom)
+# Keep the repository-root portable download in sync with the generated app.
+[System.IO.File]::WriteAllText((Join-Path $Root "pomodoro-timer.html"), $template, $utf8NoBom)
 [System.IO.File]::WriteAllText((Join-Path $outputDirectory "dependency-manifest.json"), ($manifest | ConvertTo-Json -Depth 20), $utf8NoBom)
 [System.IO.File]::WriteAllText((Join-Path $outputDirectory ".nojekyll"), "", $utf8NoBom)
 

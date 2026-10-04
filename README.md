@@ -208,3 +208,14 @@ Bug reports and feature proposals are welcome through GitHub Issues. See [CONTRI
 Copyright © 2026 ttomohisa
 
 Licensed under the [MIT License](LICENSE).
+
+## Session history
+
+- Browse the latest 300 saved sessions with dates, filter Today / All, or search intentions.
+- Use again copies a past intention into an unstarted focus timer without starting it. Reset or finish an active session first.
+- Export CSV downloads only the matching history, including timestamps in UTC and exact fractional minutes. Spreadsheet-formula prefixes are escaped. Export JSON still backs up all local state.
+- Flow overtime remains counted when adding five minutes, including after pause or reload.
+
+### Regression tests
+
+Run `node --test tests/session-history.test.cjs` for deterministic timer and history checks. `scripts/check-repository.ps1` builds and runs them against the source, both standalone copies and the decoded self-extract payload (Node.js 24). Browser checks are still needed for layout, native downloads and Picture-in-Picture support.

@@ -1,9 +1,9 @@
 {
-    "schemaVersion":  1,
-    "sourceFile":  "index.html",
-    "sourceBytes":  69576,
-    "sourceSha256":  "03a5f9e329d9d49b5bb4c593a630d8334225bc91702fe9d6b1985d8dcb5a2b44",
-    "compressedBytes":  19701,
-    "encoding":  "gzip+base64",
-    "generatedAtUtc":  "2026-08-16T07:07:54.1944792Z"
+  "schemaVersion": 1,
+  "sourceFile": "index.html",
+  "sourceBytes": 77176,
+  "sourceSha256": "03944b40ecab38ba5ef760b8d781c4386cd1390c5c7e412f5cb508b64a48874f",
+  "compressedBytes": 21865,
+  "encoding": "gzip+base64",
+  "generatedAtUtc": "2026-10-04T09:25:37.3527379Z"
 }

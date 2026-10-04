@@ -17,4 +17,13 @@ $buildArguments = @{}; if ($ForceDownload) { $buildArguments.ForceDownload = $tr
 & (Join-Path $Root "build-standalone.ps1") @buildArguments
 $html = [System.IO.File]::ReadAllText((Join-Path $Root "dist\index.html"), [System.Text.Encoding]::UTF8)
 foreach ($item in @("Pomodoro Timer","documentPictureInPicture","requestPictureInPicture","Flow","気が散った")) { if (-not $html.Contains($item)) { throw "Required content missing: $item" } }
+# Run the same dependency-free regression suite against source and every shipped variant.
+$previousTestHtml = $env:POMODORO_TEST_HTML
+try {
+  foreach ($variant in @("src/index.template.html", "dist/index.html", "pomodoro-timer.html", "dist/index.self-extract.html")) {
+    $env:POMODORO_TEST_HTML = $variant
+    & node --test (Join-Path $Root "tests/session-history.test.cjs")
+    if ($LASTEXITCODE -ne 0) { throw "Session/history regression tests failed: $variant" }
+  }
+} finally { $env:POMODORO_TEST_HTML = $previousTestHtml }
 Write-Host "[OK] Repository check passed." -ForegroundColor Green
