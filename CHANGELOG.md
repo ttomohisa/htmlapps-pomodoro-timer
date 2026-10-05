@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Add up to three local duration sets in Settings, with draft-only Apply, deduplication, and preset-only removal/Undo.
+- Validate legacy duration-set data and keep the previous set list if browser storage fails, with a retryable error.
+- Preserve idle +5 extensions across settings changes and reloads until reset, including legacy timer states.
+- Replace Japanese 25-minute session/Flow copy with duration-neutral wording.
+- Report session-only settings changes when browser storage fails without resetting active timers.
+- Run duration-set, persistence-failure, and existing timer/history regression tests against all four HTML variants.
+
 - Add dated, searchable Today / All history, safe intention reuse, and filtered CSV export.
 - Preserve Flow overtime across repeated extensions, pauses, reloads, and delayed timer events.
 - Prevent empty completions, held-key repeats, and timer shortcuts inside dialogs.

@@ -60,6 +60,8 @@
     dialog{width:min(650px,calc(100% - 28px));max-height:min(780px,calc(100dvh - 28px));padding:0;overflow:hidden;border:1px solid var(--line);border-radius:17px;background:var(--surface);color:var(--text);box-shadow:var(--shadow-md)}dialog::backdrop{background:rgba(15,17,14,.52);backdrop-filter:blur(4px)}
     .dialog-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line)}.dialog-header h2{margin:0;font-size:17px}.dialog-close{display:grid;place-items:center;width:34px;height:34px;border:0;border-radius:9px;background:transparent;color:var(--muted);cursor:pointer}.dialog-close:hover{background:var(--surface-muted);color:var(--text)}.dialog-close svg{width:18px;height:18px}.dialog-body{padding:19px 20px 25px;overflow:auto;max-height:calc(100dvh - 96px)}.dialog-body h3{margin:23px 0 8px;padding-top:18px;border-top:1px solid var(--line);font-size:14px}.dialog-body h3:first-child{margin-top:0;padding-top:0;border-top:0}.dialog-body p,.dialog-body li{color:var(--muted);font-size:12px;line-height:1.7}.dialog-body ul{padding-left:20px}.dialog-body code{padding:2px 5px;border-radius:5px;background:var(--surface-muted);font-size:11px}
     .settings-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.field label{display:block;margin-bottom:5px;color:var(--muted);font-size:10px;font-weight:750}.field input{width:100%;height:42px;padding:0 10px;border:1px solid var(--line);border-radius:10px;background:#fbfbf9}.settings-block{margin-top:18px}.settings-block h3{margin:0 0 6px;padding:0;border:0}.settings-note{margin:0;color:var(--muted);font-size:10px}.settings-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+    #settingsDialog[open]{display:flex;flex-direction:column}#settingsDialog .dialog-header{flex:none}#settingsDialog .dialog-body{min-height:0;flex:1 1 auto}
+    .duration-set-list{list-style:none;margin:10px 0;padding:0;display:grid;gap:8px}.duration-set-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:10px;border:1px solid var(--line);border-radius:10px}.duration-set-values{flex:1 1 220px;font-size:11px;overflow-wrap:anywhere}.duration-set-actions{display:flex;gap:6px;flex-wrap:wrap}.duration-set-status{min-height:1.7em;margin:8px 0!important}.duration-set-status.error{color:var(--danger)}.duration-set-controls{display:flex;gap:8px;flex-wrap:wrap}.duration-set-controls .small-btn,.duration-set-actions .small-btn{min-height:40px}.settings-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.field input{min-width:0}
     .confirm-dialog{width:min(430px,calc(100% - 28px))}.confirm-body{padding:20px}.confirm-body h2{margin:0;font-size:17px}.confirm-body p{margin:8px 0 20px;color:var(--muted);font-size:12px}.confirm-actions{display:flex;justify-content:flex-end;gap:9px}.btn.danger-solid{border-color:var(--danger);background:var(--danger);color:#fff}
     .mobile-dock{display:none}
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
@@ -86,7 +88,7 @@
 
   <main class="main">
     <section class="page-intro">
-      <div><h2 id="introTitle">この25分だけに集中。</h2><p id="introText">やることを1つ決めて開始。必要ならPiPでタイマーを画面の隅に置いたまま作業できます。</p></div>
+      <div><h2 id="introTitle">このセッションに集中。</h2><p id="introText">やることを1つ決めて開始。必要ならPiPでタイマーを画面の隅に置いたまま作業できます。</p></div>
       <div class="local-badge"><svg viewBox="0 0 24 24" fill="none"><path d="M7 10V8a5 5 0 0 1 10 0v2M6 10h12v10H6z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span id="localBadge">すべてローカル処理</span></div>
     </section>
 
@@ -97,7 +99,7 @@
           <div class="timer-ring" id="timerRing"><div class="timer-face"><div class="timer-time" id="timerTime">25:00</div><div class="timer-status" id="timerStatus">準備できたらスタート</div><div class="flow-pill" id="flowPill">FLOW +0:00</div></div></div>
         </div>
         <div class="intention-wrap">
-          <div class="intention-label"><label for="intentionInput" id="intentionLabel">この25分でやること</label><span class="intention-count" id="intentionCount">0 / 60</span></div>
+          <div class="intention-label"><label for="intentionInput" id="intentionLabel">このセッションでやること</label><span class="intention-count" id="intentionCount">0 / 60</span></div>
           <input class="intention-input" id="intentionInput" maxlength="60" autocomplete="off" placeholder="例: READMEの使い方を書く">
         </div>
         <div class="timer-actions">
@@ -126,7 +128,7 @@
         <section class="card panel">
           <div class="panel-head"><h2 class="panel-title" id="quickTitle">集中スタイル</h2><button class="small-btn" id="settingsButton" type="button">設定</button></div>
           <div class="quick-settings">
-            <div class="quick-row"><div class="quick-copy"><strong id="flowTitle">Flow延長</strong><span id="flowDesc">25分後も集中を続けて計測</span></div><label class="switch"><input id="flowToggle" type="checkbox"><span></span></label></div>
+            <div class="quick-row"><div class="quick-copy"><strong id="flowTitle">Flow延長</strong><span id="flowDesc">集中時間の終了後も計測を続ける</span></div><label class="switch"><input id="flowToggle" type="checkbox"><span></span></label></div>
             <div class="quick-row"><div class="quick-copy"><strong id="soundTitle">サウンド</strong><span id="soundDesc">区切りを短い音で通知</span></div><label class="switch"><input id="soundToggle" type="checkbox"><span></span></label></div>
             <div class="quick-row"><div class="quick-copy"><strong id="notifyTitle">通知</strong><span id="notifyDesc">バックグラウンドでも通知</span></div><label class="switch"><input id="notifyToggle" type="checkbox"><span></span></label></div>
           </div>
@@ -149,6 +151,14 @@
 
   <dialog id="settingsDialog"><div class="dialog-header"><h2 id="settingsTitle">タイマー設定</h2><button class="dialog-close" id="settingsClose" type="button" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div><div class="dialog-body">
     <div class="settings-grid"><div class="field"><label for="focusMinutesInput" id="focusMinutesLabel">集中（分）</label><input id="focusMinutesInput" type="number" min="1" max="180" inputmode="numeric"></div><div class="field"><label for="shortMinutesInput" id="shortMinutesLabel">短い休憩（分）</label><input id="shortMinutesInput" type="number" min="1" max="60" inputmode="numeric"></div><div class="field"><label for="longMinutesInput" id="longMinutesLabel">長い休憩（分）</label><input id="longMinutesInput" type="number" min="1" max="120" inputmode="numeric"></div></div>
+    <section class="settings-block" aria-labelledby="durationSetsTitle">
+      <h3 id="durationSetsTitle">時間セット</h3>
+      <p class="settings-note" id="durationSetsNote">集中・短い休憩・長い休憩の組み合わせを3件まで保存できます。適用は入力欄のみ変更します。設定を変更するには「保存」を押してください。</p>
+      <ul class="duration-set-list" id="durationSetList"></ul>
+      <p class="settings-note" id="durationSetsEmpty">保存した時間セットはありません。</p>
+      <div class="duration-set-controls"><button class="small-btn" id="durationSetSave" type="button">入力中の時間をセットに保存</button><button class="small-btn" id="durationSetUndo" type="button" hidden>削除を元に戻す</button></div>
+      <p class="duration-set-status" id="durationSetStatus" role="status" aria-live="polite" aria-atomic="true"></p>
+    </section>
     <div class="settings-block"><h3 id="autoTitle">自動で次へ</h3><div class="quick-row"><div class="quick-copy"><strong id="autoBreakTitle">休憩を自動開始</strong><span id="autoBreakDesc">集中終了後に休憩を開始</span></div><label class="switch"><input id="autoBreakToggle" type="checkbox"><span></span></label></div><div class="quick-row"><div class="quick-copy"><strong id="autoFocusTitle">集中を自動開始</strong><span id="autoFocusDesc">休憩終了後に次の集中を開始</span></div><label class="switch"><input id="autoFocusToggle" type="checkbox"><span></span></label></div></div>
     <p class="settings-note" id="settingsNote">進行中のセッション時間は変更せず、次のセッションから新しい設定を使います。</p>
     <div class="settings-actions"><button class="btn" id="settingsCancel" type="button">キャンセル</button><button class="btn primary" id="settingsSave" type="button">保存</button></div>
@@ -163,7 +173,7 @@
   (()=>{
     'use strict';
     const APP_CONFIG={"$schema":"./schemas/app-config.schema.json","name":"Pomodoro Timer","nameJa":"ポモドーロタイマー","slug":"pomodoro-timer","version":"1.0.0","description":"A local-first Pomodoro timer designed around an interactive Picture-in-Picture mini panel.","descriptionJa":"操作できるPicture-in-Pictureミニパネルを中心に設計した、ローカル完結のポモドーロタイマーです。","defaultLanguage":"auto","repository":{"owner":"ttomohisa","name":"htmlapps-pomodoro-timer"},"build":{"output":"dist/index.html","blockRuntimeNetwork":true,"selfExtract":{"enabled":true,"output":"dist/index.self-extract.html"}}};
-    const BUILD_MANIFEST={"schemaVersion":1,"builder":"single-html-app-template-compatible/1.0","generatedAtUtc":"2026-10-04T09:25:37.2777169Z","app":{"name":"Pomodoro Timer","slug":"pomodoro-timer","version":"1.0.0"},"dependencies":[]};
+    const BUILD_MANIFEST={"schemaVersion":1,"builder":"single-html-app-template-compatible/1.0","generatedAtUtc":"2026-10-05T12:52:28.0321341Z","app":{"name":"Pomodoro Timer","slug":"pomodoro-timer","version":"1.0.0"},"dependencies":[]};
     const EMBEDDED_ASSETS_B64="eyJzY2hlbWFWZXJzaW9uIjoxLCJkZXBlbmRlbmNpZXMiOnt9fQ==";
     void EMBEDDED_ASSETS_B64;
 
@@ -177,22 +187,24 @@
 
     const TEXT={
       ja:{
-        brand:'ポモドーロタイマー',tagline:'作業中も、画面の隅に。',introTitle:'この25分だけに集中。',introText:'やることを1つ決めて開始。必要ならPiPでタイマーを画面の隅に置いたまま作業できます。',local:'すべてローカル処理',
-        focus:'FOCUS',short:'SHORT BREAK',long:'LONG BREAK',ready:'準備できたらスタート',running:'集中中',paused:'一時停止中',breakRunning:'休憩中',flowing:'Flowで集中を継続中',start:'スタート',pause:'一時停止',resume:'再開',finish:'完了して次へ',skipBreak:'休憩を終了',reset:'リセット',intention:'この25分でやること',placeholder:'例: READMEの使い方を書く',distraction:'気が散った',
+        brand:'ポモドーロタイマー',tagline:'作業中も、画面の隅に。',introTitle:'このセッションに集中。',introText:'やることを1つ決めて開始。必要ならPiPでタイマーを画面の隅に置いたまま作業できます。',local:'すべてローカル処理',
+        focus:'FOCUS',short:'SHORT BREAK',long:'LONG BREAK',ready:'準備できたらスタート',running:'集中中',paused:'一時停止中',breakRunning:'休憩中',flowing:'Flowで集中を継続中',start:'スタート',pause:'一時停止',resume:'再開',finish:'完了して次へ',skipBreak:'休憩を終了',reset:'リセット',intention:'このセッションでやること',placeholder:'例: READMEの使い方を書く',distraction:'気が散った',
         today:'今日',minutes:'集中した分',sessions:'完了セッション',distractions:'脱線',pipTitle:'Picture in Picture',pipText:'別のタブやアプリで作業していても、タイマーを画面の隅に表示します。',pipOpen:'PiPで表示',pipClose:'PiPを閉じる',pipInteractive:'操作できるPiPに対応',pipFallback:'表示用PiPに対応',pipUnsupported:'このブラウザではPiPを利用できません',pipOpenedInteractive:'操作できるPiPを開きました。',pipOpenedFallback:'表示用PiPを開きました。操作は元の画面から行えます。',
-        quick:'集中スタイル',settings:'設定',flowTitle:'Flow延長',flowDesc:'25分後も集中を続けて計測',soundTitle:'サウンド',soundDesc:'区切りを短い音で通知',notifyTitle:'通知',notifyDesc:'バックグラウンドでも通知',history:'集中履歴',historyDesc:'このブラウザに最新300件を保存します。',historyAll:'すべて',historySearch:'やることで検索',historyNoMatch:'条件に一致する集中セッションはありません。',historyCount:'{count}件',reuse:'もう一度使う',reuseHint:'未開始の集中タイマーにコピーします。開始はしません。',reuseBlocked:'タイマーをリセットするか、次の集中セッションで使えます。',reused:'やることをコピーしました。準備できたらスタート。',exportCsv:'CSVを書き出す',csvExported:'表示中の集中履歴をCSVに書き出しました。',export:'JSONを書き出す',clearHistory:'履歴を消去',historyEmpty:'まだ完了した集中セッションはありません。',untitled:'やること未入力',minSuffix:'分',round:'ラウンド',flow:'Flow',
-        distractionAdded:'脱線を1回記録しました。',undo:'元に戻す',undoDone:'記録を元に戻しました。',sessionDone:'集中セッションを記録しました。',breakDone:'休憩が終わりました。',focusDone:'集中時間が終わりました。',flowStarted:'25分終了。Flow計測を続けます。',resetTitle:'現在のタイマーをリセットしますか？',resetMsg:'進行中の時間と脱線回数は記録せず、現在のモードを最初からやり直します。',resetOk:'リセット',historyClearTitle:'集中履歴をすべて消去しますか？',historyClearMsg:'今日の集計を含む、このブラウザに保存された集中履歴を削除します。設定は残ります。',clear:'消去',cancel:'キャンセル',saved:'設定を保存しました。',exported:'ローカルデータを書き出しました。',notificationDenied:'通知が許可されていません。ブラウザの設定を確認してください。',notificationUnsupported:'このブラウザは通知に対応していません。',
+        quick:'集中スタイル',settings:'設定',flowTitle:'Flow延長',flowDesc:'集中時間の終了後も計測を続ける',soundTitle:'サウンド',soundDesc:'区切りを短い音で通知',notifyTitle:'通知',notifyDesc:'バックグラウンドでも通知',history:'集中履歴',historyDesc:'このブラウザに最新300件を保存します。',historyAll:'すべて',historySearch:'やることで検索',historyNoMatch:'条件に一致する集中セッションはありません。',historyCount:'{count}件',reuse:'もう一度使う',reuseHint:'未開始の集中タイマーにコピーします。開始はしません。',reuseBlocked:'タイマーをリセットするか、次の集中セッションで使えます。',reused:'やることをコピーしました。準備できたらスタート。',exportCsv:'CSVを書き出す',csvExported:'表示中の集中履歴をCSVに書き出しました。',export:'JSONを書き出す',clearHistory:'履歴を消去',historyEmpty:'まだ完了した集中セッションはありません。',untitled:'やること未入力',minSuffix:'分',round:'ラウンド',flow:'Flow',
+        distractionAdded:'脱線を1回記録しました。',undo:'元に戻す',undoDone:'記録を元に戻しました。',sessionDone:'集中セッションを記録しました。',breakDone:'休憩が終わりました。',focusDone:'集中時間が終わりました。',flowStarted:'集中時間が終了。Flow計測を続けます。',resetTitle:'現在のタイマーをリセットしますか？',resetMsg:'進行中の時間と脱線回数は記録せず、現在のモードを最初からやり直します。',resetOk:'リセット',historyClearTitle:'集中履歴をすべて消去しますか？',historyClearMsg:'今日の集計を含む、このブラウザに保存された集中履歴を削除します。設定は残ります。',clear:'消去',cancel:'キャンセル',saved:'設定を保存しました。',sessionOnly:'設定は今回の利用中のみ適用されました。このブラウザに保存できませんでした。再試行するには設定を開いて保存してください。',exported:'ローカルデータを書き出しました。',notificationDenied:'通知が許可されていません。ブラウザの設定を確認してください。',notificationUnsupported:'このブラウザは通知に対応していません。',
         settingsTitle:'タイマー設定',focusMinutes:'集中（分）',shortMinutes:'短い休憩（分）',longMinutes:'長い休憩（分）',auto:'自動で次へ',autoBreak:'休憩を自動開始',autoBreakDesc:'集中終了後に休憩を開始',autoFocus:'集中を自動開始',autoFocusDesc:'休憩終了後に次の集中を開始',settingsNote:'進行中のセッション時間は変更せず、次のセッションから新しい設定を使います。',save:'保存',invalidMinutes:'時間は入力範囲内の整数にしてください。',
+        durationSets:'時間セット',durationSetsNote:'集中・短い休憩・長い休憩の組み合わせを3件まで保存できます。セットの保存・削除はすぐに反映されます。適用は入力欄のみ変更します。設定を変更するには「保存」を押してください。',durationSetsEmpty:'保存した時間セットはありません。',durationSetSave:'入力中の時間をセットに保存',durationSetApply:'適用',durationSetRemove:'削除',durationSetUndo:'削除を元に戻す',durationSetValues:'集中 {focus}分 / 短い休憩 {short}分 / 長い休憩 {long}分',durationSetSaved:'時間セットを保存しました。',durationSetApplied:'入力欄に適用しました。設定を変更するには「保存」を押してください。',durationSetDuplicate:'同じ時間セットはすでに保存されています。',durationSetFull:'3件まで保存できます。先に既存のセットを削除してください。',durationSetRemoved:'時間セットを削除しました。',durationSetRestored:'時間セットの削除を元に戻しました。',durationSetFailed:'時間セットを保存できませんでした。変更前の一覧を保持しています。もう一度操作して再試行してください。',
         privacy:'データは外部送信されません',helpTitle:'使い方と注意事項',close:'閉じる',complete:'完了',addFive:'5分追加',keyboard:'キーボード',pipTaskEmpty:'やることを1つ決める',notificationFocus:'集中時間が終わりました',notificationBreak:'休憩が終わりました',notificationFlow:'予定時間を超えて集中を続けています',
-        help:`<h3>基本の使い方</h3><ol><li>「この25分でやること」を1つ入力します。</li><li>スタートして集中します。脱線したときは「気が散った」を1回押すだけで記録できます。</li><li>集中が終わると短い休憩へ進み、4回目の後は長い休憩になります。</li></ol><h3>Picture in Picture</h3><p>対応ブラウザでは、他のタブやアプリより前に小さなタイマーを表示できます。Document Picture-in-Picture対応環境では、一時停止・5分追加・完了をPiP内から操作できます。非対応の場合はVideo PiPへフォールバックし、表示のみ行います。</p><p>PiP APIはブラウザやOSによって利用可否が異なります。PiPが使えなくても通常のタイマー機能はそのまま利用できます。</p><h3>Flow延長</h3><p>ONにすると、集中時間が0になっても休憩へ強制移行せず、<code>+00:01</code> のように超過時間を計測します。集中の波をタイマーで切りたくないときに使います。</p><h3>保存とプライバシー</h3><p>設定・現在のタイマー・集中履歴はこのブラウザのLocalStorageに保存されます。サーバー送信、ログイン、分析、追跡はありません。ブラウザデータを削除すると履歴も消えるため、必要ならJSONを書き出してください。</p><h3>キーボードショートカット</h3><ul><li><code>Space</code>：開始 / 一時停止</li><li><code>P</code>：PiPを開く / 閉じる</li><li><code>D</code>：脱線を記録</li><li><code>N</code>：完了して次へ</li></ul><h3>通知について</h3><p>通知は許可したブラウザでのみ動作します。OSの集中モードやブラウザ設定により表示されない場合があります。サウンドは外部音源を使わずブラウザ内で生成します。</p>`
+        help:`<h3>基本の使い方</h3><ol><li>「このセッションでやること」を1つ入力します。</li><li>スタートして集中します。脱線したときは「気が散った」を1回押すだけで記録できます。</li><li>集中が終わると短い休憩へ進み、4回目の後は長い休憩になります。</li></ol><h3>Picture in Picture</h3><p>対応ブラウザでは、他のタブやアプリより前に小さなタイマーを表示できます。Document Picture-in-Picture対応環境では、一時停止・5分追加・完了をPiP内から操作できます。非対応の場合はVideo PiPへフォールバックし、表示のみ行います。</p><p>PiP APIはブラウザやOSによって利用可否が異なります。PiPが使えなくても通常のタイマー機能はそのまま利用できます。</p><h3>Flow延長</h3><p>ONにすると、集中時間が0になっても休憩へ強制移行せず、<code>+00:01</code> のように超過時間を計測します。集中の波をタイマーで切りたくないときに使います。</p><h3>保存とプライバシー</h3><p>設定・現在のタイマー・集中履歴はこのブラウザのLocalStorageに保存されます。サーバー送信、ログイン、分析、追跡はありません。ブラウザデータを削除すると履歴も消えるため、必要ならJSONを書き出してください。</p><h3>キーボードショートカット</h3><ul><li><code>Space</code>：開始 / 一時停止</li><li><code>P</code>：PiPを開く / 閉じる</li><li><code>D</code>：脱線を記録</li><li><code>N</code>：完了して次へ</li></ul><h3>通知について</h3><p>通知は許可したブラウザでのみ動作します。OSの集中モードやブラウザ設定により表示されない場合があります。サウンドは外部音源を使わずブラウザ内で生成します。</p>`
       },
       en:{
         brand:'Pomodoro Timer',tagline:'Keep it in the corner while you work.',introTitle:'Focus on just this session.',introText:'Choose one thing to finish, start the timer, and keep it visible in Picture-in-Picture while you work.',local:'Local-only processing',
         focus:'FOCUS',short:'SHORT BREAK',long:'LONG BREAK',ready:'Ready when you are',running:'Focusing',paused:'Paused',breakRunning:'On a break',flowing:'Continuing in Flow',start:'Start',pause:'Pause',resume:'Resume',finish:'Finish & next',skipBreak:'End break',reset:'Reset',intention:'One thing for this session',placeholder:'e.g. Write the README usage section',distraction:'Distracted',
         today:'Today',minutes:'focus min',sessions:'sessions done',distractions:'distractions',pipTitle:'Picture in Picture',pipText:'Keep the timer in a small always-on-top window while working in another tab or app.',pipOpen:'Open PiP',pipClose:'Close PiP',pipInteractive:'Interactive PiP supported',pipFallback:'Display-only PiP supported',pipUnsupported:'PiP is unavailable in this browser',pipOpenedInteractive:'Interactive PiP opened.',pipOpenedFallback:'Display-only PiP opened. Use the main window for controls.',
         quick:'Focus style',settings:'Settings',flowTitle:'Flow overtime',flowDesc:'Keep counting after focus time ends',soundTitle:'Sound',soundDesc:'Play a short local chime at transitions',notifyTitle:'Notifications',notifyDesc:'Notify even when the tab is in background',history:'Focus history',historyDesc:'Latest 300 sessions saved only in this browser.',historyAll:'All',historySearch:'Search intentions',historyNoMatch:'No focus sessions match these filters.',historyCount:'{count} sessions',reuse:'Use again',reuseHint:'Copy into an unstarted focus timer without starting it.',reuseBlocked:'Reset the timer or wait for the next focus session to reuse.',reused:'Intention copied. Start when you are ready.',exportCsv:'Export CSV',csvExported:'Visible focus history exported as CSV.',export:'Export JSON',clearHistory:'Clear history',historyEmpty:'No completed focus sessions yet.',untitled:'No intention',minSuffix:'min',round:'Round',flow:'Flow',
-        distractionAdded:'Recorded one distraction.',undo:'Undo',undoDone:'The distraction was removed.',sessionDone:'Focus session recorded.',breakDone:'Break finished.',focusDone:'Focus time finished.',flowStarted:'Focus target reached. Flow overtime is still counting.',resetTitle:'Reset the current timer?',resetMsg:'Current elapsed time and distractions will not be recorded. This phase will restart from the beginning.',resetOk:'Reset',historyClearTitle:'Clear all focus history?',historyClearMsg:'This removes focus history and today totals saved in this browser. Settings are kept.',clear:'Clear',cancel:'Cancel',saved:'Settings saved.',exported:'Local data exported.',notificationDenied:'Notifications are not allowed. Check your browser settings.',notificationUnsupported:'Notifications are not supported in this browser.',
+        distractionAdded:'Recorded one distraction.',undo:'Undo',undoDone:'The distraction was removed.',sessionDone:'Focus session recorded.',breakDone:'Break finished.',focusDone:'Focus time finished.',flowStarted:'Focus target reached. Flow overtime is still counting.',resetTitle:'Reset the current timer?',resetMsg:'Current elapsed time and distractions will not be recorded. This phase will restart from the beginning.',resetOk:'Reset',historyClearTitle:'Clear all focus history?',historyClearMsg:'This removes focus history and today totals saved in this browser. Settings are kept.',clear:'Clear',cancel:'Cancel',saved:'Settings saved.',sessionOnly:'Settings apply for this session only. Could not save in this browser. Reopen Settings and Save to retry.',exported:'Local data exported.',notificationDenied:'Notifications are not allowed. Check your browser settings.',notificationUnsupported:'Notifications are not supported in this browser.',
         settingsTitle:'Timer settings',focusMinutes:'Focus (min)',shortMinutes:'Short break (min)',longMinutes:'Long break (min)',auto:'Auto advance',autoBreak:'Auto-start breaks',autoBreakDesc:'Start a break when focus ends',autoFocus:'Auto-start focus',autoFocusDesc:'Start focus when a break ends',settingsNote:'An active session keeps its current duration. New durations apply from the next session.',save:'Save',invalidMinutes:'Enter whole minutes within the allowed ranges.',
+        durationSets:'Duration sets',durationSetsNote:'Save up to 3 focus / short break / long break combinations. Saving or removing a set takes effect immediately. Apply only fills the fields; press Save to change settings.',durationSetsEmpty:'No duration sets saved yet.',durationSetSave:'Save these durations as a set',durationSetApply:'Apply',durationSetRemove:'Remove',durationSetUndo:'Undo removal',durationSetValues:'Focus {focus} min / Short break {short} min / Long break {long} min',durationSetSaved:'Duration set saved.',durationSetApplied:'Fields updated. Press Save to change settings.',durationSetDuplicate:'This duration set is already saved.',durationSetFull:'You can save up to 3 sets. Remove an existing set first.',durationSetRemoved:'Duration set removed.',durationSetRestored:'Duration set restored.',durationSetFailed:'Could not save duration sets. The previous list is unchanged. Repeat the action to retry.',
         privacy:'No data is sent outside this page',helpTitle:'How to use & notes',close:'Close',complete:'Complete',addFive:'Add 5 min',keyboard:'Keyboard',pipTaskEmpty:'Choose one thing to finish',notificationFocus:'Focus time finished',notificationBreak:'Break finished',notificationFlow:'Flow overtime is still counting',
         help:`<h3>Basic flow</h3><ol><li>Enter one thing to finish in this focus session.</li><li>Start the timer. If your attention breaks, tap “Distracted” once.</li><li>After focus, the timer moves to a short break; every fourth focus round is followed by a long break.</li></ol><h3>Picture in Picture</h3><p>Supported browsers can keep a compact timer above other tabs and desktop apps. With Document Picture-in-Picture you can pause, add five minutes, and finish from inside the PiP window. Otherwise the app falls back to display-only Video PiP when available.</p><p>PiP capability varies by browser and operating system. The normal timer remains fully usable when PiP is unavailable.</p><h3>Flow overtime</h3><p>When enabled, reaching zero does not force a break. The timer starts counting upward as <code>+00:01</code> until you choose to finish, preserving a good concentration streak.</p><h3>Storage & privacy</h3><p>Settings, the active timer, and focus history are stored in LocalStorage in this browser. There is no server upload, account, analytics, or tracking. Browser-data cleanup can erase history, so export JSON if you want a backup.</p><h3>Keyboard shortcuts</h3><ul><li><code>Space</code>: start / pause</li><li><code>P</code>: open / close PiP</li><li><code>D</code>: record a distraction</li><li><code>N</code>: finish and advance</li></ul><h3>Notifications</h3><p>Notifications require browser permission and may still be suppressed by OS focus modes. Sounds are synthesized locally; no external audio is loaded.</p>`
       }
@@ -200,8 +212,8 @@
 
     const defaults=()=>({
       lang:'',settings:{focus:25,short:5,long:15,flow:true,sound:true,notify:false,autoBreak:false,autoFocus:false},
-      timer:{mode:'focus',round:1,running:false,plannedMs:25*60000,remainingMs:25*60000,endAt:null,startedAt:null,flowOvertime:false,flowElapsedMs:0,flowStartAt:null,distractions:0,intention:''},
-      history:[]
+      timer:{mode:'focus',round:1,running:false,plannedMs:25*60000,remainingMs:25*60000,endAt:null,startedAt:null,durationAdjusted:false,flowOvertime:false,flowElapsedMs:0,flowStartAt:null,distractions:0,intention:''},
+      history:[],presets:[]
     });
 
     function loadState(){
@@ -213,12 +225,14 @@
           if(saved.settings) Object.assign(base.settings,saved.settings);
           if(saved.timer) Object.assign(base.timer,saved.timer);
           if(Array.isArray(saved.history)) base.history=saved.history.slice(0,MAX_HISTORY);
+          base.presets=normalizePresets(saved.presets);
           if(saved.lang==='ja'||saved.lang==='en') base.lang=saved.lang;
         }
       }catch(e){}
       const t=base.timer;
       t.round=clamp(Number(t.round)||1,1,ROUND_COUNT); t.distractions=Math.max(0,Number(t.distractions)||0);
       t.plannedMs=Math.max(60000,Number(t.plannedMs)||durationFor(t.mode,base.settings));
+      t.durationAdjusted=t.durationAdjusted===true||t.plannedMs!==durationFor(t.mode,base.settings);
       t.remainingMs=Math.max(0,Number(t.remainingMs)||0); t.flowElapsedMs=Math.max(0,Number(t.flowElapsedMs)||0);
       if(t.running){
         if(t.flowOvertime){ if(!t.flowStartAt) t.flowStartAt=now(); }
@@ -231,11 +245,12 @@
     let lang=state.lang||(navigator.language&&navigator.language.toLowerCase().startsWith('ja')?'ja':'en');
     let toastTimer=0,toastUndo=null,pipWin=null,pipKind='',pipDrawTimer=0,audioCtx=null,confirmResolver=null;
     let historyScope='all',historyQuery='',renderedDay='';
+    let removedPreset=null,durationSetMessage='',durationSetError=false;
     const T=()=>TEXT[lang];
 
     function saveState(){
       state.lang=lang;
-      try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){}
+      try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));return true;}catch(e){return false;}
     }
     function durationFor(mode,settings=state.settings){const m=mode==='focus'?settings.focus:mode==='short'?settings.short:settings.long;return clamp(Math.round(Number(m)||1),1,180)*60000;}
     function currentRemaining(){if(state.timer.flowOvertime)return 0;if(state.timer.running&&state.timer.endAt)return Math.max(0,state.timer.endAt-now());return Math.max(0,state.timer.remainingMs);}
@@ -281,7 +296,7 @@
       $('pipTitle').textContent=t.pipTitle;$('pipText').textContent=t.pipText;$('quickTitle').textContent=t.quick;$('settingsButton').textContent=t.settings;$('flowTitle').textContent=t.flowTitle;$('flowDesc').textContent=t.flowDesc;$('soundTitle').textContent=t.soundTitle;$('soundDesc').textContent=t.soundDesc;$('notifyTitle').textContent=t.notifyTitle;$('notifyDesc').textContent=t.notifyDesc;
       $('historyAllButton').textContent=t.historyAll;$('historyTodayButton').textContent=t.today;$('historySearchLabel').textContent=t.historySearch;$('historySearchInput').placeholder=t.historySearch;$('exportCsvButton').textContent=t.exportCsv;$('historyTitle').textContent=t.history;$('historyDesc').textContent=t.historyDesc;$('exportButton').textContent=t.export;$('clearHistoryButton').textContent=t.clearHistory;$('historyEmpty').textContent=t.historyEmpty;$('footerPrivacy').textContent=t.privacy;
       $('helpTitle').textContent=t.helpTitle;$('helpButton').setAttribute('aria-label',t.helpTitle);$('helpClose').setAttribute('aria-label',t.close);$('helpBody').innerHTML=t.help;
-      $('settingsTitle').textContent=t.settingsTitle;$('focusMinutesLabel').textContent=t.focusMinutes;$('shortMinutesLabel').textContent=t.shortMinutes;$('longMinutesLabel').textContent=t.longMinutes;$('autoTitle').textContent=t.auto;$('autoBreakTitle').textContent=t.autoBreak;$('autoBreakDesc').textContent=t.autoBreakDesc;$('autoFocusTitle').textContent=t.autoFocus;$('autoFocusDesc').textContent=t.autoFocusDesc;$('settingsNote').textContent=t.settingsNote;$('settingsCancel').textContent=t.cancel;$('settingsSave').textContent=t.save;
+      $('settingsTitle').textContent=t.settingsTitle;$('focusMinutesLabel').textContent=t.focusMinutes;$('shortMinutesLabel').textContent=t.shortMinutes;$('longMinutesLabel').textContent=t.longMinutes;$('autoTitle').textContent=t.auto;$('autoBreakTitle').textContent=t.autoBreak;$('autoBreakDesc').textContent=t.autoBreakDesc;$('autoFocusTitle').textContent=t.autoFocus;$('autoFocusDesc').textContent=t.autoFocusDesc;$('settingsNote').textContent=t.settingsNote;$('settingsCancel').textContent=t.cancel;$('settingsSave').textContent=t.save;$('settingsClose').setAttribute('aria-label',t.close);renderDurationSets();
       $('confirmCancel').textContent=t.cancel;$('intentionInput').value=state.timer.intention||'';updateIntentionCount();renderPipSupport();renderToday();renderHistory();render();
       saveState();
     }
@@ -311,7 +326,7 @@
     function pauseTimer(){const t=state.timer;handleExpiry();if(t!==state.timer||!t.running)return;if(t.flowOvertime){t.flowElapsedMs=currentFlowElapsed();t.flowStartAt=null;}else{t.remainingMs=currentRemaining();t.endAt=null;}t.running=false;saveState();render();}
     function toggleTimer(){state.timer.running?pauseTimer():startTimer();}
 
-    function addFive(){const t=state.timer;handleExpiry();if(t!==state.timer)return;const add=5*60000;if(t.flowOvertime){const wasRunning=t.running;const overtime=currentFlowElapsed();t.flowOvertime=false;t.flowElapsedMs=overtime;t.flowStartAt=null;t.remainingMs=add;t.plannedMs+=add;t.endAt=wasRunning?now()+add:null;t.running=wasRunning;}else{t.remainingMs=currentRemaining()+add;t.plannedMs+=add;if(t.running)t.endAt=now()+t.remainingMs;}saveState();render();showToast(T().addFive);}
+    function addFive(){const t=state.timer;handleExpiry();if(t!==state.timer)return;t.durationAdjusted=true;const add=5*60000;if(t.flowOvertime){const wasRunning=t.running;const overtime=currentFlowElapsed();t.flowOvertime=false;t.flowElapsedMs=overtime;t.flowStartAt=null;t.remainingMs=add;t.plannedMs+=add;t.endAt=wasRunning?now()+add:null;t.running=wasRunning;}else{t.remainingMs=currentRemaining()+add;t.plannedMs+=add;if(t.running)t.endAt=now()+t.remainingMs;}saveState();render();showToast(T().addFive);}
 
     function enterFlow(){const t=state.timer;if(t.flowOvertime)return;const threshold=t.endAt||now();t.flowOvertime=true;t.flowStartAt=threshold;t.remainingMs=0;t.endAt=null;t.running=true;playChime('focus');notify(T().notificationFlow,T().flowStarted);saveState();render();showToast(T().flowStarted);}
 
@@ -320,7 +335,7 @@
     function completeBreak(){const oldRound=state.timer.round;playChime('break');notify(T().notificationBreak,T().breakDone);const nextRound=state.timer.mode==='long'?1:clamp(oldRound+1,1,ROUND_COUNT);loadPhase('focus',nextRound,false);if(state.settings.autoFocus)startTimer();saveState();render();showToast(T().breakDone);}
     function finishCurrent(){const t=state.timer;handleExpiry();if(t!==state.timer||!canFinishCurrent())return;t.mode==='focus'?completeFocus():completeBreak();}
 
-    function loadPhase(mode,round,keepIntention){const intention=keepIntention?state.timer.intention:'';const planned=durationFor(mode);state.timer={mode,round,running:false,plannedMs:planned,remainingMs:planned,endAt:null,startedAt:null,flowOvertime:false,flowElapsedMs:0,flowStartAt:null,distractions:0,intention};$('intentionInput').value=intention;updateIntentionCount();}
+    function loadPhase(mode,round,keepIntention){const intention=keepIntention?state.timer.intention:'';const planned=durationFor(mode);state.timer={mode,round,running:false,plannedMs:planned,remainingMs:planned,endAt:null,startedAt:null,durationAdjusted:false,flowOvertime:false,flowElapsedMs:0,flowStartAt:null,distractions:0,intention};$('intentionInput').value=intention;updateIntentionCount();}
 
     function handleExpiry(){const t=state.timer;if(!t.running||t.flowOvertime)return;if(currentRemaining()>0)return;if(t.mode==='focus'){if(state.settings.flow){enterFlow();return;}completeFocus({natural:true});}else completeBreak();}
 
@@ -365,14 +380,76 @@
     function csvCell(value){let text=String(value??'');if(/^[\s]*[=+@-]|^[\t\r\n]/.test(text))text="'"+text;return '"'+text.replace(/"/g,'""')+'"';}
     function exportHistoryCsv(){const rows=filteredHistory();if(!rows.length)return;const header=['Started at (UTC)','Ended at (UTC)','Intention','Focus minutes','Planned minutes','Flow minutes','Round','Distractions'];const lines=[header,...rows.map(row=>[csvDate(row.startedAt||row.endedAt),csvDate(row.endedAt||row.startedAt),row.intention||'',(Number(row.durationMs)||0)/60000,(Number(row.plannedMs)||0)/60000,(Number(row.overtimeMs)||0)/60000,row.round||1,row.distractions||0])];const blob=new Blob(['\uFEFF'+lines.map(line=>line.map(csvCell).join(',')).join('\r\n')+'\r\n'],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`pomodoro-history-${todayKey()}.csv`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);showToast(T().csvExported);}
 
-    function openSettings(){const s=state.settings;$('focusMinutesInput').value=s.focus;$('shortMinutesInput').value=s.short;$('longMinutesInput').value=s.long;$('autoBreakToggle').checked=s.autoBreak;$('autoFocusToggle').checked=s.autoFocus;$('settingsDialog').showModal();}
-    function saveSettings(){const f=Number($('focusMinutesInput').value),s=Number($('shortMinutesInput').value),l=Number($('longMinutesInput').value);if(!Number.isInteger(f)||f<1||f>180||!Number.isInteger(s)||s<1||s>60||!Number.isInteger(l)||l<1||l>120){showToast(T().invalidMinutes);return;}const old=deepCopy(state.settings);Object.assign(state.settings,{focus:f,short:s,long:l,autoBreak:$('autoBreakToggle').checked,autoFocus:$('autoFocusToggle').checked});const untouched=!state.timer.running&&!state.timer.flowOvertime&&state.timer.startedAt===null&&currentElapsed()===0;if(untouched&&((state.timer.mode==='focus'&&old.focus!==f)||(state.timer.mode==='short'&&old.short!==s)||(state.timer.mode==='long'&&old.long!==l))){state.timer.plannedMs=durationFor(state.timer.mode);state.timer.remainingMs=state.timer.plannedMs;}saveState();$('settingsDialog').close();render();showToast(T().saved);}
+    function validDurations(value){return value&&typeof value==='object'&&!Array.isArray(value)&&[['focus',180],['short',60],['long',120]].every(([key,max])=>Number.isInteger(value[key])&&value[key]>=1&&value[key]<=max);}
+    function sameDurations(a,b){return a.focus===b.focus&&a.short===b.short&&a.long===b.long;}
+    function normalizePresets(value){
+      const presets=[];
+      if(Array.isArray(value))for(const item of value){
+        if(validDurations(item)&&!presets.some(p=>sameDurations(p,item)))presets.push({focus:item.focus,short:item.short,long:item.long});
+        if(presets.length===3)break;
+      }
+      return presets;
+    }
+    function durationDraft(){const draft={focus:Number($('focusMinutesInput').value),short:Number($('shortMinutesInput').value),long:Number($('longMinutesInput').value)};return validDurations(draft)?draft:null;}
+    function fillDurationDraft(preset){$('focusMinutesInput').value=preset.focus;$('shortMinutesInput').value=preset.short;$('longMinutesInput').value=preset.long;}
+    function durationSetLabel(preset){return T().durationSetValues.replace('{focus}',preset.focus).replace('{short}',preset.short).replace('{long}',preset.long);}
+    function setDurationSetMessage(key,error=false){durationSetMessage=key;durationSetError=error;$('durationSetStatus').textContent=T()[key]||'';$('durationSetStatus').className='duration-set-status'+(error?' error':'');}
+    function renderDurationSets(){
+      const t=T();$('durationSetsTitle').textContent=t.durationSets;$('durationSetsNote').textContent=t.durationSetsNote;$('durationSetsEmpty').textContent=t.durationSetsEmpty;$('durationSetsEmpty').hidden=state.presets.length>0;
+      $('durationSetSave').textContent=t.durationSetSave;$('durationSetUndo').textContent=t.durationSetUndo;$('durationSetUndo').hidden=!removedPreset;
+      const list=$('durationSetList');list.textContent='';
+      state.presets.forEach((preset,index)=>{
+        const row=document.createElement('li');row.className='duration-set-row';
+        const values=document.createElement('span');values.className='duration-set-values';values.textContent=durationSetLabel(preset);
+        const actions=document.createElement('div');actions.className='duration-set-actions';
+        const apply=document.createElement('button');apply.type='button';apply.className='small-btn duration-set-apply';apply.textContent=t.durationSetApply;apply.setAttribute('aria-label',t.durationSetApply+': '+values.textContent);
+        apply.addEventListener('click',()=>{fillDurationDraft(preset);setDurationSetMessage('durationSetApplied');});
+        const remove=document.createElement('button');remove.type='button';remove.className='small-btn danger duration-set-remove';remove.textContent=t.durationSetRemove;remove.setAttribute('aria-label',t.durationSetRemove+': '+values.textContent);
+        remove.addEventListener('click',()=>removeDurationSet(index));actions.append(apply,remove);row.append(values,actions);list.appendChild(row);
+      });
+      setDurationSetMessage(durationSetMessage,durationSetError);
+    }
+    // Persist a candidate list before committing it. Never snapshot or restore the timer.
+    function persistDurationSets(presets){
+      try{localStorage.setItem(STORAGE_KEY,JSON.stringify({...state,lang,presets}));}
+      catch(e){setDurationSetMessage('durationSetFailed',true);return false;}
+      state.presets=presets;return true;
+    }
+    function saveDurationSet(){
+      const preset=durationDraft();if(!preset){setDurationSetMessage('invalidMinutes',true);return;}
+      if(state.presets.some(p=>sameDurations(p,preset))){setDurationSetMessage('durationSetDuplicate');return;}
+      if(state.presets.length>=3){setDurationSetMessage('durationSetFull',true);return;}
+      if(!persistDurationSets([...state.presets,preset]))return;
+      setDurationSetMessage('durationSetSaved');renderDurationSets();
+    }
+    function removeDurationSet(index){
+      const preset=state.presets[index];if(!preset)return;
+      if(!persistDurationSets(state.presets.filter((_,i)=>i!==index)))return;
+      removedPreset={preset,index};setDurationSetMessage('durationSetRemoved');renderDurationSets();$('durationSetSave').focus();
+    }
+    function undoDurationSetRemoval(){
+      if(!removedPreset)return;
+      if(state.presets.some(p=>sameDurations(p,removedPreset.preset))){removedPreset=null;setDurationSetMessage('durationSetDuplicate');renderDurationSets();$('durationSetSave').focus();return;}
+      if(state.presets.length>=3){setDurationSetMessage('durationSetFull',true);return;}
+      const presets=[...state.presets];presets.splice(Math.min(removedPreset.index,presets.length),0,removedPreset.preset);
+      if(!persistDurationSets(presets))return;
+      removedPreset=null;setDurationSetMessage('durationSetRestored');renderDurationSets();$('durationSetSave').focus();
+    }
+    function openSettings(){const s=state.settings;fillDurationDraft(s);$('autoBreakToggle').checked=s.autoBreak;$('autoFocusToggle').checked=s.autoFocus;setDurationSetMessage('');renderDurationSets();$('settingsDialog').showModal();}
+    function saveSettings(){
+      const draft=durationDraft();if(!draft){showToast(T().invalidMinutes);return;}
+      const old=deepCopy(state.settings);Object.assign(state.settings,draft,{autoBreak:$('autoBreakToggle').checked,autoFocus:$('autoFocusToggle').checked});
+      const untouched=!state.timer.running&&!state.timer.flowOvertime&&!state.timer.durationAdjusted&&state.timer.startedAt===null&&currentElapsed()===0;
+      if(untouched&&old[state.timer.mode]!==draft[state.timer.mode]){state.timer.plannedMs=durationFor(state.timer.mode);state.timer.remainingMs=state.timer.plannedMs;}
+      const persisted=saveState();$('settingsDialog').close();render();showToast(persisted?T().saved:T().sessionOnly);
+    }
 
     function bind(){
       $('languageButton').addEventListener('click',()=>{lang=lang==='ja'?'en':'ja';applyLanguage();});$('helpButton').addEventListener('click',()=>$('helpDialog').showModal());$('helpClose').addEventListener('click',()=>$('helpDialog').close());
       $('mainToggleButton').addEventListener('click',toggleTimer);$('mobileToggleButton').addEventListener('click',toggleTimer);$('addFiveButton').addEventListener('click',addFive);$('mobileAddButton').addEventListener('click',addFive);$('finishButton').addEventListener('click',finishCurrent);$('mobileFinishButton').addEventListener('click',finishCurrent);$('resetTimerButton').addEventListener('click',resetCurrent);$('distractionButton').addEventListener('click',recordDistraction);$('pipButton').addEventListener('click',togglePip);
       $('intentionInput').addEventListener('input',(e)=>{state.timer.intention=e.target.value;updateIntentionCount();saveState();updatePip();});
       $('flowToggle').addEventListener('change',(e)=>{state.settings.flow=e.target.checked;saveState();});$('soundToggle').addEventListener('change',(e)=>{state.settings.sound=e.target.checked;saveState();if(e.target.checked)playChime('break');});$('notifyToggle').addEventListener('change',(e)=>toggleNotification(e.target.checked));
+      $('durationSetSave').addEventListener('click',saveDurationSet);$('durationSetUndo').addEventListener('click',undoDurationSetRemoval);
       $('settingsButton').addEventListener('click',openSettings);$('settingsClose').addEventListener('click',()=>$('settingsDialog').close());$('settingsCancel').addEventListener('click',()=>$('settingsDialog').close());$('settingsSave').addEventListener('click',saveSettings);$('exportButton').addEventListener('click',exportData);$('clearHistoryButton').addEventListener('click',clearHistory);
       $('confirmCancel').addEventListener('click',()=>AppConfirm.finish(false));$('confirmOk').addEventListener('click',()=>AppConfirm.finish(true));$('confirmDialog').addEventListener('cancel',(e)=>{e.preventDefault();AppConfirm.finish(false)});
       $('toastAction').addEventListener('click',()=>{const fn=toastUndo;$('toast').classList.remove('show');toastUndo=null;if(fn)fn();});

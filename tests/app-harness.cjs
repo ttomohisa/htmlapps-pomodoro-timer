@@ -4,7 +4,7 @@ const vm = require('node:vm');
 
 // Execute the shipped inline application with a deterministic clock and minimal DOM.
 // Timer behavior, event handlers, persistence and CSV generation are production code.
-function makeApp({time = '2026-10-04T12:00:00Z', saved, file = process.env.POMODORO_TEST_HTML || 'src/index.template.html', locale = 'en'} = {}) {
+function makeApp({time = '2026-10-04T12:00:00Z', saved, file = process.env.POMODORO_TEST_HTML || 'src/index.template.html', locale = 'en', storageFailure = false} = {}) {
   let clock = typeof time === 'number' ? time : Date.parse(time);
   let stored = saved ? JSON.stringify(saved) : null;
   const elements = new Map(), events = {}, intervals = [], downloads = [], blobs = new Map();
@@ -35,13 +35,13 @@ function makeApp({time = '2026-10-04T12:00:00Z', saved, file = process.env.POMOD
   const pipWindow={closed:false,document:{documentElement:{},head:element(),body:element(),getElementById(id){return pipElements.get(id);}},addEventListener(){}};
   const document = {getElementById: el, createElement: element, documentElement: {}, body: element('body'), addEventListener(type, fn) { events[type] = fn; }};
   class FakeDate extends Date { constructor(...args) { super(...(args.length ? args : [clock])); } static now() { return clock; } }
-  const context = vm.createContext({document, window: {addEventListener() {},documentPictureInPicture:{async requestWindow(){return pipWindow;}}}, navigator: {language: locale}, localStorage: {getItem() { return stored; }, setItem(key, value) { stored = value; }}, Date: FakeDate, Intl, Blob, URL: {createObjectURL(blob) { const key = `blob:${blobs.size}`; blobs.set(key, blob); return key; }, revokeObjectURL() {}}, setTimeout() {return 1;}, clearTimeout() {}, setInterval(fn) { intervals.push(fn); return intervals.length; }, clearInterval() {}});
+  const context = vm.createContext({document, window: {addEventListener() {},documentPictureInPicture:{async requestWindow(){return pipWindow;}}}, navigator: {language: locale}, localStorage: {getItem() { return stored; }, setItem(key, value) { if (storageFailure) throw new Error("Synthetic storage failure"); stored = value; }}, Date: FakeDate, Intl, Blob, URL: {createObjectURL(blob) { const key = `blob:${blobs.size}`; blobs.set(key, blob); return key; }, revokeObjectURL() {}}, setTimeout() {return 1;}, clearTimeout() {}, setInterval(fn) { intervals.push(fn); return intervals.length; }, clearInterval() {}});
   const source = raw.match(/<script>\s*([\s\S]*?)<\/script>/)[1]
     .replace('__APP_CONFIG_JSON__', '{name:"Pomodoro Timer",version:"1.0.0"}')
     .replace('__BUILD_MANIFEST_JSON__', '{generatedAtUtc:"2026-10-04T00:00:00Z",dependencies:[]}')
     .replace('    init();', '    globalThis.testApi={get state(){return state},currentElapsed,currentFlowElapsed,saveState,finishCurrent,drawVideoPip,openDocumentPip};\n    init();');
   vm.runInContext(source, context);
   context.testApi.state.settings.sound = false;
-  return {api: context.testApi, el, events, document, downloads, canvasCalls, pipEl:id=>pipElements.get(id), click(id) { if (!el(id)) throw Error(`Missing control: ${id}`); return el(id).click(); }, input(id, value) { el(id).value = value; el(id).listeners.input?.({target: el(id)}); }, advance(ms) {clock += ms;}, tick() {intervals[0]();}, reload() {context.testApi.saveState();return makeApp({time: clock, saved: JSON.parse(stored), file, locale});}, persisted() {return JSON.parse(stored);}, key(key, extra = {}) {events.keydown({target: element(), key, code: key === ' ' ? 'Space' : `Key${key.toUpperCase()}`, preventDefault() {}, ...extra});}};
+  return {api: context.testApi, el, events, document, downloads, canvasCalls, pipEl:id=>pipElements.get(id), click(id) { if (!el(id)) throw Error(`Missing control: ${id}`); return el(id).click(); }, input(id, value) { el(id).value = value; el(id).listeners.input?.({target: el(id)}); }, advance(ms) {clock += ms;}, tick() {intervals[0]();}, reload() {context.testApi.saveState();return makeApp({time: clock, saved: JSON.parse(stored), file, locale});}, setStorageFailure(value) { storageFailure = value; }, persisted() {return JSON.parse(stored);}, key(key, extra = {}) {events.keydown({target: element(), key, code: key === ' ' ? 'Space' : `Key${key.toUpperCase()}`, preventDefault() {}, ...extra});}};
 }
 module.exports = {makeApp};
