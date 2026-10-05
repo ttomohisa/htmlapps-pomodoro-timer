@@ -209,6 +209,16 @@ Copyright © 2026 ttomohisa
 
 Licensed under the [MIT License](LICENSE).
 
+## Duration sets
+
+In **Settings**, enter focus / short break / long break minutes and choose **Save these durations as a set**. Up to three different combinations are saved locally. Each set displays all three values. Sets contain only durations, not Flow, sound, notification, or auto-start preferences.
+
+- **Apply** fills the duration fields only. Press the existing **Save** button to commit settings. Cancel, Close, or Escape discards unapplied draft changes.
+- Saving or removing a set takes effect immediately, independently of Settings Save/Cancel. **Undo removal** inside Settings restores the last removed set while space is available; it never rewinds a timer or history. Undo is available until another removal or a page reload.
+- Duplicate combinations are not added. At three sets, remove an existing set before saving another.
+- Started/paused/Flow timers keep their exact state when settings are saved. New settings are used by untouched timers, subsequent phases, or a reset. Unstarted +5 extensions also survive settings changes and reloads until reset.
+- If a set cannot be stored, the previous list remains and the same action can be retried. If Settings cannot be stored, changes remain usable for this session and a warning explains how to retry; they may be lost on reload.
+
 ## Session history
 
 - Browse the latest 300 saved sessions with dates, filter Today / All, or search intentions.
@@ -218,4 +228,4 @@ Licensed under the [MIT License](LICENSE).
 
 ### Regression tests
 
-Run `node --test tests/session-history.test.cjs` for deterministic timer and history checks. `scripts/check-repository.ps1` builds and runs them against the source, both standalone copies and the decoded self-extract payload (Node.js 24). Browser checks are still needed for layout, native downloads and Picture-in-Picture support.
+Run `node --test tests/*.test.cjs` for deterministic duration-set, persistence, timer, and history checks. `scripts/check-repository.ps1` builds and runs them against the source, both standalone copies and the decoded self-extract payload (Node.js 24). Browser checks are still needed for layout, native downloads and Picture-in-Picture support.
