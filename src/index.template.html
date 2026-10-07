@@ -77,11 +77,11 @@
     <div class="header-inner">
       <div class="brand">
         <div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="13" r="7.2" stroke="currentColor" stroke-width="1.8"/><path d="M12 5.8V3.5M8.8 3.5h6.4M12 13l3.4-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
-        <div class="brand-copy"><h1 class="brand-name"><span id="brandName">ポモドーロタイマー</span><span class="version-badge" id="versionBadge">v1.0.0</span></h1><p class="brand-meta" id="brandMeta">作業中も、画面の隅に。</p></div>
+        <div class="brand-copy"><h1 class="brand-name"><span id="brandName">ポモドーロタイマー</span><span class="version-badge" id="versionBadge">v1.0.1</span></h1><p class="brand-meta" id="brandMeta">作業中も、画面の隅に。</p></div>
       </div>
       <div class="header-actions">
-        <button class="language-button" id="languageButton" type="button" aria-label="Switch language">EN</button>
-        <button class="header-icon-button" id="helpButton" type="button" aria-label="使い方と注意事項"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M9.8 9.3a2.35 2.35 0 0 1 4.55.85c0 1.85-2.35 2.05-2.35 3.65" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="17.2" r="1" fill="currentColor"/></svg></button>
+        <button class="language-button" id="languageButton" type="button" aria-label="英語に切り替え" title="英語に切り替え">EN</button>
+        <button class="header-icon-button" id="helpButton" type="button" aria-label="使い方と注意事項" title="使い方と注意事項"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M9.8 9.3a2.35 2.35 0 0 1 4.55.85c0 1.85-2.35 2.05-2.35 3.65" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="17.2" r="1" fill="currentColor"/></svg></button>
       </div>
     </div>
   </header>
@@ -89,7 +89,7 @@
   <main class="main">
     <section class="page-intro">
       <div><h2 id="introTitle">このセッションに集中。</h2><p id="introText">やることを1つ決めて開始。必要ならPiPでタイマーを画面の隅に置いたまま作業できます。</p></div>
-      <div class="local-badge"><svg viewBox="0 0 24 24" fill="none"><path d="M7 10V8a5 5 0 0 1 10 0v2M6 10h12v10H6z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span id="localBadge">すべてローカル処理</span></div>
+      <div class="local-badge"><svg viewBox="0 0 24 24" fill="none"><path d="M7 10V8a5 5 0 0 1 10 0v2M6 10h12v10H6z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span id="localBadge">完全ローカル処理</span></div>
     </section>
 
     <div class="hero-grid">
@@ -187,7 +187,7 @@
 
     const TEXT={
       ja:{
-        brand:'ポモドーロタイマー',tagline:'作業中も、画面の隅に。',introTitle:'このセッションに集中。',introText:'やることを1つ決めて開始。必要ならPiPでタイマーを画面の隅に置いたまま作業できます。',local:'すべてローカル処理',
+        brand:'ポモドーロタイマー',tagline:'作業中も、画面の隅に。',introTitle:'このセッションに集中。',introText:'やることを1つ決めて開始。必要ならPiPでタイマーを画面の隅に置いたまま作業できます。',local:'完全ローカル処理',languageSwitch:'英語に切り替え',
         focus:'FOCUS',short:'SHORT BREAK',long:'LONG BREAK',ready:'準備できたらスタート',running:'集中中',paused:'一時停止中',breakRunning:'休憩中',flowing:'Flowで集中を継続中',start:'スタート',pause:'一時停止',resume:'再開',finish:'完了して次へ',skipBreak:'休憩を終了',reset:'リセット',intention:'このセッションでやること',placeholder:'例: READMEの使い方を書く',distraction:'気が散った',
         today:'今日',minutes:'集中した分',sessions:'完了セッション',distractions:'脱線',pipTitle:'Picture in Picture',pipText:'別のタブやアプリで作業していても、タイマーを画面の隅に表示します。',pipOpen:'PiPで表示',pipClose:'PiPを閉じる',pipInteractive:'操作できるPiPに対応',pipFallback:'表示用PiPに対応',pipUnsupported:'このブラウザではPiPを利用できません',pipOpenedInteractive:'操作できるPiPを開きました。',pipOpenedFallback:'表示用PiPを開きました。操作は元の画面から行えます。',
         quick:'集中スタイル',settings:'設定',flowTitle:'Flow延長',flowDesc:'集中時間の終了後も計測を続ける',soundTitle:'サウンド',soundDesc:'区切りを短い音で通知',notifyTitle:'通知',notifyDesc:'バックグラウンドでも通知',history:'集中履歴',historyDesc:'このブラウザに最新300件を保存します。',historyAll:'すべて',historySearch:'やることで検索',historyNoMatch:'条件に一致する集中セッションはありません。',historyCount:'{count}件',reuse:'もう一度使う',reuseHint:'未開始の集中タイマーにコピーします。開始はしません。',reuseBlocked:'タイマーをリセットするか、次の集中セッションで使えます。',reused:'やることをコピーしました。準備できたらスタート。',exportCsv:'CSVを書き出す',csvExported:'表示中の集中履歴をCSVに書き出しました。',export:'JSONを書き出す',clearHistory:'履歴を消去',historyEmpty:'まだ完了した集中セッションはありません。',untitled:'やること未入力',minSuffix:'分',round:'ラウンド',flow:'Flow',
@@ -198,7 +198,7 @@
         help:`<h3>基本の使い方</h3><ol><li>「このセッションでやること」を1つ入力します。</li><li>スタートして集中します。脱線したときは「気が散った」を1回押すだけで記録できます。</li><li>集中が終わると短い休憩へ進み、4回目の後は長い休憩になります。</li></ol><h3>Picture in Picture</h3><p>対応ブラウザでは、他のタブやアプリより前に小さなタイマーを表示できます。Document Picture-in-Picture対応環境では、一時停止・5分追加・完了をPiP内から操作できます。非対応の場合はVideo PiPへフォールバックし、表示のみ行います。</p><p>PiP APIはブラウザやOSによって利用可否が異なります。PiPが使えなくても通常のタイマー機能はそのまま利用できます。</p><h3>Flow延長</h3><p>ONにすると、集中時間が0になっても休憩へ強制移行せず、<code>+00:01</code> のように超過時間を計測します。集中の波をタイマーで切りたくないときに使います。</p><h3>保存とプライバシー</h3><p>設定・現在のタイマー・集中履歴はこのブラウザのLocalStorageに保存されます。サーバー送信、ログイン、分析、追跡はありません。ブラウザデータを削除すると履歴も消えるため、必要ならJSONを書き出してください。</p><h3>キーボードショートカット</h3><ul><li><code>Space</code>：開始 / 一時停止</li><li><code>P</code>：PiPを開く / 閉じる</li><li><code>D</code>：脱線を記録</li><li><code>N</code>：完了して次へ</li></ul><h3>通知について</h3><p>通知は許可したブラウザでのみ動作します。OSの集中モードやブラウザ設定により表示されない場合があります。サウンドは外部音源を使わずブラウザ内で生成します。</p>`
       },
       en:{
-        brand:'Pomodoro Timer',tagline:'Keep it in the corner while you work.',introTitle:'Focus on just this session.',introText:'Choose one thing to finish, start the timer, and keep it visible in Picture-in-Picture while you work.',local:'Local-only processing',
+        brand:'Pomodoro Timer',tagline:'Keep it in the corner while you work.',introTitle:'Focus on just this session.',introText:'Choose one thing to finish, start the timer, and keep it visible in Picture-in-Picture while you work.',local:'Local-only processing',languageSwitch:'Switch to Japanese',
         focus:'FOCUS',short:'SHORT BREAK',long:'LONG BREAK',ready:'Ready when you are',running:'Focusing',paused:'Paused',breakRunning:'On a break',flowing:'Continuing in Flow',start:'Start',pause:'Pause',resume:'Resume',finish:'Finish & next',skipBreak:'End break',reset:'Reset',intention:'One thing for this session',placeholder:'e.g. Write the README usage section',distraction:'Distracted',
         today:'Today',minutes:'focus min',sessions:'sessions done',distractions:'distractions',pipTitle:'Picture in Picture',pipText:'Keep the timer in a small always-on-top window while working in another tab or app.',pipOpen:'Open PiP',pipClose:'Close PiP',pipInteractive:'Interactive PiP supported',pipFallback:'Display-only PiP supported',pipUnsupported:'PiP is unavailable in this browser',pipOpenedInteractive:'Interactive PiP opened.',pipOpenedFallback:'Display-only PiP opened. Use the main window for controls.',
         quick:'Focus style',settings:'Settings',flowTitle:'Flow overtime',flowDesc:'Keep counting after focus time ends',soundTitle:'Sound',soundDesc:'Play a short local chime at transitions',notifyTitle:'Notifications',notifyDesc:'Notify even when the tab is in background',history:'Focus history',historyDesc:'Latest 300 sessions saved only in this browser.',historyAll:'All',historySearch:'Search intentions',historyNoMatch:'No focus sessions match these filters.',historyCount:'{count} sessions',reuse:'Use again',reuseHint:'Copy into an unstarted focus timer without starting it.',reuseBlocked:'Reset the timer or wait for the next focus session to reuse.',reused:'Intention copied. Start when you are ready.',exportCsv:'Export CSV',csvExported:'Visible focus history exported as CSV.',export:'Export JSON',clearHistory:'Clear history',historyEmpty:'No completed focus sessions yet.',untitled:'No intention',minSuffix:'min',round:'Round',flow:'Flow',
@@ -290,12 +290,12 @@
 
     function applyLanguage(){
       document.documentElement.lang=lang;const t=T();
-      $('brandName').textContent=t.brand;$('brandMeta').textContent=t.tagline;$('introTitle').textContent=t.introTitle;$('introText').textContent=t.introText;$('localBadge').textContent=t.local;$('languageButton').textContent=lang==='ja'?'EN':'JA';
+      $('brandName').textContent=t.brand;$('brandMeta').textContent=t.tagline;$('introTitle').textContent=t.introTitle;$('introText').textContent=t.introText;$('localBadge').textContent=t.local;$('languageButton').textContent=lang==='ja'?'EN':'JA';$('languageButton').setAttribute('aria-label',t.languageSwitch);$('languageButton').setAttribute('title',t.languageSwitch);
       $('intentionLabel').textContent=t.intention;$('intentionInput').placeholder=t.placeholder;$('distractionText').textContent=t.distraction;$('resetTimerButton').textContent=t.reset;
       $('todayTitle').textContent=t.today;$('todayMinutesLabel').textContent=t.minutes;$('todaySessionsLabel').textContent=t.sessions;$('todayDistractionsLabel').textContent=t.distractions;
       $('pipTitle').textContent=t.pipTitle;$('pipText').textContent=t.pipText;$('quickTitle').textContent=t.quick;$('settingsButton').textContent=t.settings;$('flowTitle').textContent=t.flowTitle;$('flowDesc').textContent=t.flowDesc;$('soundTitle').textContent=t.soundTitle;$('soundDesc').textContent=t.soundDesc;$('notifyTitle').textContent=t.notifyTitle;$('notifyDesc').textContent=t.notifyDesc;
       $('historyAllButton').textContent=t.historyAll;$('historyTodayButton').textContent=t.today;$('historySearchLabel').textContent=t.historySearch;$('historySearchInput').placeholder=t.historySearch;$('exportCsvButton').textContent=t.exportCsv;$('historyTitle').textContent=t.history;$('historyDesc').textContent=t.historyDesc;$('exportButton').textContent=t.export;$('clearHistoryButton').textContent=t.clearHistory;$('historyEmpty').textContent=t.historyEmpty;$('footerPrivacy').textContent=t.privacy;
-      $('helpTitle').textContent=t.helpTitle;$('helpButton').setAttribute('aria-label',t.helpTitle);$('helpClose').setAttribute('aria-label',t.close);$('helpBody').innerHTML=t.help;
+      $('helpTitle').textContent=t.helpTitle;$('helpButton').setAttribute('aria-label',t.helpTitle);$('helpButton').setAttribute('title',t.helpTitle);$('helpClose').setAttribute('aria-label',t.close);$('helpBody').innerHTML=t.help;
       $('settingsTitle').textContent=t.settingsTitle;$('focusMinutesLabel').textContent=t.focusMinutes;$('shortMinutesLabel').textContent=t.shortMinutes;$('longMinutesLabel').textContent=t.longMinutes;$('autoTitle').textContent=t.auto;$('autoBreakTitle').textContent=t.autoBreak;$('autoBreakDesc').textContent=t.autoBreakDesc;$('autoFocusTitle').textContent=t.autoFocus;$('autoFocusDesc').textContent=t.autoFocusDesc;$('settingsNote').textContent=t.settingsNote;$('settingsCancel').textContent=t.cancel;$('settingsSave').textContent=t.save;$('settingsClose').setAttribute('aria-label',t.close);renderDurationSets();
       $('confirmCancel').textContent=t.cancel;$('intentionInput').value=state.timer.intention||'';updateIntentionCount();renderPipSupport();renderToday();renderHistory();render();
       saveState();
@@ -446,6 +446,8 @@
 
     function bind(){
       $('languageButton').addEventListener('click',()=>{lang=lang==='ja'?'en':'ja';applyLanguage();});$('helpButton').addEventListener('click',()=>$('helpDialog').showModal());$('helpClose').addEventListener('click',()=>$('helpDialog').close());
+      $('helpDialog').addEventListener('click',(e)=>{const dialog=e.currentTarget;if(e.target!==dialog)return;const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();});
+      $('helpDialog').addEventListener('close',()=>$('helpButton').focus());
       $('mainToggleButton').addEventListener('click',toggleTimer);$('mobileToggleButton').addEventListener('click',toggleTimer);$('addFiveButton').addEventListener('click',addFive);$('mobileAddButton').addEventListener('click',addFive);$('finishButton').addEventListener('click',finishCurrent);$('mobileFinishButton').addEventListener('click',finishCurrent);$('resetTimerButton').addEventListener('click',resetCurrent);$('distractionButton').addEventListener('click',recordDistraction);$('pipButton').addEventListener('click',togglePip);
       $('intentionInput').addEventListener('input',(e)=>{state.timer.intention=e.target.value;updateIntentionCount();saveState();updatePip();});
       $('flowToggle').addEventListener('change',(e)=>{state.settings.flow=e.target.checked;saveState();});$('soundToggle').addEventListener('change',(e)=>{state.settings.sound=e.target.checked;saveState();if(e.target.checked)playChime('break');});$('notifyToggle').addEventListener('change',(e)=>toggleNotification(e.target.checked));
