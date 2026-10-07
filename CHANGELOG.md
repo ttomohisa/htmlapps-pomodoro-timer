@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Keep EN / JA target-language controls consistent with localized accessible names and tooltips; localize the Help action.
+- Standardize the Japanese privacy badge as 完全ローカル処理.
+- Close Help on true backdrop clicks while retaining inside/padding clicks, Close, Escape, and focus return to the Help button.
+
 - Add up to three local duration sets in Settings, with draft-only Apply, deduplication, and preset-only removal/Undo.
 - Validate legacy duration-set data and keep the previous set list if browser storage fails, with a retryable error.
 - Preserve idle +5 extensions across settings changes and reloads until reset, including legacy timer states.

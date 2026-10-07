@@ -9,7 +9,7 @@ function makeApp({time = '2026-10-04T12:00:00Z', saved, file = process.env.POMOD
   let stored = saved ? JSON.stringify(saved) : null;
   const elements = new Map(), events = {}, intervals = [], downloads = [], blobs = new Map();
   function element(tag = 'div') {
-    let text = '';
+    let text = '', previousFocus;
     return {tagName: tag.toUpperCase(), value: '', checked: false, hidden: false, disabled: false, open: false, children: [], attributes: {}, listeners: {}, className: '', style: {setProperty() {}}, classList: {add() {}, remove() {}, toggle() {}},
       get textContent() { return text + this.children.map(x => x.textContent || '').join(''); },
       set textContent(value) { text = String(value); this.children = []; },
@@ -20,13 +20,22 @@ function makeApp({time = '2026-10-04T12:00:00Z', saved, file = process.env.POMOD
       querySelector() { return element(); },
       querySelectorAll(selector) { return this.children.flatMap(child => [...(selector === 'button' ? child.tagName === 'BUTTON' ? [child] : [] : child.className.split(' ').includes(selector.slice(1)) ? [child] : []), ...child.querySelectorAll(selector)]); },
       click() { if (this.disabled) return; if (this.tagName === 'A') downloads.push({name: this.download, blob: blobs.get(this.href)}); return this.listeners.click?.({target: this}); },
-      focus() { document.activeElement = this; }, remove() {}, showModal() { this.open = true; }, close() { this.open = false; }
+      focus() { document.activeElement = this; }, remove() {},
+      // Model the native dialog focus-restoration and unprevented Escape contract.
+      // Actual browser geometry and native focus behavior need separate browser QA.
+      showModal() { previousFocus = document.activeElement; this.open = true; },
+      close() { if (!this.open) return; this.open = false; previousFocus?.focus(); this.listeners.close?.({target: this}); },
+      cancel() { const event = {target: this, defaultPrevented: false, preventDefault() { this.defaultPrevented = true; }}; this.listeners.cancel?.(event); if (!event.defaultPrevented) this.close(); }
     };
   }
   let raw = fs.readFileSync(path.resolve(__dirname, '..', file), 'utf8');
   const payload=raw.match(/<script id="payload" type="application\/octet-stream">([^<]+)<\/script>/);
   if(payload)raw=require('node:zlib').gunzipSync(Buffer.from(payload[1].trim(),'base64')).toString('utf8');
-  for (const match of raw.matchAll(/<([a-z]+)[^>]*\bid="([^"]+)"[^>]*>/g)) elements.set(match[2], element(match[1]));
+  for (const match of raw.matchAll(/<([a-z]+)[^>]*\bid="([^"]+)"[^>]*>/g)) {
+    const node = element(match[1]);
+    for (const attr of match[0].matchAll(/([\w-]+)="([^"]*)"/g)) node.setAttribute(attr[1], attr[2]);
+    elements.set(match[2], node);
+  }
   const el = id => elements.get(id) || null;
   const canvasCalls=[];
   const canvasContext={textAlign:"start",fillRect(){},fillText(text,x,y){canvasCalls.push({text,x,y,align:this.textAlign});}};
