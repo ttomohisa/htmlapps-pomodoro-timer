@@ -3,7 +3,7 @@
   "name": "Pomodoro Timer",
   "nameJa": "ポモドーロタイマー",
   "slug": "pomodoro-timer",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A local-first Pomodoro timer designed around an interactive Picture-in-Picture mini panel.",
   "descriptionJa": "操作できるPicture-in-Pictureミニパネルを中心に設計した、ローカル完結のポモドーロタイマーです。",
   "defaultLanguage": "auto",
