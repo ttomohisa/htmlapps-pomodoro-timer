@@ -14,7 +14,7 @@ A local-first, single-HTML Pomodoro timer designed around Picture-in-Picture, so
 
 GitHub Pages only delivers the initial HTML. Timer state, focus intentions, settings, and history are handled locally in your browser. The app has no account system, analytics, telemetry, or runtime network communication.
 
-[![Pomodoro Timer screenshot](assets/screenshot.png)](https://ttomohisa.github.io/htmlapps-pomodoro-timer/)
+[![Pomodoro Timer screenshot](assets/screenshot-en.png)](https://ttomohisa.github.io/htmlapps-pomodoro-timer/)
 
 ## Features
 
