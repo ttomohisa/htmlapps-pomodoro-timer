@@ -3,3 +3,6 @@
 *.bat text eol=crlf
 *.html text eol=lf
 *.md text eol=lf
+
+# Preserve the supplied canonical SVG bytes on Windows and Unix.
+assets/favicon.svg text eol=lf
