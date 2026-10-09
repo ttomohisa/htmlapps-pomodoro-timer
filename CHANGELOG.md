@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.2 - 2026-10-09
+
+- Prepare the maintenance build for an English catalog screenshot, preserving app behavior and the supplied icon.
+
 ## Unreleased
 
 - Keep EN / JA target-language controls consistent with localized accessible names and tooltips; localize the Help action.
