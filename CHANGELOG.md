@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.3 - 2026-10-10
+
+- Replace the canonical SVG, header icon and embedded favicon with the supplied redesigned artwork, preserving the exact #16624f color and 64×64 rx=16 background.
+- Verify artwork preservation and consistent icons across shipped HTML copies.
+
 ## 1.0.2 - 2026-10-09
 
 - Add a real English catalog screenshot and use it in the English README, preserving app behavior and the supplied icon.

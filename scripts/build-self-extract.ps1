@@ -18,6 +18,10 @@ $compressed = $memory.ToArray(); $memory.Dispose()
 $base64 = [Convert]::ToBase64String($compressed)
 $sha = (Get-FileHash -Algorithm SHA256 -Path $InputPath).Hash.ToLowerInvariant()
 $escapedName = [System.Security.SecurityElement]::Escape([System.IO.Path]::GetFileName($InputPath))
+$inputHtml = [System.Text.Encoding]::UTF8.GetString($inputBytes)
+$faviconMatch = [regex]::Match($inputHtml, '<link\b[^>]*rel="icon"[^>]*>')
+if (-not $faviconMatch.Success) { throw "Input HTML must include its canonical favicon." }
+$faviconLink = $faviconMatch.Value
 $wrapper = @"
 <!doctype html>
 <html lang="en">
@@ -26,6 +30,7 @@ $wrapper = @"
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'">
 <title>Pomodoro Timer - self extract</title>
+$faviconLink
 <style>html,body{height:100%;margin:0;background:#f5f5f2;color:#20211f;font:14px system-ui,sans-serif}body{display:grid;place-items:center}.box{max-width:480px;padding:28px;text-align:center}.spin{width:34px;height:34px;margin:0 auto 16px;border:3px solid #d9dbd6;border-top-color:#16624f;border-radius:50%;animation:s .8s linear infinite}@keyframes s{to{transform:rotate(360deg)}}.err{color:#b3261e;white-space:pre-wrap}</style>
 </head>
 <body><div class="box"><div class="spin"></div><strong>Opening Pomodoro Timer…</strong><p id="status">Decompressing the embedded standalone app.</p></div>
