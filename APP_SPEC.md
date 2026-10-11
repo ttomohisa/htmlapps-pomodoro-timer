@@ -2,6 +2,7 @@
 
 ## 1. Product identity
 
+- **Current version:** 1.0.4
 - **Working name:** Pomodoro Timer / ポモドーロタイマー
 - **One-sentence purpose:** Keep the current focus session visible and controllable in a small Picture-in-Picture window while the user works elsewhere.
 - **Primary users:** People who work in browser tabs, editors, spreadsheets, and desktop apps and want a lightweight focus timer without an account.
@@ -60,6 +61,8 @@ A normal browser timer disappears behind the work it is timing. This app keeps t
 - Motion must respect `prefers-reduced-motion`.
 - Status and toast messages use an `aria-live` region.
 - Destructive resets use an in-app confirmation dialog.
+- While any native modal is open, both root and body background scrolling are locked; Help and Settings retain their existing inner scrolling layouts.
+- The local-processing badge uses the shared decorative shield/check icon; the app logo and favicon remain unchanged.
 
 ## 8. Performance expectations
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.4 - 2026-10-11
+
+- Keep the background page still while any native modal dialog is open, preserving the existing Help and Settings scrolling layouts.
+- Use the shared shield/check icon for the local-processing badge without changing the app artwork.
+- Add bilingual Help guidance and source/generated-HTML regression checks for the modal lock and privacy badge.
+
 ## 1.0.3 - 2026-10-10
 
 - Replace the canonical SVG, header icon and embedded favicon with the supplied redesigned artwork, preserving the exact #16624f color and 64×64 rx=16 background.

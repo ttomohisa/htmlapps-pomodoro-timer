@@ -16,6 +16,10 @@ GitHub Pages only delivers the initial HTML. Timer state, focus intentions, sett
 
 [![Pomodoro Timer screenshot](assets/screenshot-en.png)](https://ttomohisa.github.io/htmlapps-pomodoro-timer/)
 
+## Dialog behavior (v1.0.4)
+
+The background page stays still while Help, Settings, or a confirmation dialog is open. Scroll the dialog body to reach longer Help or Settings content. The local-processing badge uses a shield/check icon.
+
 ## Features
 
 - 25 / 5 / 15 minute Pomodoro cycle with customizable focus, short-break, and long-break durations
@@ -228,4 +232,4 @@ In **Settings**, enter focus / short break / long break minutes and choose **Sav
 
 ### Regression tests
 
-Run `node --test tests/*.test.cjs` for deterministic duration-set, persistence, timer, and history checks. `scripts/check-repository.ps1` builds and runs them against the source, both standalone copies and the decoded self-extract payload (Node.js 24). Browser checks are still needed for layout, native downloads and Picture-in-Picture support.
+Run `node --test tests/*.test.cjs` for deterministic duration-set, persistence, timer, history, modal-scroll CSS, and privacy-badge checks. `scripts/check-repository.ps1` builds and runs them against the source, both standalone copies and the decoded self-extract payload (Node.js 24). Browser checks are still needed for layout, native downloads and Picture-in-Picture support.
