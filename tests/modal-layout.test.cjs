@@ -30,9 +30,9 @@ test('local-processing badge uses the shared decorative shield and check', () =>
   assert.doesNotMatch(badge[1], /M7 10V8a5 5/);
 });
 
-test('Help explains modal scrolling in both languages', () => {
+test('Help omits layout implementation commentary in both languages', () => {
   const app = makeApp({ locale: 'ja-JP' });
-  assert.match(app.el('helpBody').textContent, /ダイアログを開いている間は背景のスクロールを止めます/);
+  assert.doesNotMatch(app.el('helpBody').textContent, /ダイアログを開いている間は背景のスクロールを止めます/);
   app.click('languageButton');
-  assert.match(app.el('helpBody').textContent, /Background scrolling is paused while a dialog is open/);
+  assert.doesNotMatch(app.el('helpBody').textContent, /Background scrolling is paused while a dialog is open/);
 });

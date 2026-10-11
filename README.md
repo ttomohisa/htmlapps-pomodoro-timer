@@ -16,10 +16,6 @@ GitHub Pages only delivers the initial HTML. Timer state, focus intentions, sett
 
 [![Pomodoro Timer screenshot](assets/screenshot-en.png)](https://ttomohisa.github.io/htmlapps-pomodoro-timer/)
 
-## Dialog behavior (v1.0.4)
-
-The background page stays still while Help, Settings, or a confirmation dialog is open. Scroll the dialog body to reach longer Help or Settings content. The local-processing badge uses a shield/check icon.
-
 ## Features
 
 - 25 / 5 / 15 minute Pomodoro cycle with customizable focus, short-break, and long-break durations
