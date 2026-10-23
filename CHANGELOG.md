@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Help alone uses a flex column and shrinkable body so the existing clipped dialog keeps its final content and moved build metadata reachable; other dialogs are unchanged.
+
+- Standardize the phone informational footer and English local-processing label. Move lower build metadata to the end of Help.
+
 ## 1.0.4 - 2026-10-11
 
 - Keep the background page still while any native modal dialog is open, preserving the existing Help and Settings scrolling layouts.
@@ -43,3 +49,4 @@
 - Added one-line session intention, distraction counter with undo, and Flow overtime.
 - Added local history, today summary, notification/sound options, JSON export, and bilingual UI.
 - Added mobile control dock and responsive app-like layout.
+
