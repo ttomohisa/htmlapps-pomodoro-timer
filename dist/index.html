@@ -73,7 +73,8 @@
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
       @media (max-width: 620px) { body > footer { display: none; } }
   .help-build{margin:18px 0 0;color:var(--muted);font-size:11px}
-</style>
+#helpDialog[open]{display:flex;flex-direction:column}#helpDialog .dialog-header{flex:none}#helpDialog .dialog-body{min-height:0;flex:1 1 auto}
+  </style>
 </head>
 <body>
   <header class="app-header">
@@ -176,7 +177,7 @@
   (()=>{
     'use strict';
     const APP_CONFIG={"$schema":"./schemas/app-config.schema.json","name":"Pomodoro Timer","nameJa":"ポモドーロタイマー","slug":"pomodoro-timer","version":"1.0.4","description":"A local-first Pomodoro timer designed around an interactive Picture-in-Picture mini panel.","descriptionJa":"操作できるPicture-in-Pictureミニパネルを中心に設計した、ローカル完結のポモドーロタイマーです。","defaultLanguage":"auto","repository":{"owner":"ttomohisa","name":"htmlapps-pomodoro-timer"},"build":{"output":"dist/index.html","blockRuntimeNetwork":true,"selfExtract":{"enabled":true,"output":"dist/index.self-extract.html"}}};
-    const BUILD_MANIFEST={"schemaVersion":1,"builder":"single-html-app-template-compatible/1.0","generatedAtUtc":"2026-10-23T10:53:02.4438476Z","app":{"name":"Pomodoro Timer","slug":"pomodoro-timer","version":"1.0.4"},"dependencies":[]};
+    const BUILD_MANIFEST={"schemaVersion":1,"builder":"single-html-app-template-compatible/1.0","generatedAtUtc":"2026-10-23T11:13:36.9961909Z","app":{"name":"Pomodoro Timer","slug":"pomodoro-timer","version":"1.0.4"},"dependencies":[]};
     const EMBEDDED_ASSETS_B64="eyJzY2hlbWFWZXJzaW9uIjoxLCJkZXBlbmRlbmNpZXMiOnt9fQ==";
     void EMBEDDED_ASSETS_B64;
 

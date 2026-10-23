@@ -73,7 +73,8 @@
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
       @media (max-width: 620px) { body > footer { display: none; } }
   .help-build{margin:18px 0 0;color:var(--muted);font-size:11px}
-</style>
+#helpDialog[open]{display:flex;flex-direction:column}#helpDialog .dialog-header{flex:none}#helpDialog .dialog-body{min-height:0;flex:1 1 auto}
+  </style>
 </head>
 <body>
   <header class="app-header">

@@ -95,3 +95,5 @@ The upper-right help action opens bilingual instructions covering timer flow, Pi
 - Hide only the informational footer at the existing 620px phone breakpoint; preserve functional bottom controls and existing badge visibility.
 - The equivalent English local-processing badge reads `Fully local processing`.
 - Existing lower build metadata is the final quiet Help content, with populated values and phone visibility preserved.
+
+- Help alone uses a flex column and shrinkable body so the existing clipped dialog keeps its final content and moved build metadata reachable; other dialogs are unchanged.
