@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Standardize the phone informational footer and English local-processing label. Move lower build metadata to the end of Help.
+
 ## 1.0.4 - 2026-10-11
 
 - Keep the background page still while any native modal dialog is open, preserving the existing Help and Settings scrolling layouts.

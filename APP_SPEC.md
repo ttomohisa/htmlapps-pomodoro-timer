@@ -89,3 +89,9 @@ Current stable desktop/mobile Chromium, Firefox, and Safari for the normal timer
 ## In-app help
 
 The upper-right help action opens bilingual instructions covering timer flow, PiP capability differences, Flow mode, local privacy, keyboard shortcuts, notifications, and browser limitations.
+
+## Informational footer and Help metadata
+
+- Hide only the informational footer at the existing 620px phone breakpoint; preserve functional bottom controls and existing badge visibility.
+- The equivalent English local-processing badge reads `Fully local processing`.
+- Existing lower build metadata is the final quiet Help content, with populated values and phone visibility preserved.

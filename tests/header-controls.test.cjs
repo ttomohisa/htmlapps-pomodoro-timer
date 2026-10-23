@@ -4,7 +4,7 @@ const { makeApp } = require('./app-harness.cjs');
 
 const expected = {
   ja: { language: 'EN', switchLabel: '英語に切り替え', help: '使い方と注意事項', close: '閉じる', privacy: '完全ローカル処理' },
-  en: { language: 'JA', switchLabel: 'Switch to Japanese', help: 'How to use & notes', close: 'Close', privacy: 'Local-only processing' },
+  en: { language: 'JA', switchLabel: 'Switch to Japanese', help: 'How to use & notes', close: 'Close', privacy: 'Fully local processing' },
 };
 
 function assertLanguage(app, lang) {
@@ -41,7 +41,7 @@ test('Japanese privacy badge uses the shared local-processing wording', () => {
   const app = makeApp({ locale: 'ja-JP' });
   assert.equal(app.el('localBadge').textContent, '完全ローカル処理');
   app.click('languageButton');
-  assert.equal(app.el('localBadge').textContent, 'Local-only processing');
+  assert.equal(app.el('localBadge').textContent, 'Fully local processing');
 });
 
 test('Help title is localized on initial load in each language', () => {
