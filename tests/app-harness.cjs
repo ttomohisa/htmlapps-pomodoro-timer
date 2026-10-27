@@ -4,7 +4,7 @@ const vm = require('node:vm');
 
 // Execute the shipped inline application with a deterministic clock and minimal DOM.
 // Timer behavior, event handlers, persistence and CSV generation are production code.
-function makeApp({time = '2026-10-04T12:00:00Z', saved, file = process.env.POMODORO_TEST_HTML || 'src/index.template.html', locale = 'en', storageFailure = false, sharedLanguage = null, url = "https://example.test/", savedRaw} = {}) {
+function makeApp({time = '2026-10-04T12:00:00Z', saved, file = process.env.POMODORO_TEST_HTML || 'src/index.template.html', locale = 'en', storageFailure = false, sharedLanguage = null, url = "https://example.test/", savedRaw,readFailure=false} = {}) {
   let clock = typeof time === 'number' ? time : Date.parse(time);
   let stored = savedRaw !== undefined ? savedRaw : saved ? JSON.stringify(saved) : null;
   const writes=[],timeouts=new Map(),revoked=[];let nextTimeout=0,downloadFailure=false,pipRequest=null;
@@ -38,6 +38,7 @@ function makeApp({time = '2026-10-04T12:00:00Z', saved, file = process.env.POMOD
     elements.set(match[2], node);
   }
   const el = id => elements.get(id) || null;
+  el('bkCommonStyle').textContent=fs.readFileSync(path.join(__dirname,'../components/ui-conventions.css'),'utf8');
   const canvasCalls=[];
   const canvasContext={textAlign:"start",fillRect(){},fillText(text,x,y){canvasCalls.push({text,x,y,align:this.textAlign});}};
   el("pipCanvas").getContext=()=>canvasContext;
@@ -45,7 +46,7 @@ function makeApp({time = '2026-10-04T12:00:00Z', saved, file = process.env.POMOD
   const pipWindow={closed:false,document:{documentElement:{},head:element(),body:element(),getElementById(id){return pipElements.get(id);}},addEventListener(){}};
   const document = {getElementById: el, createElement: element, documentElement: {}, body: element('body'), addEventListener(type, fn) { events[type] = fn; }};
   class FakeDate extends Date { constructor(...args) { super(...(args.length ? args : [clock])); } static now() { return clock; } }
-  const context = vm.createContext({document, window: {addEventListener() {},documentPictureInPicture:{async requestWindow(){return pipRequest?await pipRequest():pipWindow;}}}, navigator: {language: locale}, location:{href:url},history:{replaceState(){}},localStorage: {getItem(key) { return key==='browser-kitty:ui-language:v1'?sharedLanguage:key==='bk-pomodoro-v1'?stored:null; }, setItem(key, value) { if (storageFailure) throw new Error("Synthetic storage failure"); writes.push({key,value});if(key==='browser-kitty:ui-language:v1')sharedLanguage=value;else if(key==='bk-pomodoro-v1')stored = value; }}, Date: FakeDate, Intl, Blob, URL: class extends URL {static createObjectURL(blob) { const key = `blob:${blobs.size}`; blobs.set(key, blob); return key; } static revokeObjectURL(value) {revoked.push(value);}}, setTimeout(fn,ms) {const id=++nextTimeout;timeouts.set(id,{fn,ms});return id;}, clearTimeout(id) {timeouts.delete(id);}, setInterval(fn) { intervals.push(fn); return intervals.length; }, clearInterval() {}});
+  const context = vm.createContext({document, window: {addEventListener() {},documentPictureInPicture:{async requestWindow(){return pipRequest?await pipRequest():pipWindow;}}}, navigator: {language: locale}, location:{href:url},history:{replaceState(){}},localStorage: {getItem(key) { if(readFailure&&key==='bk-pomodoro-v1')throw Error('read denied');return key==='browser-kitty:ui-language:v1'?sharedLanguage:key==='bk-pomodoro-v1'?stored:null; }, setItem(key, value) { if (storageFailure) throw new Error("Synthetic storage failure"); writes.push({key,value});if(key==='browser-kitty:ui-language:v1')sharedLanguage=value;else if(key==='bk-pomodoro-v1')stored = value; }}, Date: FakeDate, Intl, Blob, URL: class extends URL {static createObjectURL(blob) { const key = `blob:${blobs.size}`; blobs.set(key, blob); return key; } static revokeObjectURL(value) {revoked.push(value);}}, setTimeout(fn,ms) {const id=++nextTimeout;timeouts.set(id,{fn,ms});return id;}, clearTimeout(id) {timeouts.delete(id);}, setInterval(fn) { intervals.push(fn); return intervals.length; }, clearInterval() {}});
   const source = raw.match(/<script>\s*([\s\S]*?)<\/script>/)[1]
     .replace('__APP_CONFIG_JSON__', '{name:"Pomodoro Timer",version:"1.0.0"}')
     .replace('__BUILD_MANIFEST_JSON__', '{generatedAtUtc:"2026-10-04T00:00:00Z",dependencies:[]}')
@@ -53,6 +54,6 @@ function makeApp({time = '2026-10-04T12:00:00Z', saved, file = process.env.POMOD
   vm.runInContext(fs.readFileSync(path.join(__dirname,'../components/ui-conventions.js'),'utf8'),context);
   vm.runInContext(source, context);
   context.testApi.state.settings.sound = false;
-  return {writes,timeouts,revoked,setPipRequest(fn){pipRequest=fn}, get sharedLanguage(){return sharedLanguage},snapshot(){return JSON.parse(JSON.stringify(context.testApi.state))},setDownloadFailure(value){downloadFailure=value;},api: context.testApi, el, events, document, downloads, canvasCalls, pipEl:id=>pipElements.get(id), click(id) { if (!el(id)) throw Error(`Missing control: ${id}`); return el(id).click(); }, input(id, value) { el(id).value = value; el(id).listeners.input?.({target: el(id)}); }, advance(ms) {clock += ms;}, tick() {intervals[0]();}, reload() {context.testApi.saveState();return makeApp({time: clock, saved: JSON.parse(stored), file, locale, sharedLanguage});}, setStorageFailure(value) { storageFailure = value; }, persistedRaw(){return stored;}, persisted() {return JSON.parse(stored);}, key(key, extra = {}) {events.keydown({target: element(), key, code: key === ' ' ? 'Space' : `Key${key.toUpperCase()}`, preventDefault() {}, ...extra});}};
+  return {context,pipWindow,setReadFailure(value){readFailure=value},writes,timeouts,revoked,setPipRequest(fn){pipRequest=fn}, get sharedLanguage(){return sharedLanguage},snapshot(){return JSON.parse(JSON.stringify(context.testApi.state))},setDownloadFailure(value){downloadFailure=value;},api: context.testApi, el, events, document, downloads, canvasCalls, pipEl:id=>pipElements.get(id), click(id) { if (!el(id)) throw Error(`Missing control: ${id}`); return el(id).click(); }, input(id, value) { el(id).value = value; el(id).listeners.input?.({target: el(id)}); }, advance(ms) {clock += ms;}, tick() {intervals[0]();}, reload() {context.testApi.saveState();return makeApp({time: clock, saved: JSON.parse(stored), file, locale, sharedLanguage});}, setStorageFailure(value) { storageFailure = value; }, persistedRaw(){return stored;}, persisted() {return JSON.parse(stored);}, key(key, extra = {}) {events.keydown({target: element(), key, code: key === ' ' ? 'Space' : `Key${key.toUpperCase()}`, preventDefault() {}, ...extra});}};
 }
 module.exports = {makeApp};
