@@ -32,7 +32,7 @@ for (const locale of ['ja-JP', 'en-US']) {
       app.click('languageButton');
       lang = lang === 'ja' ? 'en' : 'ja';
     }
-    const reloaded = makeApp({ saved: app.persisted(), locale });
+    const reloaded = makeApp({ saved: app.persisted(), sharedLanguage: app.sharedLanguage, locale });
     assertLanguage(reloaded, lang);
   });
 }

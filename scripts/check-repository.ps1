@@ -27,4 +27,6 @@ try {
     if ($LASTEXITCODE -ne 0) { throw "App regression tests failed: $variant" }
   }
 } finally { $env:POMODORO_TEST_HTML = $previousTestHtml }
+& node (Join-Path $Root "scripts/test-common-ui.cjs")
+if ($LASTEXITCODE -ne 0) { throw "Common UI checks failed" }
 Write-Host "[OK] Repository check passed." -ForegroundColor Green

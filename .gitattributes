@@ -6,3 +6,7 @@
 
 # Preserve the supplied canonical SVG bytes on Windows and Unix.
 assets/favicon.svg text eol=lf
+
+components/ui-conventions.js text eol=lf
+
+components/ui-conventions.css text eol=lf

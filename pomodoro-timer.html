@@ -75,6 +75,118 @@
   .help-build{margin:18px 0 0;color:var(--muted);font-size:11px}
 #helpDialog[open]{display:flex;flex-direction:column}#helpDialog .dialog-header{flex:none}#helpDialog .dialog-body{min-height:0;flex:1 1 auto}
   </style>
+  <style>/* Browser Kitty shared UI conventions 1.0.0. Explicit opt-in only. */
+[data-bk-button] { min-height: 44px; border: 1px solid #BFC1BA; background: #FFFFFF; color: #202823; cursor: pointer; opacity: 1; }
+[data-bk-button][data-bk-variant="primary"] { background: #16624F; border-color: #16624F; color: #FFFFFF; }
+[data-bk-button][data-bk-variant="primary"]:hover:not(:disabled) { background: #0E503F; border-color: #0E503F; }
+[data-bk-button][data-bk-variant="secondary"] { background: #FFFFFF; color: #202823; border-color: #BFC1BA; }
+[data-bk-button][data-bk-variant="secondary"]:hover:not(:disabled) { background: #FFFFFF; color: #202823; border-color: #BFC1BA; }
+[data-bk-button][data-bk-variant="danger"] { background: #B3261E; border-color: #B3261E; color: #FFFFFF; }
+[data-bk-button][data-bk-variant="danger"]:hover:not(:disabled) { background: #8C1D18; border-color: #8C1D18; color: #FFFFFF; }
+[data-bk-button]:focus-visible, [data-bk-header-action]:focus-visible { outline: 2px solid #16624F; outline-offset: 2px; }
+[data-bk-button]:disabled, [data-bk-button]:disabled:hover, [data-bk-button]:disabled:active { background: #E7EBE7; color: #59635C; border-color: #E7EBE7; cursor: not-allowed; opacity: 1; transform: none; }
+[data-bk-button][data-bk-state="busy"], [data-bk-button][data-bk-state="stopping"], [data-bk-button][data-bk-state="busy"]:hover, [data-bk-button][data-bk-state="stopping"]:hover { background: #E1F0EA; color: #16624F; border-color: #E1F0EA; cursor: wait; opacity: 1; }
+[data-bk-button][data-bk-state="busy"]::before, [data-bk-button][data-bk-state="stopping"]::before { content: ''; display: inline-block; width: .85em; height: .85em; margin-inline-end: .45em; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; vertical-align: -.1em; animation: bk-ui-spin .85s linear infinite; }
+[data-bk-header-action] { min-width: 44px; min-height: 44px; }
+[data-bk-save-status] { display: block; font-size: .85rem; color: #59635C; overflow-wrap: anywhere; }
+[data-bk-save-status="error"] { color: #B3261E; }
+@keyframes bk-ui-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { [data-bk-button] { transition: none; } [data-bk-button]::before { animation: none !important; } }
+</style>
+  <script data-bk-ui-version="1.0.0">/* Browser Kitty shared UI conventions 1.0.0. Build-time embed only; no network. */
+(function (root) {
+  'use strict';
+  const version = '1.0.0';
+  const languageKey = 'browser-kitty:ui-language:v1';
+  const validLanguage = value => value === 'ja' || value === 'en';
+  function safely(read, fallback) { try { return read(); } catch (_) { return fallback; } }
+  function dependency(options, key, readDefault, fallback) {
+    return safely(() => Object.prototype.hasOwnProperty.call(options, key) ? options[key] : readDefault(), fallback);
+  }
+  function storageFrom(options) { return dependency(options, 'storage', () => root.localStorage, null); }
+  function urlFrom(options) { return dependency(options, 'url', () => root.location.href, ''); }
+  function parseUrl(value) { return safely(() => new URL(String(value), 'https://browser-kitty.invalid/'), null); }
+  function readLanguage(storage, key) { return safely(() => storage && storage.getItem(key), null); }
+  function resolveLanguage(options = {}) {
+    const url = parseUrl(urlFrom(options));
+    const query = url && url.searchParams.get('lang');
+    if (validLanguage(query)) return query;
+    const storage = storageFrom(options);
+    const shared = readLanguage(storage, languageKey);
+    if (validLanguage(shared)) return shared;
+    for (const key of options.legacyKeys || []) {
+      const legacy = readLanguage(storage, key);
+      if (validLanguage(legacy)) return legacy;
+    }
+    const languages = dependency(options, 'languages', () => root.navigator.languages || [root.navigator.language], []);
+    for (const value of languages || []) {
+      const language = String(value).toLowerCase().split('-')[0];
+      if (validLanguage(language)) return language;
+    }
+    return 'en';
+  }
+  function chooseLanguage(language, options = {}) {
+    if (!validLanguage(language)) throw new TypeError('Unsupported language: ' + language);
+    const storage = storageFrom(options);
+    const persisted = safely(() => { if (!storage) return false; storage.setItem(languageKey, language); return true; }, false);
+    const url = parseUrl(urlFrom(options));
+    const history = dependency(options, 'history', () => root.history, null);
+    const urlUpdated = safely(() => {
+      if (!url || !url.searchParams.has('lang') || !history) return false;
+      url.searchParams.set('lang', language);
+      history.replaceState(history.state, '', url.href);
+      return true;
+    }, false);
+    return { language, persisted, urlUpdated };
+  }
+  const copy = {
+    en: {
+      sessionOnly: 'Your work will be lost when this tab closes',
+      manualSave: 'Your work is not saved automatically. Save a project file to continue editing later.',
+      dirty: 'Unsaved changes', saving: 'Saving…', saved: 'Saved in this browser',
+      saveFailed: 'Could not save in this browser', downloadStarted: 'Download started',
+      previousResult: 'Previous result', stopping: 'Stopping…', stopProcessing: 'Stop processing', cancel: 'Cancel',
+      languageSessionOnly: 'Language applies to this screen only'
+    },
+    ja: {
+      sessionOnly: '作業内容はこのタブを閉じると消えます',
+      manualSave: '自動保存されません。続きの編集には作業ファイルを保存してください',
+      dirty: '未保存の変更があります', saving: '保存しています…', saved: 'このブラウザーに保存済み',
+      saveFailed: 'このブラウザーに保存できませんでした', downloadStarted: '保存を開始しました',
+      previousResult: '前回の結果', stopping: '中止しています…', stopProcessing: '処理を中止', cancel: 'キャンセル',
+      languageSessionOnly: '言語はこの画面だけに適用されます'
+    }
+  };
+  function text(key, language = 'en', values = {}) {
+    const locale = validLanguage(language) ? language : 'en';
+    let value = copy[locale][key] || copy.en[key] || String(key);
+    if (key === 'saved' && values.time) value += (locale === 'ja' ? '・' : ' · ') + String(values.time);
+    return value.replace(/\{([a-zA-Z0-9_]+)\}/g, (match, name) => Object.prototype.hasOwnProperty.call(values, name) ? String(values[name]) : match);
+  }
+  function setButtonState(button, state) {
+    if (!['ready', 'unavailable', 'busy', 'stopping'].includes(state)) throw new TypeError('Unsupported button state: ' + state);
+    button.disabled = state !== 'ready';
+    button.setAttribute('data-bk-state', state);
+    if (state === 'busy' || state === 'stopping') button.setAttribute('aria-busy', 'true');
+    else button.removeAttribute('aria-busy');
+  }
+  function setSaveStatus(element, options = {}) {
+    const mode = options.mode || 'session';
+    const state = options.state || 'dirty';
+    if (!['session', 'manual', 'autosave'].includes(mode)) throw new TypeError('Unsupported save mode: ' + mode);
+    if (!['dirty', 'saving', 'saved', 'error'].includes(state)) throw new TypeError('Unsupported save state: ' + state);
+    const key = mode === 'session' ? 'sessionOnly' : mode === 'manual' ? 'manualSave' : state === 'error' ? 'saveFailed' : state;
+    element.textContent = text(key, options.language, { time: options.time });
+    element.setAttribute('role', 'status');
+    element.setAttribute('aria-live', 'polite');
+    element.setAttribute('data-bk-save-status', state);
+    element.setAttribute('data-bk-save-mode', mode);
+  }
+  const api = Object.freeze({ version, languageKey, resolveLanguage, chooseLanguage, text, setButtonState, setSaveStatus });
+  root.BrowserKittyUI = api;
+  if (typeof module === 'object' && module.exports) module.exports = api;
+})(typeof globalThis === 'object' ? globalThis : window);
+</script>
 </head>
 <body>
   <header class="app-header">
@@ -84,13 +196,13 @@
         <div class="brand-copy"><h1 class="brand-name"><span id="brandName">ポモドーロタイマー</span><span class="version-badge" id="versionBadge">v1.0.4</span></h1><p class="brand-meta" id="brandMeta">作業中も、画面の隅に。</p></div>
       </div>
       <div class="header-actions">
-        <button class="language-button" id="languageButton" type="button" aria-label="英語に切り替え" title="英語に切り替え">EN</button>
-        <button class="header-icon-button" id="helpButton" type="button" aria-label="使い方と注意事項" title="使い方と注意事項"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M9.8 9.3a2.35 2.35 0 0 1 4.55.85c0 1.85-2.35 2.05-2.35 3.65" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="17.2" r="1" fill="currentColor"/></svg></button>
+        <button data-bk-button data-bk-variant="secondary" class="language-button" data-bk-header-action id="languageButton" type="button" aria-label="英語に切り替え" title="英語に切り替え">EN</button>
+        <button data-bk-button data-bk-variant="secondary" class="header-icon-button" data-bk-header-action id="helpButton" type="button" aria-label="使い方と注意事項" title="使い方と注意事項"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M9.8 9.3a2.35 2.35 0 0 1 4.55.85c0 1.85-2.35 2.05-2.35 3.65" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="17.2" r="1" fill="currentColor"/></svg></button>
       </div>
     </div>
   </header>
 
-  <main class="main">
+  <main class="main"><p id="saveStatus" data-bk-save-status role="status" aria-live="polite"></p><button id="retrySave" type="button" data-bk-button data-bk-variant="secondary" hidden></button><p id="languageNotice" role="status"></p><p id="capabilityRecovery" role="alert"></p><p id="exportRecovery" role="alert"></p><label id="exportFilenameLabel" for="exportFilename"></label><input id="exportFilename" type="text" maxlength="120"><p id="exportScope"></p>
     <section class="page-intro">
       <div><h2 id="introTitle">このセッションに集中。</h2><p id="introText">やることを1つ決めて開始。必要ならPiPでタイマーを画面の隅に置いたまま作業できます。</p></div>
       <div class="local-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 2.8 8 7 10 4.2-2 7-5.4 7-10V6z"/><path d="m9 12 2 2 4-5"/></svg><span id="localBadge">完全ローカル処理</span></div>
@@ -107,13 +219,13 @@
           <input class="intention-input" id="intentionInput" maxlength="60" autocomplete="off" placeholder="例: READMEの使い方を書く">
         </div>
         <div class="timer-actions">
-          <button class="btn" id="addFiveButton" type="button">+5 min</button>
-          <button class="btn primary icon-text" id="mainToggleButton" type="button"><span id="mainToggleIcon"></span><span id="mainToggleText">スタート</span></button>
-          <button class="btn" id="finishButton" type="button">完了して次へ</button>
+          <button data-bk-button data-bk-variant="secondary" class="btn" id="addFiveButton" type="button">+5 min</button>
+          <button data-bk-button data-bk-variant="primary" class="btn primary icon-text" id="mainToggleButton" type="button"><span id="mainToggleIcon"></span><span id="mainToggleText">スタート</span></button>
+          <button data-bk-button data-bk-variant="secondary" class="btn" id="finishButton" type="button">完了して次へ</button>
         </div>
         <div class="timer-foot">
-          <button class="distraction-btn" id="distractionButton" type="button"><svg viewBox="0 0 24 24" fill="none" width="15" height="15"><path d="M12 3v7M8.5 6.5 12 10l3.5-3.5M5 13a7 7 0 1 0 14 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="distractionText">気が散った</span><strong id="distractionCount">0</strong></button>
-          <button class="text-action" id="resetTimerButton" type="button">リセット</button>
+          <button data-bk-button data-bk-variant="secondary" class="distraction-btn" id="distractionButton" type="button"><svg viewBox="0 0 24 24" fill="none" width="15" height="15"><path d="M12 3v7M8.5 6.5 12 10l3.5-3.5M5 13a7 7 0 1 0 14 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="distractionText">気が散った</span><strong id="distractionCount">0</strong></button>
+          <button data-bk-button data-bk-variant="secondary" class="text-action" id="resetTimerButton" type="button">リセット</button>
         </div>
       </section>
 
@@ -125,12 +237,12 @@
 
         <section class="card pip-card">
           <div class="pip-row"><div class="pip-icon"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="11" y="11" width="8" height="6" rx="1" fill="currentColor"/></svg></div><div class="pip-copy"><strong id="pipTitle">Picture in Picture</strong><p id="pipText">別のタブやアプリで作業していても、タイマーを画面の隅に表示します。</p></div></div>
-          <button class="btn primary pip-button icon-text" id="pipButton" type="button"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="12" y="11" width="7" height="6" rx="1" fill="currentColor"/></svg><span id="pipButtonText">PiPで表示</span></button>
+          <button data-bk-button data-bk-variant="primary" class="btn primary pip-button icon-text" id="pipButton" type="button"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="12" y="11" width="7" height="6" rx="1" fill="currentColor"/></svg><span id="pipButtonText">PiPで表示</span></button>
           <div class="support-note"><span class="support-dot" id="pipSupportDot"></span><span id="pipSupportText">対応状況を確認中</span></div>
         </section>
 
         <section class="card panel">
-          <div class="panel-head"><h2 class="panel-title" id="quickTitle">集中スタイル</h2><button class="small-btn" id="settingsButton" type="button">設定</button></div>
+          <div class="panel-head"><h2 class="panel-title" id="quickTitle">集中スタイル</h2><button data-bk-button data-bk-variant="secondary" class="small-btn" id="settingsButton" type="button">設定</button></div>
           <div class="quick-settings">
             <div class="quick-row"><div class="quick-copy"><strong id="flowTitle">Flow延長</strong><span id="flowDesc">集中時間の終了後も計測を続ける</span></div><label class="switch"><input id="flowToggle" type="checkbox"><span></span></label></div>
             <div class="quick-row"><div class="quick-copy"><strong id="soundTitle">サウンド</strong><span id="soundDesc">区切りを短い音で通知</span></div><label class="switch"><input id="soundToggle" type="checkbox"><span></span></label></div>
@@ -141,34 +253,34 @@
     </div>
 
     <section class="section">
-      <div class="section-head"><div><h2 class="section-title" id="historyTitle">最近の集中</h2><p id="historyDesc">このブラウザにだけ保存されます。</p></div><div class="history-tools"><button class="small-btn" id="exportCsvButton" type="button">CSVを書き出す</button><button class="small-btn" id="exportButton" type="button">JSONを書き出す</button><button class="small-btn danger" id="clearHistoryButton" type="button">履歴を消去</button></div></div>
+      <div class="section-head"><div><h2 class="section-title" id="historyTitle">最近の集中</h2><p id="historyDesc">このブラウザにだけ保存されます。</p></div><div class="history-tools"><button data-bk-button data-bk-variant="secondary" class="small-btn" id="exportCsvButton" type="button">CSVを書き出す</button><button data-bk-button data-bk-variant="secondary" class="small-btn" id="exportButton" type="button">JSONを書き出す</button><button data-bk-button data-bk-variant="danger" class="small-btn danger" id="clearHistoryButton" type="button">履歴を消去</button></div></div>
       <div class="card history-card"><div class="history-filters"><button class="small-btn" id="historyAllButton" type="button" aria-pressed="true">すべて</button><button class="small-btn" id="historyTodayButton" type="button" aria-pressed="false">今日</button><label class="history-search"><span class="sr-only" id="historySearchLabel">やることで検索</span><input id="historySearchInput" type="search" maxlength="60" autocomplete="off" placeholder="やることで検索"></label><span class="history-count" id="historyCount" role="status" aria-live="polite"></span></div><ul class="history-list" id="historyList"></ul><div class="empty" id="historyEmpty">まだ完了した集中セッションはありません。</div></div>
     </section>
   </main>
 
   <footer><div class="build-line"><span id="footerPrivacy">データは外部送信されません</span></div></footer>
 
-  <div class="mobile-dock" aria-label="Timer controls"><button class="dock-btn" id="mobileAddButton" type="button" aria-label="Add five minutes">+5</button><button class="dock-btn primary" id="mobileToggleButton" type="button">スタート</button><button class="dock-btn" id="mobileFinishButton" type="button" aria-label="Complete and advance"><svg viewBox="0 0 24 24" fill="none"><path d="m6 12 4 4 8-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
-  <div class="toast" id="toast" role="status" aria-live="polite"><span class="toast-message" id="toastMessage"></span><button class="toast-action" id="toastAction" type="button"></button></div>
+  <div class="mobile-dock" aria-label="Timer controls"><button data-bk-button data-bk-variant="secondary" class="dock-btn" id="mobileAddButton" type="button" aria-label="Add five minutes">+5</button><button data-bk-button data-bk-variant="primary" class="dock-btn primary" id="mobileToggleButton" type="button">スタート</button><button data-bk-button data-bk-variant="secondary" class="dock-btn" id="mobileFinishButton" type="button" aria-label="Complete and advance"><svg viewBox="0 0 24 24" fill="none"><path d="m6 12 4 4 8-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"><span class="toast-message" id="toastMessage"></span><button data-bk-button data-bk-variant="secondary" class="toast-action" id="toastAction" type="button"></button></div>
 
-  <dialog id="helpDialog"><div class="dialog-header"><h2 id="helpTitle">使い方と注意事項</h2><button class="dialog-close" id="helpClose" type="button" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div><div class="dialog-body" id="helpBody"><div id="helpContent"></div><p class="build-line help-build"><span id="footerBuild">Build -</span><span id="footerDeps">Dependencies 0</span></p></div></dialog>
+  <dialog id="helpDialog"><div class="dialog-header"><h2 id="helpTitle">使い方と注意事項</h2><button data-bk-button data-bk-variant="secondary" class="dialog-close" id="helpClose" type="button" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div><div class="dialog-body" id="helpBody"><div id="helpContent"></div><p class="build-line help-build"><span id="footerBuild">Build -</span><span id="footerDeps">Dependencies 0</span></p></div></dialog>
 
-  <dialog id="settingsDialog"><div class="dialog-header"><h2 id="settingsTitle">タイマー設定</h2><button class="dialog-close" id="settingsClose" type="button" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div><div class="dialog-body">
+  <dialog id="settingsDialog"><div class="dialog-header"><h2 id="settingsTitle">タイマー設定</h2><button data-bk-button data-bk-variant="secondary" class="dialog-close" id="settingsClose" type="button" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div><div class="dialog-body"><p id="settingsSaveStatus" role="alert"></p>
     <div class="settings-grid"><div class="field"><label for="focusMinutesInput" id="focusMinutesLabel">集中（分）</label><input id="focusMinutesInput" type="number" min="1" max="180" inputmode="numeric"></div><div class="field"><label for="shortMinutesInput" id="shortMinutesLabel">短い休憩（分）</label><input id="shortMinutesInput" type="number" min="1" max="60" inputmode="numeric"></div><div class="field"><label for="longMinutesInput" id="longMinutesLabel">長い休憩（分）</label><input id="longMinutesInput" type="number" min="1" max="120" inputmode="numeric"></div></div>
     <section class="settings-block" aria-labelledby="durationSetsTitle">
       <h3 id="durationSetsTitle">時間セット</h3>
       <p class="settings-note" id="durationSetsNote">集中・短い休憩・長い休憩の組み合わせを3件まで保存できます。適用は入力欄のみ変更します。設定を変更するには「保存」を押してください。</p>
       <ul class="duration-set-list" id="durationSetList"></ul>
       <p class="settings-note" id="durationSetsEmpty">保存した時間セットはありません。</p>
-      <div class="duration-set-controls"><button class="small-btn" id="durationSetSave" type="button">入力中の時間をセットに保存</button><button class="small-btn" id="durationSetUndo" type="button" hidden>削除を元に戻す</button></div>
+      <div class="duration-set-controls"><button data-bk-button data-bk-variant="secondary" class="small-btn" id="durationSetSave" type="button">入力中の時間をセットに保存</button><button data-bk-button data-bk-variant="secondary" class="small-btn" id="durationSetUndo" type="button" hidden>削除を元に戻す</button></div>
       <p class="duration-set-status" id="durationSetStatus" role="status" aria-live="polite" aria-atomic="true"></p>
     </section>
     <div class="settings-block"><h3 id="autoTitle">自動で次へ</h3><div class="quick-row"><div class="quick-copy"><strong id="autoBreakTitle">休憩を自動開始</strong><span id="autoBreakDesc">集中終了後に休憩を開始</span></div><label class="switch"><input id="autoBreakToggle" type="checkbox"><span></span></label></div><div class="quick-row"><div class="quick-copy"><strong id="autoFocusTitle">集中を自動開始</strong><span id="autoFocusDesc">休憩終了後に次の集中を開始</span></div><label class="switch"><input id="autoFocusToggle" type="checkbox"><span></span></label></div></div>
     <p class="settings-note" id="settingsNote">進行中のセッション時間は変更せず、次のセッションから新しい設定を使います。</p>
-    <div class="settings-actions"><button class="btn" id="settingsCancel" type="button">キャンセル</button><button class="btn primary" id="settingsSave" type="button">保存</button></div>
+    <div class="settings-actions"><button data-bk-button data-bk-variant="secondary" class="btn" id="settingsCancel" type="button">キャンセル</button><button data-bk-button data-bk-variant="primary" class="btn primary" id="settingsSave" type="button">保存</button></div>
   </div></dialog>
 
-  <dialog class="confirm-dialog" id="confirmDialog"><div class="confirm-body"><h2 id="confirmTitle"></h2><p id="confirmMessage"></p><div class="confirm-actions"><button class="btn" id="confirmCancel" type="button">キャンセル</button><button class="btn danger-solid" id="confirmOk" type="button">実行</button></div></div></dialog>
+  <dialog class="confirm-dialog" id="confirmDialog"><div class="confirm-body"><h2 id="confirmTitle"></h2><p id="confirmMessage"></p><div class="confirm-actions"><button data-bk-button data-bk-variant="secondary" class="btn" id="confirmCancel" type="button">キャンセル</button><button data-bk-button data-bk-variant="danger" class="btn danger-solid" id="confirmOk" type="button">実行</button></div></div></dialog>
 
   <video id="pipVideo" muted playsinline style="position:fixed;width:1px;height:1px;opacity:0;pointer-events:none"></video>
   <canvas id="pipCanvas" width="560" height="315" style="display:none"></canvas>
@@ -177,7 +289,7 @@
   (()=>{
     'use strict';
     const APP_CONFIG={"$schema":"./schemas/app-config.schema.json","name":"Pomodoro Timer","nameJa":"ポモドーロタイマー","slug":"pomodoro-timer","version":"1.0.4","description":"A local-first Pomodoro timer designed around an interactive Picture-in-Picture mini panel.","descriptionJa":"操作できるPicture-in-Pictureミニパネルを中心に設計した、ローカル完結のポモドーロタイマーです。","defaultLanguage":"auto","repository":{"owner":"ttomohisa","name":"htmlapps-pomodoro-timer"},"build":{"output":"dist/index.html","blockRuntimeNetwork":true,"selfExtract":{"enabled":true,"output":"dist/index.self-extract.html"}}};
-    const BUILD_MANIFEST={"schemaVersion":1,"builder":"single-html-app-template-compatible/1.0","generatedAtUtc":"2026-10-23T11:13:36.9961909Z","app":{"name":"Pomodoro Timer","slug":"pomodoro-timer","version":"1.0.4"},"dependencies":[]};
+    const BUILD_MANIFEST={"schemaVersion":1,"builder":"single-html-app-template-compatible/1.0","generatedAtUtc":"2026-10-27T13:38:23.5182855Z","app":{"name":"Pomodoro Timer","slug":"pomodoro-timer","version":"1.0.4"},"dependencies":[]};
     const EMBEDDED_ASSETS_B64="eyJzY2hlbWFWZXJzaW9uIjoxLCJkZXBlbmRlbmNpZXMiOnt9fQ==";
     void EMBEDDED_ASSETS_B64;
 
@@ -246,16 +358,17 @@
     }
 
     let state=loadState();
-    let lang=state.lang||(navigator.language&&navigator.language.toLowerCase().startsWith('ja')?'ja':'en');
+    let lang=BrowserKittyUI.resolveLanguage({legacyKeys:['pomodoro:legacy-lang'],storage:{getItem:key=>key==='pomodoro:legacy-lang'?state.lang:localStorage.getItem(key)}});
     let toastTimer=0,toastUndo=null,pipWin=null,pipKind='',pipDrawTimer=0,audioCtx=null,confirmResolver=null;
+    let uiSaveFailed=false,uiPendingSave=false,uiSavedAt=null,uiPresetFailure=false,uiLanguageSessionOnly=false,uiExportErrors={},uiPipBusy=false,uiNotifyBusy=false,uiNotificationError=null,uiPipError=false,confirmInfo=null,confirmOrigin=null,toastKey=null,toastRemaining=0,toastExpiresAt=0;
     let historyScope='all',historyQuery='',renderedDay='';
     let removedPreset=null,durationSetMessage='',durationSetError=false;
     const T=()=>TEXT[lang];
 
-    function saveState(){
-      state.lang=lang;
-      try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));return true;}catch(e){return false;}
-    }
+    function savedSuccessfully(){uiSaveFailed=false;uiPendingSave=false;uiSavedAt=new Date(now()).toLocaleTimeString(lang==='ja'?'ja-JP':'en-US',{hour:'2-digit',minute:'2-digit'});}
+    function saveState(){state.lang=lang;try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));savedSuccessfully();renderSharedUi();return true;}catch(e){uiSaveFailed=true;uiPendingSave=true;renderSharedUi();return false;}}
+    function ui(ja,en){return lang==='ja'?ja:en;}
+    function renderSharedUi(){if(!$('saveStatus'))return;const message=ui('タイマー・目的・設定・全履歴: ','Timer, intention, preferences and all history: ')+(uiSaveFailed?BrowserKittyUI.text('saveFailed',lang):uiSavedAt?BrowserKittyUI.text('saved',lang,{time:uiSavedAt}):ui('変更時にこのブラウザーへ保存します。','saved in this browser when changed.'));if($('saveStatus').textContent!==message)$('saveStatus').textContent=message;$('retrySave').hidden=!uiPendingSave;$('retrySave').textContent=ui('保存を再試行','Retry saving');$('settingsSaveStatus').textContent=uiSaveFailed?BrowserKittyUI.text('saveFailed',lang):uiPresetFailure?T().durationSetFailed:'';$('languageNotice').textContent=uiLanguageSessionOnly?BrowserKittyUI.text('languageSessionOnly',lang):'';$('exportRecovery').textContent=Object.entries(uiExportErrors).map(([kind,detail])=>ui('出力に失敗しました。同じ形式の保存を再試行してください。','Export failed. Retry saving the same format.')+' '+kind.toUpperCase()+' — '+detail).join(' ');$('exportFilenameLabel').textContent=ui('出力ファイル名（空欄なら日付に基づく名前、拡張子は形式に合わせます）','Output filename (blank uses today; extension follows format)');$('exportScope').textContent=ui('JSONバックアップ: タイマー・目的・設定・全履歴・時間セット。CSV: 絞り込み中の履歴','JSON backup: timer, intention, preferences, all history and duration sets. CSV: ')+filteredHistory().length+ui('件。',' matching history entries.');$('exportButton').textContent=ui('バックアップをJSONで保存','Save backup as JSON');$('exportCsvButton').textContent=ui('履歴をCSVで保存','Save history as CSV');$('clearHistoryButton').textContent=ui('全履歴','Delete all ')+state.history.length+ui('件を削除',' history entries');$('resetTimerButton').textContent=ui('現在のタイマーをリセット','Reset current timer');BrowserKittyUI.setButtonState($('pipButton'),uiPipBusy?'busy':pipCapability()==='none'?'unavailable':'ready');BrowserKittyUI.setButtonState($('notifyToggle'),uiNotifyBusy?'busy':'ready');$('capabilityRecovery').textContent=(uiNotificationError?T()[uiNotificationError]+' ':'')+(uiPipError?T().pipUnsupported:'');if(confirmInfo&&$('confirmDialog').open){$('confirmTitle').textContent=confirmInfo.kind==='history'?T().historyClearTitle:T().resetTitle;$('confirmMessage').textContent=confirmInfo.kind==='history'?ui('全履歴','Delete all ')+confirmInfo.count+ui('件を削除します。元に戻せません。現在のタイマー・目的・設定・言語は残ります。',' history entries permanently. Current timer, intention, preferences and language remain.'):ui('現在のタイマーと気が散った回数をリセットします。目的・履歴・設定は残ります。','Reset the current timer and distraction count. Intention, saved history and preferences remain.');$('confirmOk').textContent=confirmInfo.kind==='history'?ui('履歴を削除','Delete history'):ui('現在のタイマーをリセット','Reset current timer');$('confirmCancel').textContent=T().cancel;}if(toastKey&&toastUndo){$('toastMessage').textContent=T()[toastKey];$('toastAction').textContent=T().undo;}}
     function durationFor(mode,settings=state.settings){const m=mode==='focus'?settings.focus:mode==='short'?settings.short:settings.long;return clamp(Math.round(Number(m)||1),1,180)*60000;}
     function currentRemaining(){if(state.timer.flowOvertime)return 0;if(state.timer.running&&state.timer.endAt)return Math.max(0,state.timer.endAt-now());return Math.max(0,state.timer.remainingMs);}
     function currentFlowElapsed(){if(!state.timer.flowOvertime)return 0;return state.timer.flowElapsedMs+(state.timer.running&&state.timer.flowStartAt?Math.max(0,now()-state.timer.flowStartAt):0);}
@@ -287,7 +400,7 @@
       $('finishButton').textContent=t.mode==='focus'?T().finish:T().skipBreak;$('finishButton').disabled=!canFinishCurrent();$('mobileFinishButton').disabled=!canFinishCurrent();$('mobileFinishButton').setAttribute('aria-label',t.mode==='focus'?T().finish:T().skipBreak);updateHistoryReuse();refreshDay();$('distractionButton').disabled=t.mode!=='focus';$('distractionCount').textContent=t.distractions;
       $('addFiveButton').disabled=t.mode!=='focus'&&t.mode!=='short'&&t.mode!=='long';
       document.title=`${t.running||t.flowOvertime?`[${t.flowOvertime?formatFlow(flow):formatMs(remain)}] `:''}${T().brand}`;
-      updatePip();
+      updatePip();renderSharedUi();
     }
 
     function renderRounds(){const el=$('rounds');el.textContent='';for(let i=1;i<=ROUND_COUNT;i++){const d=document.createElement('span');d.className='round-dot';if(i<state.timer.round)d.classList.add('done');if(i===state.timer.round)d.classList.add('current');el.appendChild(d);}el.setAttribute('aria-label',`${T().round} ${state.timer.round} / ${ROUND_COUNT}`);}
@@ -299,10 +412,10 @@
       $('todayTitle').textContent=t.today;$('todayMinutesLabel').textContent=t.minutes;$('todaySessionsLabel').textContent=t.sessions;$('todayDistractionsLabel').textContent=t.distractions;
       $('pipTitle').textContent=t.pipTitle;$('pipText').textContent=t.pipText;$('quickTitle').textContent=t.quick;$('settingsButton').textContent=t.settings;$('flowTitle').textContent=t.flowTitle;$('flowDesc').textContent=t.flowDesc;$('soundTitle').textContent=t.soundTitle;$('soundDesc').textContent=t.soundDesc;$('notifyTitle').textContent=t.notifyTitle;$('notifyDesc').textContent=t.notifyDesc;
       $('historyAllButton').textContent=t.historyAll;$('historyTodayButton').textContent=t.today;$('historySearchLabel').textContent=t.historySearch;$('historySearchInput').placeholder=t.historySearch;$('exportCsvButton').textContent=t.exportCsv;$('historyTitle').textContent=t.history;$('historyDesc').textContent=t.historyDesc;$('exportButton').textContent=t.export;$('clearHistoryButton').textContent=t.clearHistory;$('historyEmpty').textContent=t.historyEmpty;$('footerPrivacy').textContent=t.privacy;
-      $('helpTitle').textContent=t.helpTitle;$('helpButton').setAttribute('aria-label',t.helpTitle);$('helpButton').setAttribute('title',t.helpTitle);$('helpClose').setAttribute('aria-label',t.close);$('helpContent').innerHTML=t.help;
+      $('helpTitle').textContent=t.helpTitle;$('helpButton').setAttribute('aria-label',t.helpTitle);$('helpButton').setAttribute('title',t.helpTitle);$('helpClose').setAttribute('aria-label',t.close);$('helpContent').innerHTML='<p>'+ui('保存に失敗してもタイマーはこの画面で動きます。保存を再試行するかJSONバックアップを保存してください。','If saving fails, the timer keeps running on this screen. Retry saving or save a JSON backup.')+'</p>'+t.help;
       $('settingsTitle').textContent=t.settingsTitle;$('focusMinutesLabel').textContent=t.focusMinutes;$('shortMinutesLabel').textContent=t.shortMinutes;$('longMinutesLabel').textContent=t.longMinutes;$('autoTitle').textContent=t.auto;$('autoBreakTitle').textContent=t.autoBreak;$('autoBreakDesc').textContent=t.autoBreakDesc;$('autoFocusTitle').textContent=t.autoFocus;$('autoFocusDesc').textContent=t.autoFocusDesc;$('settingsNote').textContent=t.settingsNote;$('settingsCancel').textContent=t.cancel;$('settingsSave').textContent=t.save;$('settingsClose').setAttribute('aria-label',t.close);renderDurationSets();
       $('confirmCancel').textContent=t.cancel;$('intentionInput').value=state.timer.intention||'';updateIntentionCount();renderPipSupport();renderToday();renderHistory();render();
-      saveState();
+      renderSharedUi();
     }
 
     function renderToday(){const key=todayKey();renderedDay=key;const rows=state.history.filter(x=>isoDay(x.endedAt||x.startedAt||0)===key);const total=rows.reduce((a,x)=>a+(Number(x.durationMs)||0),0);$('todayMinutes').textContent=String(Math.round(total/60000));$('todaySessions').textContent=String(rows.length);$('todayDistractions').textContent=String(rows.reduce((a,x)=>a+(Number(x.distractions)||0),0));$('todayDate').textContent=new Intl.DateTimeFormat(lang==='ja'?'ja-JP':'en-US',{month:'short',day:'numeric',weekday:'short'}).format(new Date());}
@@ -318,10 +431,10 @@
         const li=document.createElement('li');li.className='history-item';const d=new Date(row.endedAt||row.startedAt);const time=document.createElement('time');time.className='history-time';time.textContent=`${isoDay(d)}\n${pad(d.getHours())}:${pad(d.getMinutes())}`;if(Number.isFinite(d.getTime()))time.dateTime=d.toISOString();
         const main=document.createElement('div');main.className='history-main';const strong=document.createElement('strong');strong.textContent=row.intention||T().untitled;strong.title=strong.textContent;const sub=document.createElement('span');sub.textContent=`${T().round} ${row.round||1} · ${T().distractions} ${row.distractions||0}${row.overtimeMs>0?` · ${T().flow} ${formatFlow(row.overtimeMs)}`:''}`;main.append(strong,sub);
         const actions=document.createElement('div');actions.className='history-actions';const dur=document.createElement('span');dur.className='history-duration';dur.textContent=`${Math.max(1,Math.round((row.durationMs||0)/60000))} ${T().minSuffix}`;actions.appendChild(dur);
-        if(row.intention){const reuse=document.createElement('button');reuse.type='button';reuse.className='small-btn history-reuse';reuse.textContent=T().reuse;reuse.setAttribute('aria-label',`${T().reuse}: ${row.intention}`);reuse.addEventListener('click',()=>reuseIntention(row.id));actions.appendChild(reuse);}
+        if(row.intention){const reuse=document.createElement('button');reuse.type='button';reuse.setAttribute('data-bk-button','');reuse.setAttribute('data-bk-variant','secondary');reuse.className='small-btn history-reuse';reuse.textContent=T().reuse;reuse.setAttribute('aria-label',`${T().reuse}: ${row.intention}`);reuse.addEventListener('click',()=>reuseIntention(row.id));actions.appendChild(reuse);}
         li.append(time,main,actions);list.appendChild(li);
       }
-      updateHistoryReuse();
+      updateHistoryReuse();renderSharedUi();
     }
 
     function updateIntentionCount(){const value=$('intentionInput').value;$('intentionCount').textContent=`${value.length} / 60`;}
@@ -343,24 +456,25 @@
 
     function handleExpiry(){const t=state.timer;if(!t.running||t.flowOvertime)return;if(currentRemaining()>0)return;if(t.mode==='focus'){if(state.settings.flow){enterFlow();return;}completeFocus({natural:true});}else completeBreak();}
 
-    function recordDistraction(){if(state.timer.mode!=='focus')return;state.timer.distractions+=1;saveState();render();$('distractionButton').classList.remove('bump');void $('distractionButton').offsetWidth;$('distractionButton').classList.add('bump');let active=true;toastUndo=()=>{if(!active)return;active=false;state.timer.distractions=Math.max(0,state.timer.distractions-1);saveState();render();showToast(T().undoDone);};showToast(T().distractionAdded,T().undo,toastUndo);}
+    function recordDistraction(){if(state.timer.mode!=='focus')return;const timer=state.timer;state.timer.distractions+=1;saveState();render();$('distractionButton').classList.remove('bump');void $('distractionButton').offsetWidth;$('distractionButton').classList.add('bump');let active=true;toastUndo=()=>{if(!active||timer!==state.timer)return;active=false;state.timer.distractions=Math.max(0,state.timer.distractions-1);saveState();render();showToast(T().undoDone);};showToast(T().distractionAdded,T().undo,toastUndo,'distractionAdded');}
 
-    function showToast(message,actionLabel='',action=null){clearTimeout(toastTimer);toastUndo=action;$('toastMessage').textContent=message;$('toastAction').textContent=actionLabel;$('toastAction').hidden=!action;$('toast').classList.add('show');toastTimer=setTimeout(()=>{$('toast').classList.remove('show');toastUndo=null;},3800);}
+    function expireToast(){if($('toast').contains(document.activeElement))return;$('toast').classList.remove('show');toastUndo=null;toastKey=null;}
+    function showToast(message,actionLabel='',action=null,key=null){clearTimeout(toastTimer);toastUndo=action;toastKey=key;toastRemaining=3800;toastExpiresAt=now()+toastRemaining;$('toastMessage').textContent=message;$('toastAction').textContent=actionLabel;$('toastAction').hidden=!action;$('toast').classList.add('show');toastTimer=setTimeout(expireToast,toastRemaining);}
 
     function playChime(kind){if(!state.settings.sound)return;try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();const base=kind==='break'?520:660;[0,.12].forEach((delay,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='sine';o.frequency.value=base+(i*120);g.gain.setValueAtTime(.0001,audioCtx.currentTime+delay);g.gain.exponentialRampToValueAtTime(.055,audioCtx.currentTime+delay+.015);g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+delay+.18);o.connect(g);g.connect(audioCtx.destination);o.start(audioCtx.currentTime+delay);o.stop(audioCtx.currentTime+delay+.2);});}catch(e){}}
     function notify(title,body){if(!state.settings.notify||!('Notification'in window)||Notification.permission!=='granted')return;try{new Notification(title,{body,silent:true});}catch(e){}}
 
-    async function toggleNotification(value){if(!value){state.settings.notify=false;saveState();return;}if(!('Notification'in window)){state.settings.notify=false;$('notifyToggle').checked=false;showToast(T().notificationUnsupported);return;}let permission=Notification.permission;if(permission==='default'){try{permission=await Notification.requestPermission();}catch(e){permission='denied';}}state.settings.notify=permission==='granted';$('notifyToggle').checked=state.settings.notify;saveState();if(!state.settings.notify)showToast(T().notificationDenied);}
+    async function toggleNotification(value){if(uiNotifyBusy)return;if(!value){state.settings.notify=false;uiNotificationError=null;saveState();return;}if(!('Notification'in window)){state.settings.notify=false;$('notifyToggle').checked=false;uiNotificationError='notificationUnsupported';renderSharedUi();return;}uiNotifyBusy=true;renderSharedUi();try{let permission=Notification.permission;if(permission==='default'){try{permission=await Notification.requestPermission();}catch(e){permission='denied';}}state.settings.notify=permission==='granted';$('notifyToggle').checked=state.settings.notify;uiNotificationError=state.settings.notify?null:'notificationDenied';saveState();}finally{uiNotifyBusy=false;renderSharedUi();}}
 
     function pipCapability(){if('documentPictureInPicture'in window&&window.documentPictureInPicture&&typeof window.documentPictureInPicture.requestWindow==='function')return'interactive';const v=$('pipVideo');if(document.pictureInPictureEnabled&&v&&typeof v.requestPictureInPicture==='function')return'fallback';return'none';}
     function renderPipSupport(){const cap=pipCapability(),dot=$('pipSupportDot');dot.className='support-dot '+(cap==='interactive'?'ok':cap==='fallback'?'fallback':'');$('pipSupportText').textContent=cap==='interactive'?T().pipInteractive:cap==='fallback'?T().pipFallback:T().pipUnsupported;$('pipButton').disabled=cap==='none';$('pipButtonText').textContent=(pipWin||document.pictureInPictureElement)?T().pipClose:T().pipOpen;}
 
-    async function togglePip(){try{if(pipWin&&!pipWin.closed){pipWin.close();pipWin=null;pipKind='';renderPipSupport();return;}if(document.pictureInPictureElement){await document.exitPictureInPicture();renderPipSupport();return;}const cap=pipCapability();if(cap==='interactive')await openDocumentPip();else if(cap==='fallback')await openVideoPip();}catch(e){showToast(T().pipUnsupported);}}
+    async function togglePip(){if(uiPipBusy)return;uiPipBusy=true;renderSharedUi();try{uiPipError=false;if(pipWin&&!pipWin.closed){pipWin.close();pipWin=null;pipKind='';renderPipSupport();return;}if(document.pictureInPictureElement){await document.exitPictureInPicture();renderPipSupport();return;}const cap=pipCapability();if(cap==='interactive')await openDocumentPip();else if(cap==='fallback')await openVideoPip();}catch(e){uiPipError=true;showToast(T().pipUnsupported);}finally{uiPipBusy=false;renderPipSupport();renderSharedUi();}}
 
     async function openDocumentPip(){
       pipWin=await window.documentPictureInPicture.requestWindow({width:420,height:260});pipKind='document';const d=pipWin.document;d.documentElement.lang=lang;d.title=T().brand;
       d.head.innerHTML=`<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#f7f7f4;color:#20211f;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}body{display:flex;align-items:stretch}.pip{width:100%;min-height:100%;padding:15px 16px;display:grid;grid-template-rows:auto 1fr auto;gap:9px}.top{display:flex;align-items:center;justify-content:space-between;gap:10px}.mode{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:850;letter-spacing:.08em;color:#c35448}.dot{width:6px;height:6px;border-radius:50%;background:currentColor}.round{color:#74766f;font-size:10px}.center{display:grid;align-content:center;justify-items:center;min-width:0}.time{font-size:54px;font-weight:720;letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums}.task{margin-top:8px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#666963;font-size:11px}.actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}button{height:37px;border:1px solid #dadbd6;border-radius:10px;background:#fff;color:#20211f;font:700 11px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer}button.primary{border-color:#16624f;background:#16624f;color:#fff}@media(max-width:250px),(max-height:150px){.pip{padding:9px 10px;grid-template-rows:auto 1fr}.time{font-size:37px}.task,.actions{display:none}}@media(min-width:520px) and (min-height:290px){.pip{padding:18px 20px}.time{font-size:66px}.task{font-size:13px}.actions button{height:42px;font-size:12px}}</style>`;
-      d.body.innerHTML=`<div class="pip"><div class="top"><div class="mode" id="pMode"><span class="dot"></span><span></span></div><div class="round" id="pRound"></div></div><div class="center"><div class="time" id="pTime"></div><div class="task" id="pTask"></div></div><div class="actions"><button id="pAdd">+5</button><button class="primary" id="pToggle"></button><button id="pFinish"></button></div></div>`;
+      d.body.innerHTML=`<div class="pip"><div class="top"><div class="mode" id="pMode"><span class="dot"></span><span></span></div><div class="round" id="pRound"></div></div><div class="center"><div class="time" id="pTime"></div><div class="task" id="pTask"></div></div><div class="actions"><button data-bk-button data-bk-variant="secondary" id="pAdd">+5</button><button data-bk-button data-bk-variant="primary" class="primary" id="pToggle"></button><button data-bk-button data-bk-variant="secondary" id="pFinish"></button></div></div>`;
       d.getElementById('pToggle').addEventListener('click',toggleTimer);d.getElementById('pAdd').addEventListener('click',addFive);d.getElementById('pFinish').addEventListener('click',finishCurrent);pipWin.addEventListener('pagehide',()=>{pipWin=null;pipKind='';renderPipSupport();});updateDocumentPip();renderPipSupport();showToast(T().pipOpenedInteractive);
     }
 
@@ -372,17 +486,19 @@
 
     function updatePip(){if(pipKind==='document')updateDocumentPip();if(pipKind==='video')drawVideoPip();renderPipSupport();}
 
-    const AppConfirm={ask({title,message,okLabel}){return new Promise(resolve=>{confirmResolver=resolve;$('confirmTitle').textContent=title;$('confirmMessage').textContent=message;$('confirmOk').textContent=okLabel||T().clear;$('confirmDialog').showModal();});},finish(value){if(!$('confirmDialog').open)return;$('confirmDialog').close();const r=confirmResolver;confirmResolver=null;if(r)r(value);}};
+    const AppConfirm={ask({title,message,okLabel,kind=null,count=null}){if($('confirmDialog').open)this.finish(false);confirmInfo={kind,count};confirmOrigin=document.activeElement;return new Promise(resolve=>{confirmResolver=resolve;$('confirmTitle').textContent=title;$('confirmMessage').textContent=message;$('confirmOk').textContent=okLabel||T().clear;$('confirmDialog').showModal();renderSharedUi();$('confirmCancel').focus();});},finish(value){if(!confirmResolver)return;const resolver=confirmResolver,origin=confirmOrigin;confirmResolver=null;confirmInfo=null;confirmOrigin=null;$('confirmDialog').close();resolver(value);if(origin?.isConnected!==false)origin?.focus?.();}};
 
-    async function resetCurrent(){if(currentElapsed()<1200&&!state.timer.running&&state.timer.distractions===0){const mode=state.timer.mode,round=state.timer.round;loadPhase(mode,round,true);saveState();render();return;}const ok=await AppConfirm.ask({title:T().resetTitle,message:T().resetMsg,okLabel:T().resetOk});if(!ok)return;const mode=state.timer.mode,round=state.timer.round;loadPhase(mode,round,true);saveState();render();}
+    async function resetCurrent(){if(currentElapsed()<1200&&!state.timer.running&&state.timer.distractions===0){const mode=state.timer.mode,round=state.timer.round;loadPhase(mode,round,true);saveState();render();return;}const timer=state.timer,signature=JSON.stringify(timer);const ok=await AppConfirm.ask({kind:'timer',title:T().resetTitle,message:T().resetMsg,okLabel:T().resetOk});if(!ok||timer!==state.timer||signature!==JSON.stringify(state.timer))return;const mode=state.timer.mode,round=state.timer.round;loadPhase(mode,round,true);saveState();render();}
 
-    async function clearHistory(){if(!state.history.length)return;const ok=await AppConfirm.ask({title:T().historyClearTitle,message:T().historyClearMsg,okLabel:T().clear});if(!ok)return;state.history=[];saveState();renderToday();renderHistory();}
+    async function clearHistory(){if(!state.history.length)return;const history=state.history,signature=JSON.stringify(history);const ok=await AppConfirm.ask({kind:'history',count:history.length,title:T().historyClearTitle,message:T().historyClearMsg,okLabel:T().clear});if(!ok||history!==state.history||signature!==JSON.stringify(state.history))return;state.history=[];saveState();renderToday();renderHistory();}
 
-    function exportData(){const payload={schemaVersion:1,exportedAt:new Date().toISOString(),app:{name:APP_CONFIG.name,version:APP_CONFIG.version},data:state};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`pomodoro-${todayKey()}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);showToast(T().exported);}
+    function exportName(fallback,extension){const value=$('exportFilename').value.trim().replace(/[\\/:*?"<>|\u0000-\u001f]/g,'-').replace(/\.(?:json|csv)$/i,'').replace(/\.+$/,'');return(value||fallback)+'.'+extension;}
+    function deliverExport(blob,name){let a,url;try{url=URL.createObjectURL(blob);a=document.createElement('a');a.href=url;a.download=name;a.hidden=true;document.body.appendChild(a);a.click();showToast(BrowserKittyUI.text('downloadStarted',lang));}finally{try{a?.remove();}finally{if(url)setTimeout(()=>URL.revokeObjectURL(url),1000);}}}
+    function exportData(){try{const name=exportName(`pomodoro-${todayKey()}`,'json'),payload={schemaVersion:1,exportedAt:new Date().toISOString(),app:{name:APP_CONFIG.name,version:APP_CONFIG.version},data:state};deliverExport(new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),name);delete uiExportErrors.json;}catch(e){uiExportErrors.json=e.message||String(e);}renderSharedUi();}
 
     function csvDate(value){const date=new Date(value);return Number.isFinite(date.getTime())?date.toISOString():'';}
     function csvCell(value){let text=String(value??'');if(/^[\s]*[=+@-]|^[\t\r\n]/.test(text))text="'"+text;return '"'+text.replace(/"/g,'""')+'"';}
-    function exportHistoryCsv(){const rows=filteredHistory();if(!rows.length)return;const header=['Started at (UTC)','Ended at (UTC)','Intention','Focus minutes','Planned minutes','Flow minutes','Round','Distractions'];const lines=[header,...rows.map(row=>[csvDate(row.startedAt||row.endedAt),csvDate(row.endedAt||row.startedAt),row.intention||'',(Number(row.durationMs)||0)/60000,(Number(row.plannedMs)||0)/60000,(Number(row.overtimeMs)||0)/60000,row.round||1,row.distractions||0])];const blob=new Blob(['\uFEFF'+lines.map(line=>line.map(csvCell).join(',')).join('\r\n')+'\r\n'],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`pomodoro-history-${todayKey()}.csv`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);showToast(T().csvExported);}
+    function exportHistoryCsv(){const rows=filteredHistory();if(!rows.length)return;const header=['Started at (UTC)','Ended at (UTC)','Intention','Focus minutes','Planned minutes','Flow minutes','Round','Distractions'];const lines=[header,...rows.map(row=>[csvDate(row.startedAt||row.endedAt),csvDate(row.endedAt||row.startedAt),row.intention||'',(Number(row.durationMs)||0)/60000,(Number(row.plannedMs)||0)/60000,(Number(row.overtimeMs)||0)/60000,row.round||1,row.distractions||0])];const blob=new Blob(['\uFEFF'+lines.map(line=>line.map(csvCell).join(',')).join('\r\n')+'\r\n'],{type:'text/csv;charset=utf-8'});try{deliverExport(blob,exportName(`pomodoro-history-${todayKey()}`,'csv'));delete uiExportErrors.csv;}catch(e){uiExportErrors.csv=e.message||String(e);}renderSharedUi();}
 
     function validDurations(value){return value&&typeof value==='object'&&!Array.isArray(value)&&[['focus',180],['short',60],['long',120]].every(([key,max])=>Number.isInteger(value[key])&&value[key]>=1&&value[key]<=max);}
     function sameDurations(a,b){return a.focus===b.focus&&a.short===b.short&&a.long===b.long;}
@@ -406,9 +522,9 @@
         const row=document.createElement('li');row.className='duration-set-row';
         const values=document.createElement('span');values.className='duration-set-values';values.textContent=durationSetLabel(preset);
         const actions=document.createElement('div');actions.className='duration-set-actions';
-        const apply=document.createElement('button');apply.type='button';apply.className='small-btn duration-set-apply';apply.textContent=t.durationSetApply;apply.setAttribute('aria-label',t.durationSetApply+': '+values.textContent);
+        const apply=document.createElement('button');apply.type='button';apply.setAttribute('data-bk-button','');apply.setAttribute('data-bk-variant','secondary');apply.className='small-btn duration-set-apply';apply.textContent=t.durationSetApply;apply.setAttribute('aria-label',t.durationSetApply+': '+values.textContent);
         apply.addEventListener('click',()=>{fillDurationDraft(preset);setDurationSetMessage('durationSetApplied');});
-        const remove=document.createElement('button');remove.type='button';remove.className='small-btn danger duration-set-remove';remove.textContent=t.durationSetRemove;remove.setAttribute('aria-label',t.durationSetRemove+': '+values.textContent);
+        const remove=document.createElement('button');remove.type='button';remove.setAttribute('data-bk-button','');remove.setAttribute('data-bk-variant','secondary');remove.className='small-btn danger duration-set-remove';remove.textContent=t.durationSetRemove;remove.setAttribute('aria-label',t.durationSetRemove+': '+values.textContent);
         remove.addEventListener('click',()=>removeDurationSet(index));actions.append(apply,remove);row.append(values,actions);list.appendChild(row);
       });
       setDurationSetMessage(durationSetMessage,durationSetError);
@@ -416,8 +532,8 @@
     // Persist a candidate list before committing it. Never snapshot or restore the timer.
     function persistDurationSets(presets){
       try{localStorage.setItem(STORAGE_KEY,JSON.stringify({...state,lang,presets}));}
-      catch(e){setDurationSetMessage('durationSetFailed',true);return false;}
-      state.presets=presets;return true;
+      catch(e){uiPresetFailure=true;setDurationSetMessage('durationSetFailed',true);renderSharedUi();return false;}
+      state.presets=presets;uiPresetFailure=false;savedSuccessfully();renderSharedUi();return true;
     }
     function saveDurationSet(){
       const preset=durationDraft();if(!preset){setDurationSetMessage('invalidMinutes',true);return;}
@@ -439,7 +555,7 @@
       if(!persistDurationSets(presets))return;
       removedPreset=null;setDurationSetMessage('durationSetRestored');renderDurationSets();$('durationSetSave').focus();
     }
-    function openSettings(){const s=state.settings;fillDurationDraft(s);$('autoBreakToggle').checked=s.autoBreak;$('autoFocusToggle').checked=s.autoFocus;setDurationSetMessage('');renderDurationSets();$('settingsDialog').showModal();}
+    function openSettings(){const s=state.settings;fillDurationDraft(s);$('autoBreakToggle').checked=s.autoBreak;$('autoFocusToggle').checked=s.autoFocus;if(!durationSetError)setDurationSetMessage('');renderDurationSets();renderSharedUi();$('settingsDialog').showModal();}
     function saveSettings(){
       const draft=durationDraft();if(!draft){showToast(T().invalidMinutes);return;}
       const old=deepCopy(state.settings);Object.assign(state.settings,draft,{autoBreak:$('autoBreakToggle').checked,autoFocus:$('autoFocusToggle').checked});
@@ -449,7 +565,8 @@
     }
 
     function bind(){
-      $('languageButton').addEventListener('click',()=>{lang=lang==='ja'?'en':'ja';applyLanguage();});$('helpButton').addEventListener('click',()=>$('helpDialog').showModal());$('helpClose').addEventListener('click',()=>$('helpDialog').close());
+      $('retrySave').addEventListener('click',()=>{if(uiPendingSave)saveState()});$('toast').addEventListener('focusin',()=>{toastRemaining=Math.max(1,toastExpiresAt-now());clearTimeout(toastTimer)});$('toast').addEventListener('focusout',e=>{if(toastUndo&&!$('toast').contains(e.relatedTarget)){toastExpiresAt=now()+toastRemaining;toastTimer=setTimeout(expireToast,toastRemaining);}});
+      $('languageButton').addEventListener('click',()=>{lang=lang==='ja'?'en':'ja';state.lang=lang;uiLanguageSessionOnly=!BrowserKittyUI.chooseLanguage(lang).persisted;applyLanguage();});$('helpButton').addEventListener('click',()=>$('helpDialog').showModal());$('helpClose').addEventListener('click',()=>$('helpDialog').close());
       $('helpDialog').addEventListener('click',(e)=>{const dialog=e.currentTarget;if(e.target!==dialog)return;const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();});
       $('helpDialog').addEventListener('close',()=>$('helpButton').focus());
       $('mainToggleButton').addEventListener('click',toggleTimer);$('mobileToggleButton').addEventListener('click',toggleTimer);$('addFiveButton').addEventListener('click',addFive);$('mobileAddButton').addEventListener('click',addFive);$('finishButton').addEventListener('click',finishCurrent);$('mobileFinishButton').addEventListener('click',finishCurrent);$('resetTimerButton').addEventListener('click',resetCurrent);$('distractionButton').addEventListener('click',recordDistraction);$('pipButton').addEventListener('click',togglePip);
@@ -457,12 +574,12 @@
       $('flowToggle').addEventListener('change',(e)=>{state.settings.flow=e.target.checked;saveState();});$('soundToggle').addEventListener('change',(e)=>{state.settings.sound=e.target.checked;saveState();if(e.target.checked)playChime('break');});$('notifyToggle').addEventListener('change',(e)=>toggleNotification(e.target.checked));
       $('durationSetSave').addEventListener('click',saveDurationSet);$('durationSetUndo').addEventListener('click',undoDurationSetRemoval);
       $('settingsButton').addEventListener('click',openSettings);$('settingsClose').addEventListener('click',()=>$('settingsDialog').close());$('settingsCancel').addEventListener('click',()=>$('settingsDialog').close());$('settingsSave').addEventListener('click',saveSettings);$('exportButton').addEventListener('click',exportData);$('clearHistoryButton').addEventListener('click',clearHistory);
-      $('confirmCancel').addEventListener('click',()=>AppConfirm.finish(false));$('confirmOk').addEventListener('click',()=>AppConfirm.finish(true));$('confirmDialog').addEventListener('cancel',(e)=>{e.preventDefault();AppConfirm.finish(false)});
-      $('toastAction').addEventListener('click',()=>{const fn=toastUndo;$('toast').classList.remove('show');toastUndo=null;if(fn)fn();});
+      $('confirmCancel').addEventListener('click',()=>AppConfirm.finish(false));$('confirmOk').addEventListener('click',()=>AppConfirm.finish(true));$('confirmDialog').addEventListener('close',()=>AppConfirm.finish(false));$('confirmDialog').addEventListener('click',e=>{const dialog=$('confirmDialog');if(e.target!==dialog)return;const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)AppConfirm.finish(false)});$('confirmDialog').addEventListener('cancel',(e)=>{e.preventDefault();AppConfirm.finish(false)});
+      $('toastAction').addEventListener('click',()=>{clearTimeout(toastTimer);toastKey=null;const fn=toastUndo;$('toast').classList.remove('show');toastUndo=null;if(fn)fn();});
       $('historyAllButton').addEventListener('click',()=>{historyScope='all';renderHistory();});$('historyTodayButton').addEventListener('click',()=>{historyScope='today';renderHistory();});$('historySearchInput').addEventListener('input',(e)=>{historyQuery=e.target.value;renderHistory();});$('exportCsvButton').addEventListener('click',exportHistoryCsv);
       $('pipVideo').addEventListener('enterpictureinpicture',renderPipSupport);
       document.addEventListener('keydown',(e)=>{const tag=(e.target&&e.target.tagName||'').toLowerCase();if(e.repeat||e.isComposing||$('helpDialog').open||$('settingsDialog').open||$('confirmDialog').open||e.target?.isContentEditable||tag==='select'||tag==='input'||tag==='textarea'||tag==='button'||e.metaKey||e.ctrlKey||e.altKey)return;if(e.code==='Space'){e.preventDefault();toggleTimer();}else if(e.key.toLowerCase()==='p'){e.preventDefault();togglePip();}else if(e.key.toLowerCase()==='d'){e.preventDefault();recordDistraction();}else if(e.key.toLowerCase()==='n'){e.preventDefault();finishCurrent();}});
-      document.addEventListener('visibilitychange',()=>{handleExpiry();render();});window.addEventListener('pagehide',saveState);
+      document.addEventListener('visibilitychange',()=>{handleExpiry();render();});window.addEventListener('pagehide',()=>{if(uiPendingSave)saveState()});
     }
 
     function init(){

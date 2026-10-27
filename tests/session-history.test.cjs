@@ -48,7 +48,7 @@ test('Today totals and filter roll over at local midnight on tick or visibility'
   }
 });
 test('all retained history is dated, searchable and independent of Today totals', () => {
-  const seed=makeApp().persisted();seed.history=Array.from({length:300},(_,i)=>({id:String(i),endedAt:new Date(2026,9,4,12).getTime()-i*86400000,durationMs:minute,plannedMs:25*minute,overtimeMs:0,intention:i===299?'Old 日本語 target':'Other',round:1,distractions:0}));
+  const seed=makeApp().snapshot();seed.history=Array.from({length:300},(_,i)=>({id:String(i),endedAt:new Date(2026,9,4,12).getTime()-i*86400000,durationMs:minute,plannedMs:25*minute,overtimeMs:0,intention:i===299?'Old 日本語 target':'Other',round:1,distractions:0}));
   const a = makeApp({saved:seed});assert.equal(a.el('historyList').children.length,300);assert.match(a.el('historyList').children[0].children[0].textContent,/2026/);
   a.input('historySearchInput','日本語 TARGET');assert.equal(a.el('historyList').children.length,1);assert.equal(a.el('todaySessions').textContent,'1');
   a.click('historyTodayButton');assert.equal(a.el('historyList').children.length,0);assert.equal(a.el('exportCsvButton').disabled,true);
@@ -60,7 +60,7 @@ test('reuse copies intention only into an untouched idle focus and never starts'
   a.click('mainToggleButton');a.advance(100);a.click('mainToggleButton');assert.equal(button.disabled,true);assert.equal(a.api.state.history.length,1);
 });
 test('filtered CSV safely escapes quotes, newlines, Unicode and formula prefixes; JSON keeps all data', async () => {
-  const seed=makeApp().persisted();seed.history=['日本語,"quoted"\nline','=SUM(A1)',' +1','\t@cmd','-1','safe'].map((intention,i)=>({id:String(i),endedAt:Date.parse('2026-10-04T11:00:00Z'),startedAt:Date.parse('2026-10-04T10:59:00Z'),durationMs:minute,plannedMs:25*minute,overtimeMs:0,intention,round:1,distractions:0}));
+  const seed=makeApp().snapshot();seed.history=['日本語,"quoted"\nline','=SUM(A1)',' +1','\t@cmd','-1','safe'].map((intention,i)=>({id:String(i),endedAt:Date.parse('2026-10-04T11:00:00Z'),startedAt:Date.parse('2026-10-04T10:59:00Z'),durationMs:minute,plannedMs:25*minute,overtimeMs:0,intention,round:1,distractions:0}));
   const a=makeApp({saved:seed});a.click('exportCsvButton');let csv=await a.downloads.at(-1).blob.text();assert.match(csv,/日本語,""quoted""\nline/);for(const text of ["'=SUM(A1)","' +1","'\t@cmd","'-1"])assert.ok(csv.includes(text),text);
   a.input('historySearchInput','日本語');a.click('exportCsvButton');csv=await a.downloads.at(-1).blob.text();assert.ok(csv.includes('日本語'));assert.ok(!csv.includes('SUM(A1)'));
   a.click('exportButton');const json=JSON.parse(await a.downloads.at(-1).blob.text());assert.equal(json.schemaVersion,1);assert.equal(json.data.history.length,6);
@@ -98,5 +98,5 @@ test('interactive PiP shares the finish guard across idle focus, active focus an
   const a=makeApp();await a.api.openDocumentPip();assert.equal(a.pipEl('pFinish').disabled,true);a.click('mainToggleButton');assert.equal(a.pipEl('pFinish').disabled,false);a.advance(minute);a.pipEl('pFinish').click();assert.equal(a.api.state.history.length,1);assert.equal(a.pipEl('pFinish').disabled,false);a.pipEl('pFinish').click();assert.equal(a.pipEl('pFinish').disabled,true);
 });
 test('Japanese history controls remain localized with filter and empty-state feedback', () => {
-  const a=makeApp({locale:'ja'});assert.equal(a.el('historyAllButton').textContent,'すべて');assert.equal(a.el('exportCsvButton').textContent,'CSVを書き出す');finish(a,'集中');a.input('historySearchInput','missing');assert.equal(a.el('historyCount').textContent,'0件');assert.match(a.el('historyEmpty').textContent,/一致/);
+  const a=makeApp({locale:'ja'});assert.equal(a.el('historyAllButton').textContent,'すべて');assert.equal(a.el('exportCsvButton').textContent,'履歴をCSVで保存');finish(a,'集中');a.input('historySearchInput','missing');assert.equal(a.el('historyCount').textContent,'0件');assert.match(a.el('historyEmpty').textContent,/一致/);
 });

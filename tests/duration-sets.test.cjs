@@ -12,7 +12,7 @@ function draft(a, values = setA) {
 function open(a) { a.click('settingsButton'); }
 function add(a, values = setA) { draft(a,values); a.click('durationSetSave'); }
 function buttons(a, action) { return a.el('durationSetList').querySelectorAll(`.duration-set-${action}`); }
-function seedWith(...presets) { const seed=makeApp().persisted();seed.presets=presets;return seed; }
+function seedWith(...presets) { const seed=makeApp().snapshot();seed.presets=presets;return seed; }
 
 test('save duration set stores only a valid triple, leaves timer/settings/draft alone and reloads', () => {
   const a=makeApp();open(a);draft(a);a.el('autoBreakToggle').checked=true;
@@ -75,12 +75,12 @@ test('all duration boundaries and invalid drafts are checked before saving eithe
 });
 
 test('legacy and malformed preset storage loads safely with numeric ranges, deduplication and a cap', () => {
-  const legacy=makeApp().persisted();delete legacy.presets;assert.deepEqual(clone(makeApp({saved:legacy}).api.state.presets),[]);
+  const legacy=makeApp().snapshot();delete legacy.presets;assert.deepEqual(clone(makeApp({saved:legacy}).api.state.presets),[]);
   for(const presets of [null,'bad',{},[null,[],{},'x',{focus:'40',short:8,long:20},{focus:40,short:0,long:20},{focus:1.1,short:1,long:1}]]){
-    const seed=makeApp().persisted();seed.presets=presets;assert.deepEqual(clone(makeApp({saved:seed}).api.state.presets),[]);
+    const seed=makeApp().snapshot();seed.presets=presets;assert.deepEqual(clone(makeApp({saved:seed}).api.state.presets),[]);
   }
   const a=makeApp({saved:seedWith({...setA,flow:false,name:'ignore',notify:true},setA,setB,setC,{focus:60,short:10,long:30})});
-  assert.deepEqual(clone(a.api.state.presets),[setA,setB,setC]);assert.deepEqual(a.persisted().presets,[setA,setB,setC]);
+  assert.deepEqual(clone(a.api.state.presets),[setA,setB,setC]);assert.equal(a.writes.length,0);a.api.saveState();assert.deepEqual(a.persisted().presets,[setA,setB,setC]);
 });
 
 test('remove and Undo are presets-only, preserve order, never restore old timer/settings/history', () => {
@@ -152,7 +152,7 @@ test('localized explicit values and action labels identify every set; Settings s
 
 test('unstarted +5 extensions survive repeated settings commits, reload and equal-duration collisions until reset', async () => {
   for(const mode of ['focus','short','long']) {
-    const seed=makeApp().persisted();Object.assign(seed.timer,{mode,plannedMs:seed.settings[mode]*minute,remainingMs:seed.settings[mode]*minute});
+    const seed=makeApp().snapshot();Object.assign(seed.timer,{mode,plannedMs:seed.settings[mode]*minute,remainingMs:seed.settings[mode]*minute});
     let a=makeApp({saved:seed});a.click('addFiveButton');const extended=clone(a.api.state.timer);
     const collision={focus:30,short:10,long:20};open(a);draft(a,collision);a.click('settingsSave');assert.deepEqual(clone(a.api.state.timer),extended,mode);
     a=a.reload();const reloaded=clone(a.api.state.timer);open(a);draft(a,setA);a.click('settingsSave');assert.deepEqual(clone(a.api.state.timer),reloaded,mode);
@@ -162,7 +162,7 @@ test('unstarted +5 extensions survive repeated settings commits, reload and equa
 });
 
 test('legacy idle extensions without a marker are preserved on settings Save', () => {
-  const seed=makeApp().persisted();delete seed.timer.durationAdjusted;seed.timer.plannedMs=30*minute;seed.timer.remainingMs=30*minute;
+  const seed=makeApp().snapshot();delete seed.timer.durationAdjusted;seed.timer.plannedMs=30*minute;seed.timer.remainingMs=30*minute;
   const a=makeApp({saved:seed});const before=clone(a.api.state.timer);open(a);draft(a);a.click('settingsSave');assert.deepEqual(clone(a.api.state.timer),before);
 });
 
