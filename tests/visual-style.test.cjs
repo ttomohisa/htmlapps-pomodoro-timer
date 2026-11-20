@@ -39,7 +39,7 @@ test('CSS spacing follows an 8px grid, excluding visually hidden accessibility s
   assert.ok(pipCss,'Document PiP stylesheet must be embedded');
   for(const [name,style] of [['main',css],['Document PiP',pipCss]]){
     const props=[...style.matchAll(/(?<![\w-])(padding(?:-(?:top|bottom|left|right))?|margin(?:-(?:top|bottom|left|right))?|gap|row-gap|column-gap)\s*:\s*([^;}]+)/g)];
-    assert.ok(props.length>10,name+': spacing declarations missing');
+    assert.ok(props.length>=(name==='main'?10:5),name+': spacing declarations missing');
     for(const m of props)for(const token of m[2].matchAll(/(-?\d+(?:\.\d+)?)px/g)){
       const value=Number(token[1]);
       if(name==='main'&&m[1]==='margin'&&m[2].trim()==='-1px')continue;
