@@ -81,7 +81,7 @@
     <div class="header-inner">
       <div class="brand">
         <div class="brand-mark" aria-hidden="true"><svg fill="#16624f" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="16"/><path d="m23.22 18.95c-1.06.12-2.05.39-3.06.74-1.41.62-2.66 1.4-3.83 2.42-2.44 2.4-3.99 5.36-4.65 8.72-.8 3.89-.07 8.02 1.5 11.63.73 1.39 1.57 2.61 2.55 3.83.49.5.97.99 1.47 1.48 1.44 1.18 2.93 2.17 4.59 3 1.4.6 2.82 1.02 4.29 1.38 1.01.2 2.04.36 3.06.46.71.01 1.44.03 2.15.11 5.47 0 11.2-1.4 15.46-5 4.41-3.94 6.29-9.78 5.71-15.57-.58-4.8-2.99-9.2-7.19-11.75-1.05-.53-2.07-.94-3.22-1.23-.71-.13-1.39-.24-2.12-.23.73 1.2 1.75 2.44 1.77 3.92-.3 1.23-1.69 1.2-2.71 1.08-2.14-.04-4.39-.74-6.28-1.74-.25-.15-.5-.27-.76-.4-.8.45-1.6.84-2.45 1.18-1.48.5-3.03.94-4.59.96-1.01.12-2.21.15-2.64-.97-.06-1.48.92-2.84 1.76-3.98-.25-.04-.52-.05-.81-.04zm8.58 10.53c.49.03.66.12 1.06.43.5 1.01.26 2.4.26 3.52.06.24-.09.76.21.84 1.2-.57 2.36-1.29 3.52-1.95 1.18-.66 2.39-1.52 3.67-1.93.77.04 1.31.71 1.13 1.46-.75 1.05-2.13 1.42-3.17 2.13-.97.54-1.93 1.09-2.91 1.63-.47.36-1.27.48-1.24 1.19-.36 1.1-1.1 1.73-2.23 1.94-.9-.02-1.7-.48-2.2-1.23-.39-.91-.42-1.54 0-2.45.29-.48.92-.65.88-1.27 0-.67-.03-1.33.05-1.99-.01-.92-.14-2.07.97-2.32zm2.6-20.94c-2.07.67-3.37 2.48-3.87 4.53-.15 1.07-.15 2.13-.16 3.21-.15 0-.13.08-.46-.1-1.94-1.24-4.01-1.69-6.28-1.69-.53.16-2.65-.01-2.19.97 1.58 1.68 3.51 2.49 5.75 2.79-.04.36-.83.63-1.06.94-.66.66-1.22 1.33-1.7 2.14-.15.3-.26.58-.36.9.75-.05 1.51-.19 2.26-.3 1.22-.23 2.37-.51 3.53-.97.71-.35 1.36-.74 1.99-1.22.1 0 .2.01.3.02 2.21 1.71 4.95 2.2 7.66 2.49.26-.19-.52-1.15-.6-1.43-.7-.99-1.52-1.76-2.48-2.5.63-.26 1.41-.22 2.06-.48.94-.34 1.79-.76 2.6-1.35 1.83-1.46 1.48-1.79-.71-1.95-1.73-.17-3.44.14-5.06.76-.72.36-1.42.81-2.11 1.17-.1-1.41-.11-2.74.65-3.97.67-.91 2.21-1.13 2.07-2.5-.28-.94-.87-1.39-1.83-1.46z" fill="#fff"/><rect x="30.98" y="23.97" width="1.99" height="3.78" rx=".99"/><rect x="30.98" y="43.21" width="1.99" height="3.83" rx=".99"/><rect x="19.6" y="35.16" width="3.88" height="2.05" rx="1.025"/><rect x="40.47" y="35.16" width="3.88" height="2.05" rx="1.025"/></svg></div>
-        <div class="brand-copy"><h1 class="brand-name"><span id="brandName">ポモドーロタイマー</span><span class="version-badge" id="versionBadge">v1.0.4</span></h1><p class="brand-meta" id="brandMeta">作業中も、画面の隅に。</p></div>
+        <div class="brand-copy"><h1 class="brand-name"><span id="brandName">ポモドーロタイマー</span><span class="version-badge" id="versionBadge">v1.0.5</span></h1><p class="brand-meta" id="brandMeta">作業中も、画面の隅に。</p></div>
       </div>
       <div class="header-actions">
         <button class="language-button" id="languageButton" type="button" aria-label="英語に切り替え" title="英語に切り替え">EN</button>
@@ -148,7 +148,7 @@
 
   <footer><div class="build-line"><span id="footerName">Pomodoro Timer</span> · MIT License · <span id="footerPrivacy">タイマーはブラウザー内で完結</span></div></footer>
 
-  <div class="mobile-dock" aria-label="Timer controls"><button class="dock-btn" id="mobileAddButton" type="button" aria-label="Add five minutes">+5</button><button class="dock-btn primary" id="mobileToggleButton" type="button">スタート</button><button class="dock-btn" id="mobileFinishButton" type="button" aria-label="Complete and advance"><svg viewBox="0 0 24 24" fill="none"><path d="m6 12 4 4 8-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+  <div class="mobile-dock" id="mobileDock" aria-label="タイマー操作"><button class="dock-btn" id="mobileAddButton" type="button" aria-label="Add five minutes">+5</button><button class="dock-btn primary" id="mobileToggleButton" type="button">スタート</button><button class="dock-btn" id="mobileFinishButton" type="button" aria-label="Complete and advance"><svg viewBox="0 0 24 24" fill="none"><path d="m6 12 4 4 8-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
   <div class="toast" id="toast" role="status" aria-live="polite"><span class="toast-message" id="toastMessage"></span><button class="toast-action" id="toastAction" type="button"></button></div>
 
   <dialog id="helpDialog"><div class="dialog-header"><h2 id="helpTitle">使い方と注意事項</h2><button class="dialog-close" id="helpClose" type="button" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none"><path d="m6 6 12 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div><div class="dialog-body" id="helpBody"><div id="helpContent"></div><p class="build-line help-build"><span id="footerBuild">Build -</span><span id="footerDeps">Dependencies 0</span></p></div></dialog>
@@ -176,8 +176,8 @@
   <script>
   (()=>{
     'use strict';
-    const APP_CONFIG={"$schema":"./schemas/app-config.schema.json","name":"Pomodoro Timer","nameJa":"ポモドーロタイマー","slug":"pomodoro-timer","version":"1.0.4","description":"A local-first Pomodoro timer designed around an interactive Picture-in-Picture mini panel.","descriptionJa":"操作できるPicture-in-Pictureミニパネルを中心に設計した、ローカル完結のポモドーロタイマーです。","defaultLanguage":"auto","repository":{"owner":"ttomohisa","name":"htmlapps-pomodoro-timer"},"build":{"output":"dist/index.html","blockRuntimeNetwork":true,"selfExtract":{"enabled":true,"output":"dist/index.self-extract.html"}}};
-    const BUILD_MANIFEST={"schemaVersion":1,"builder":"single-html-app-template-compatible/1.0","generatedAtUtc":"2026-11-14T00:07:00.6720242Z","app":{"name":"Pomodoro Timer","slug":"pomodoro-timer","version":"1.0.4"},"dependencies":[]};
+    const APP_CONFIG={"$schema":"./schemas/app-config.schema.json","name":"Pomodoro Timer","nameJa":"ポモドーロタイマー","slug":"pomodoro-timer","version":"1.0.5","description":"A local-first Pomodoro timer designed around an interactive Picture-in-Picture mini panel.","descriptionJa":"操作できるPicture-in-Pictureミニパネルを中心に設計した、ローカル完結のポモドーロタイマーです。","defaultLanguage":"auto","repository":{"owner":"ttomohisa","name":"htmlapps-pomodoro-timer"},"build":{"output":"dist/index.html","blockRuntimeNetwork":true,"selfExtract":{"enabled":true,"output":"dist/index.self-extract.html"}}};
+    const BUILD_MANIFEST={"schemaVersion":1,"builder":"single-html-app-template-compatible/1.0","generatedAtUtc":"2026-11-20T15:02:50.4830478Z","app":{"name":"Pomodoro Timer","slug":"pomodoro-timer","version":"1.0.5"},"dependencies":[]};
     const EMBEDDED_ASSETS_B64="eyJzY2hlbWFWZXJzaW9uIjoxLCJkZXBlbmRlbmNpZXMiOnt9fQ==";
     void EMBEDDED_ASSETS_B64;
 
@@ -185,6 +185,7 @@
     const STORAGE_KEY='bk-pomodoro-v1';
     const MAX_HISTORY=300;
     const ROUND_COUNT=4;
+    const MAX_DATE_MS=8.64e15;
     const clamp=(n,min,max)=>Math.min(max,Math.max(min,n));
     const deepCopy=(v)=>JSON.parse(JSON.stringify(v));
     const now=()=>Date.now();
@@ -193,8 +194,8 @@
       ja:{
         brand:'ポモドーロタイマー',tagline:'作業中も、画面の隅に。',introTitle:'このセッションに集中。',introText:'やることを1つ決めて開始。必要ならPiPでタイマーを画面の隅に置いたまま作業できます。',local:'完全ローカル処理',languageSwitch:'英語に切り替え',
         focus:'FOCUS',short:'SHORT BREAK',long:'LONG BREAK',ready:'準備できたらスタート',running:'集中中',paused:'一時停止中',breakRunning:'休憩中',flowing:'Flowで集中を継続中',start:'スタート',pause:'一時停止',resume:'再開',finish:'完了して次へ',skipBreak:'休憩を終了',reset:'リセット',intention:'このセッションでやること',placeholder:'例: READMEの使い方を書く',distraction:'気が散った',
-        today:'今日',minutes:'集中した分',sessions:'完了セッション',distractions:'脱線',pipTitle:'Picture in Picture',pipText:'別のタブやアプリで作業していても、タイマーを画面の隅に表示します。',pipOpen:'PiPで表示',pipClose:'PiPを閉じる',pipInteractive:'操作できるPiPに対応',pipFallback:'表示用PiPに対応',pipUnsupported:'このブラウザではPiPを利用できません',pipOpenedInteractive:'操作できるPiPを開きました。',pipOpenedFallback:'表示用PiPを開きました。操作は元の画面から行えます。',
-        quick:'集中スタイル',settings:'設定',flowTitle:'Flow延長',flowDesc:'集中時間の終了後も計測を続ける',soundTitle:'サウンド',soundDesc:'区切りを短い音で通知',notifyTitle:'通知',notifyDesc:'バックグラウンドでも通知',history:'集中履歴',historyDesc:'このブラウザに最新300件を保存します。',historyAll:'すべて',historySearch:'やることで検索',historyNoMatch:'条件に一致する集中セッションはありません。',historyCount:'{count}件',reuse:'もう一度使う',reuseHint:'未開始の集中タイマーにコピーします。開始はしません。',reuseBlocked:'タイマーをリセットするか、次の集中セッションで使えます。',reused:'やることをコピーしました。準備できたらスタート。',exportCsv:'CSVを書き出す',csvExported:'表示中の集中履歴をCSVに書き出しました。',export:'JSONを書き出す',clearHistory:'履歴を消去',historyEmpty:'まだ完了した集中セッションはありません。',untitled:'やること未入力',minSuffix:'分',round:'ラウンド',flow:'Flow',
+        today:'今日',minutes:'集中時間',sessions:'完了セッション',distractions:'脱線',pipTitle:'Picture in Picture',pipText:'別のタブやアプリで作業していても、タイマーを画面の隅に表示します。',pipOpen:'PiPで表示',pipClose:'PiPを閉じる',pipInteractive:'操作できるPiPに対応',pipFallback:'表示用PiPに対応',pipUnsupported:'このブラウザではPiPを利用できません',pipOpenedInteractive:'操作できるPiPを開きました。',pipOpenedFallback:'表示用PiPを開きました。操作は元の画面から行えます。',
+        quick:'集中スタイル',settings:'設定',flowTitle:'Flow延長',flowDesc:'集中時間の終了後も計測を続ける',soundTitle:'サウンド',soundDesc:'区切りを短い音で通知',notifyTitle:'通知',notifyDesc:'バックグラウンドでも通知',history:'集中履歴',historyDesc:'このブラウザに最新300件を保存します。',historyAll:'すべて',historySearch:'やることで検索',historyNoMatch:'条件に一致する集中セッションはありません。',historyCount:'{count}件',reuse:'もう一度使う',reuseHint:'未開始の集中タイマーにコピーします。開始はしません。',reuseBlocked:'タイマーをリセットするか、次の集中セッションで使えます。',reused:'やることをコピーしました。準備できたらスタート。',exportCsv:'CSVを書き出す',csvExported:'表示中の集中履歴をCSVに書き出しました。',export:'JSONを書き出す',clearHistory:'履歴を消去',historyEmpty:'まだ完了した集中セッションはありません。',untitled:'やること未入力',minSuffix:'分',secSuffix:'秒',timerControls:'タイマー操作',saveFailed:'このブラウザーに保存できませんでした。画面を閉じる前にJSONを書き出してください。',round:'ラウンド',flow:'Flow',
         distractionAdded:'脱線を1回記録しました。',undo:'元に戻す',undoDone:'記録を元に戻しました。',sessionDone:'集中セッションを記録しました。',breakDone:'休憩が終わりました。',focusDone:'集中時間が終わりました。',flowStarted:'集中時間が終了。Flow計測を続けます。',resetTitle:'現在のタイマーをリセットしますか？',resetMsg:'進行中の時間と脱線回数は記録せず、現在のモードを最初からやり直します。',resetOk:'リセット',historyClearTitle:'集中履歴をすべて消去しますか？',historyClearMsg:'今日の集計を含む、このブラウザに保存された集中履歴を削除します。設定は残ります。',clear:'消去',cancel:'キャンセル',saved:'設定を保存しました。',sessionOnly:'設定は今回の利用中のみ適用されました。このブラウザに保存できませんでした。再試行するには設定を開いて保存してください。',exported:'ローカルデータを書き出しました。',notificationDenied:'通知が許可されていません。ブラウザの設定を確認してください。',notificationUnsupported:'このブラウザは通知に対応していません。',
         settingsTitle:'タイマー設定',focusMinutes:'集中（分）',shortMinutes:'短い休憩（分）',longMinutes:'長い休憩（分）',auto:'自動で次へ',autoBreak:'休憩を自動開始',autoBreakDesc:'集中終了後に休憩を開始',autoFocus:'集中を自動開始',autoFocusDesc:'休憩終了後に次の集中を開始',settingsNote:'進行中のセッション時間は変更せず、次のセッションから新しい設定を使います。',save:'保存',invalidMinutes:'時間は入力範囲内の整数にしてください。',
         durationSets:'時間セット',durationSetsNote:'集中・短い休憩・長い休憩の組み合わせを3件まで保存できます。セットの保存・削除はすぐに反映されます。適用は入力欄のみ変更します。設定を変更するには「保存」を押してください。',durationSetsEmpty:'保存した時間セットはありません。',durationSetSave:'入力中の時間をセットに保存',durationSetApply:'適用',durationSetRemove:'削除',durationSetUndo:'削除を元に戻す',durationSetValues:'集中 {focus}分 / 短い休憩 {short}分 / 長い休憩 {long}分',durationSetSaved:'時間セットを保存しました。',durationSetApplied:'入力欄に適用しました。設定を変更するには「保存」を押してください。',durationSetDuplicate:'同じ時間セットはすでに保存されています。',durationSetFull:'3件まで保存できます。先に既存のセットを削除してください。',durationSetRemoved:'時間セットを削除しました。',durationSetRestored:'時間セットの削除を元に戻しました。',durationSetFailed:'時間セットを保存できませんでした。変更前の一覧を保持しています。もう一度操作して再試行してください。',
@@ -204,8 +205,8 @@
       en:{
         brand:'Pomodoro Timer',tagline:'Keep it in the corner while you work.',introTitle:'Focus on just this session.',introText:'Choose one thing to finish, start the timer, and keep it visible in Picture-in-Picture while you work.',local:'Fully local processing',languageSwitch:'Switch to Japanese',
         focus:'FOCUS',short:'SHORT BREAK',long:'LONG BREAK',ready:'Ready when you are',running:'Focusing',paused:'Paused',breakRunning:'On a break',flowing:'Continuing in Flow',start:'Start',pause:'Pause',resume:'Resume',finish:'Finish & next',skipBreak:'End break',reset:'Reset',intention:'One thing for this session',placeholder:'e.g. Write the README usage section',distraction:'Distracted',
-        today:'Today',minutes:'focus min',sessions:'sessions done',distractions:'distractions',pipTitle:'Picture in Picture',pipText:'Keep the timer in a small always-on-top window while working in another tab or app.',pipOpen:'Open PiP',pipClose:'Close PiP',pipInteractive:'Interactive PiP supported',pipFallback:'Display-only PiP supported',pipUnsupported:'PiP is unavailable in this browser',pipOpenedInteractive:'Interactive PiP opened.',pipOpenedFallback:'Display-only PiP opened. Use the main window for controls.',
-        quick:'Focus style',settings:'Settings',flowTitle:'Flow overtime',flowDesc:'Keep counting after focus time ends',soundTitle:'Sound',soundDesc:'Play a short local chime at transitions',notifyTitle:'Notifications',notifyDesc:'Notify even when the tab is in background',history:'Focus history',historyDesc:'Latest 300 sessions saved only in this browser.',historyAll:'All',historySearch:'Search intentions',historyNoMatch:'No focus sessions match these filters.',historyCount:'{count} sessions',reuse:'Use again',reuseHint:'Copy into an unstarted focus timer without starting it.',reuseBlocked:'Reset the timer or wait for the next focus session to reuse.',reused:'Intention copied. Start when you are ready.',exportCsv:'Export CSV',csvExported:'Visible focus history exported as CSV.',export:'Export JSON',clearHistory:'Clear history',historyEmpty:'No completed focus sessions yet.',untitled:'No intention',minSuffix:'min',round:'Round',flow:'Flow',
+        today:'Today',minutes:'focus time',sessions:'sessions done',distractions:'distractions',pipTitle:'Picture in Picture',pipText:'Keep the timer in a small always-on-top window while working in another tab or app.',pipOpen:'Open PiP',pipClose:'Close PiP',pipInteractive:'Interactive PiP supported',pipFallback:'Display-only PiP supported',pipUnsupported:'PiP is unavailable in this browser',pipOpenedInteractive:'Interactive PiP opened.',pipOpenedFallback:'Display-only PiP opened. Use the main window for controls.',
+        quick:'Focus style',settings:'Settings',flowTitle:'Flow overtime',flowDesc:'Keep counting after focus time ends',soundTitle:'Sound',soundDesc:'Play a short local chime at transitions',notifyTitle:'Notifications',notifyDesc:'Notify even when the tab is in background',history:'Focus history',historyDesc:'Latest 300 sessions saved only in this browser.',historyAll:'All',historySearch:'Search intentions',historyNoMatch:'No focus sessions match these filters.',historyCount:'{count} sessions',reuse:'Use again',reuseHint:'Copy into an unstarted focus timer without starting it.',reuseBlocked:'Reset the timer or wait for the next focus session to reuse.',reused:'Intention copied. Start when you are ready.',exportCsv:'Export CSV',csvExported:'Visible focus history exported as CSV.',export:'Export JSON',clearHistory:'Clear history',historyEmpty:'No completed focus sessions yet.',untitled:'No intention',minSuffix:'min',secSuffix:'sec',timerControls:'Timer controls',saveFailed:'Could not save in this browser. Export JSON before closing this page.',round:'Round',flow:'Flow',
         distractionAdded:'Recorded one distraction.',undo:'Undo',undoDone:'The distraction was removed.',sessionDone:'Focus session recorded.',breakDone:'Break finished.',focusDone:'Focus time finished.',flowStarted:'Focus target reached. Flow overtime is still counting.',resetTitle:'Reset the current timer?',resetMsg:'Current elapsed time and distractions will not be recorded. This phase will restart from the beginning.',resetOk:'Reset',historyClearTitle:'Clear all focus history?',historyClearMsg:'This removes focus history and today totals saved in this browser. Settings are kept.',clear:'Clear',cancel:'Cancel',saved:'Settings saved.',sessionOnly:'Settings apply for this session only. Could not save in this browser. Reopen Settings and Save to retry.',exported:'Local data exported.',notificationDenied:'Notifications are not allowed. Check your browser settings.',notificationUnsupported:'Notifications are not supported in this browser.',
         settingsTitle:'Timer settings',focusMinutes:'Focus (min)',shortMinutes:'Short break (min)',longMinutes:'Long break (min)',auto:'Auto advance',autoBreak:'Auto-start breaks',autoBreakDesc:'Start a break when focus ends',autoFocus:'Auto-start focus',autoFocusDesc:'Start focus when a break ends',settingsNote:'An active session keeps its current duration. New durations apply from the next session.',save:'Save',invalidMinutes:'Enter whole minutes within the allowed ranges.',
         durationSets:'Duration sets',durationSetsNote:'Save up to 3 focus / short break / long break combinations. Saving or removing a set takes effect immediately. Apply only fills the fields; press Save to change settings.',durationSetsEmpty:'No duration sets saved yet.',durationSetSave:'Save these durations as a set',durationSetApply:'Apply',durationSetRemove:'Remove',durationSetUndo:'Undo removal',durationSetValues:'Focus {focus} min / Short break {short} min / Long break {long} min',durationSetSaved:'Duration set saved.',durationSetApplied:'Fields updated. Press Save to change settings.',durationSetDuplicate:'This duration set is already saved.',durationSetFull:'You can save up to 3 sets. Remove an existing set first.',durationSetRemoved:'Duration set removed.',durationSetRestored:'Duration set restored.',durationSetFailed:'Could not save duration sets. The previous list is unchanged. Repeat the action to retry.',
@@ -220,6 +221,30 @@
       history:[],presets:[]
     });
 
+    function normalizeHistory(value){
+      if(!Array.isArray(value))return [];
+      const history=[];
+      for(const row of value){
+        if(!row||typeof row!=='object'||Array.isArray(row))continue;
+        const endedAt=Number(row.endedAt??row.startedAt);
+        const durationMs=Number(row.durationMs);
+        const startedAt=Number(row.startedAt??(endedAt-durationMs));
+        if(!Number.isFinite(endedAt)||!Number.isFinite(startedAt)||!Number.isFinite(durationMs)||endedAt<=0||startedAt<=0||durationMs<0||endedAt>MAX_DATE_MS||startedAt>MAX_DATE_MS)continue;
+        const planned=Number(row.plannedMs),overtime=Number(row.overtimeMs),round=Number(row.round),distractions=Number(row.distractions);
+        history.push({
+          id:typeof row.id==='string'?row.id:`${endedAt}-${history.length}`,
+          startedAt,endedAt,durationMs,
+          plannedMs:Number.isFinite(planned)&&planned>=0?planned:durationMs,
+          overtimeMs:Number.isFinite(overtime)&&overtime>=0?overtime:0,
+          round:Number.isInteger(round)?clamp(round,1,ROUND_COUNT):1,
+          intention:typeof row.intention==='string'?row.intention.slice(0,60):'',
+          distractions:Number.isInteger(distractions)&&distractions>=0?distractions:0
+        });
+        if(history.length>=MAX_HISTORY)break;
+      }
+      return history;
+    }
+
     function loadState(){
       const base=defaults();
       try{
@@ -228,7 +253,7 @@
         if(saved&&typeof saved==='object'){
           if(saved.settings) Object.assign(base.settings,saved.settings);
           if(saved.timer) Object.assign(base.timer,saved.timer);
-          if(Array.isArray(saved.history)) base.history=saved.history.slice(0,MAX_HISTORY);
+          base.history=normalizeHistory(saved.history);
           base.presets=normalizePresets(saved.presets);
           if(saved.lang==='ja'||saved.lang==='en') base.lang=saved.lang;
         }
@@ -250,12 +275,27 @@
     let toastTimer=0,toastUndo=null,pipWin=null,pipKind='',pipDrawTimer=0,audioCtx=null,confirmResolver=null;
     let historyScope='all',historyQuery='',renderedDay='';
     let removedPreset=null,durationSetMessage='',durationSetError=false;
+    let roundsKey='',reuseButtonsState=null;
     const T=()=>TEXT[lang];
 
     function saveState(){
       state.lang=lang;
       try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));return true;}catch(e){return false;}
     }
+    function saveStateOrWarn(){const saved=saveState();if(!saved)showToast(T().saveFailed);return saved;}
+    function unlockAudio(){
+      if(!state.settings.sound)return;
+      try{
+        const Ctor=window.AudioContext||window.webkitAudioContext;
+        if(!Ctor)return;
+        audioCtx=audioCtx||new Ctor();
+        if(audioCtx.state==='suspended'&&typeof audioCtx.resume==='function'){
+          const promise=audioCtx.resume();
+          if(promise&&typeof promise.catch==='function')promise.catch(()=>{});
+        }
+      }catch(e){}
+    }
+    function canRecordDistraction(){const t=state.timer;return t.mode==='focus'&&(t.running||t.startedAt!==null||t.flowOvertime);}
     function durationFor(mode,settings=state.settings){const m=mode==='focus'?settings.focus:mode==='short'?settings.short:settings.long;return clamp(Math.round(Number(m)||1),1,180)*60000;}
     function currentRemaining(){if(state.timer.flowOvertime)return 0;if(state.timer.running&&state.timer.endAt)return Math.max(0,state.timer.endAt-now());return Math.max(0,state.timer.remainingMs);}
     function currentFlowElapsed(){if(!state.timer.flowOvertime)return 0;return state.timer.flowElapsedMs+(state.timer.running&&state.timer.flowStartAt?Math.max(0,now()-state.timer.flowStartAt):0);}
@@ -284,17 +324,17 @@
       renderRounds();
       const toggleText=t.running?T().pause:(currentElapsed()>1200||t.flowOvertime?T().resume:T().start);$('mainToggleText').textContent=toggleText;$('mobileToggleButton').textContent=toggleText;
       $('mainToggleIcon').innerHTML=t.running?'<svg viewBox="0 0 24 24" fill="none" width="17" height="17"><path d="M9 7v10M15 7v10" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>':'<svg viewBox="0 0 24 24" fill="none" width="17" height="17"><path d="m9 7 8 5-8 5z" fill="currentColor"/></svg>';
-      $('finishButton').textContent=t.mode==='focus'?T().finish:T().skipBreak;$('finishButton').disabled=!canFinishCurrent();$('mobileFinishButton').disabled=!canFinishCurrent();$('mobileFinishButton').setAttribute('aria-label',t.mode==='focus'?T().finish:T().skipBreak);updateHistoryReuse();refreshDay();$('distractionButton').disabled=t.mode!=='focus';$('distractionCount').textContent=t.distractions;
+      $('finishButton').textContent=t.mode==='focus'?T().finish:T().skipBreak;$('finishButton').disabled=!canFinishCurrent();$('mobileFinishButton').disabled=!canFinishCurrent();$('mobileFinishButton').setAttribute('aria-label',t.mode==='focus'?T().finish:T().skipBreak);updateHistoryReuse();refreshDay();$('distractionButton').disabled=!canRecordDistraction();$('distractionCount').textContent=t.distractions;
       $('addFiveButton').disabled=t.mode!=='focus'&&t.mode!=='short'&&t.mode!=='long';
       document.title=`${t.running||t.flowOvertime?`[${t.flowOvertime?formatFlow(flow):formatMs(remain)}] `:''}${T().brand}`;
       updatePip();
     }
 
-    function renderRounds(){const el=$('rounds');el.textContent='';for(let i=1;i<=ROUND_COUNT;i++){const d=document.createElement('span');d.className='round-dot';if(i<state.timer.round)d.classList.add('done');if(i===state.timer.round)d.classList.add('current');el.appendChild(d);}el.setAttribute('aria-label',`${T().round} ${state.timer.round} / ${ROUND_COUNT}`);}
+    function renderRounds(){const key=`${state.timer.mode}:${state.timer.round}:${lang}`;if(roundsKey===key)return;roundsKey=key;const el=$('rounds');el.textContent='';for(let i=1;i<=ROUND_COUNT;i++){const d=document.createElement('span');d.className='round-dot';if(i<state.timer.round)d.classList.add('done');if(i===state.timer.round)d.classList.add('current');el.appendChild(d);}el.setAttribute('aria-label',`${T().round} ${state.timer.round} / ${ROUND_COUNT}`);}
 
     function applyLanguage(){
       document.documentElement.lang=lang;const t=T();
-      $('brandName').textContent=t.brand;$('brandMeta').textContent=t.tagline;$('introTitle').textContent=t.introTitle;$('introText').textContent=t.introText;$('localBadge').textContent=t.local;$('languageButton').textContent=lang==='ja'?'EN':'JA';$('languageButton').setAttribute('aria-label',t.languageSwitch);$('languageButton').setAttribute('title',t.languageSwitch);
+      $('mobileAddButton').setAttribute('aria-label',t.addFive);$('mobileDock').setAttribute('aria-label',t.timerControls);$('brandName').textContent=t.brand;$('brandMeta').textContent=t.tagline;$('introTitle').textContent=t.introTitle;$('introText').textContent=t.introText;$('localBadge').textContent=t.local;$('languageButton').textContent=lang==='ja'?'EN':'JA';$('languageButton').setAttribute('aria-label',t.languageSwitch);$('languageButton').setAttribute('title',t.languageSwitch);
       $('intentionLabel').textContent=t.intention;$('intentionInput').placeholder=t.placeholder;$('distractionText').textContent=t.distraction;$('resetTimerButton').textContent=t.reset;
       $('todayTitle').textContent=t.today;$('todayMinutesLabel').textContent=t.minutes;$('todaySessionsLabel').textContent=t.sessions;$('todayDistractionsLabel').textContent=t.distractions;
       $('pipTitle').textContent=t.pipTitle;$('pipText').textContent=t.pipText;$('quickTitle').textContent=t.quick;$('settingsButton').textContent=t.settings;$('flowTitle').textContent=t.flowTitle;$('flowDesc').textContent=t.flowDesc;$('soundTitle').textContent=t.soundTitle;$('soundDesc').textContent=t.soundDesc;$('notifyTitle').textContent=t.notifyTitle;$('notifyDesc').textContent=t.notifyDesc;
@@ -305,63 +345,71 @@
       saveState();
     }
 
-    function renderToday(){const key=todayKey();renderedDay=key;const rows=state.history.filter(x=>isoDay(x.endedAt||x.startedAt||0)===key);const total=rows.reduce((a,x)=>a+(Number(x.durationMs)||0),0);$('todayMinutes').textContent=String(Math.round(total/60000));$('todaySessions').textContent=String(rows.length);$('todayDistractions').textContent=String(rows.reduce((a,x)=>a+(Number(x.distractions)||0),0));$('todayDate').textContent=new Intl.DateTimeFormat(lang==='ja'?'ja-JP':'en-US',{month:'short',day:'numeric',weekday:'short'}).format(new Date());}
+    function renderToday(){const key=todayKey();renderedDay=key;const rows=state.history.filter(x=>isoDay(x.endedAt||x.startedAt||0)===key);const total=rows.reduce((a,x)=>a+(Number(x.durationMs)||0),0);$('todayMinutes').textContent=total>0&&total<60000?`${Math.max(1,Math.ceil(total/1000))}${lang==='ja'?'':' '}${T().secSuffix}`:String(Math.round(total/60000));$('todaySessions').textContent=String(rows.length);$('todayDistractions').textContent=String(rows.reduce((a,x)=>a+(Number(x.distractions)||0),0));$('todayDate').textContent=new Intl.DateTimeFormat(lang==='ja'?'ja-JP':'en-US',{month:'short',day:'numeric',weekday:'short'}).format(new Date());}
 
     function refreshDay(){if(renderedDay===todayKey())return;renderToday();renderHistory();}
     function filteredHistory(){const query=historyQuery.trim().toLocaleLowerCase();return state.history.filter(row=>(historyScope!=='today'||isoDay(row.endedAt||row.startedAt||0)===todayKey())&&(!query||String(row.intention||'').toLocaleLowerCase().includes(query)));}
-    function updateHistoryReuse(){for(const button of $('historyList').querySelectorAll('.history-reuse')){button.disabled=!untouchedFocus();button.title=button.disabled?T().reuseBlocked:T().reuseHint;}}
-    function reuseIntention(id){if(!untouchedFocus())return;const row=state.history.find(item=>item.id===id);if(!row||!row.intention)return;state.timer.intention=String(row.intention).slice(0,60);$('intentionInput').value=state.timer.intention;updateIntentionCount();saveState();render();$('intentionInput').focus();showToast(T().reused);}
+    function updateHistoryReuse(force=false){const canReuse=untouchedFocus();if(!force&&reuseButtonsState===canReuse)return;reuseButtonsState=canReuse;for(const button of $('historyList').querySelectorAll('.history-reuse')){button.disabled=!canReuse;button.title=button.disabled?T().reuseBlocked:T().reuseHint;}}
+    function reuseIntention(id){if(!untouchedFocus())return;const row=state.history.find(item=>item.id===id);if(!row||!row.intention)return;state.timer.intention=String(row.intention).slice(0,60);$('intentionInput').value=state.timer.intention;updateIntentionCount();const saved=saveState();render();$('intentionInput').focus();showToast(saved?T().reused:T().saveFailed);}
     function renderHistory(){
       const list=$('historyList');list.textContent='';const rows=filteredHistory();$('historyEmpty').hidden=rows.length>0;$('historyEmpty').textContent=state.history.length?T().historyNoMatch:T().historyEmpty;
       $('historyAllButton').setAttribute('aria-pressed',historyScope==='all');$('historyTodayButton').setAttribute('aria-pressed',historyScope==='today');$('historyCount').textContent=T().historyCount.replace('{count}',rows.length);$('exportCsvButton').disabled=!rows.length;
       for(const row of rows){
         const li=document.createElement('li');li.className='history-item';const d=new Date(row.endedAt||row.startedAt);const time=document.createElement('time');time.className='history-time';time.textContent=`${isoDay(d)}\n${pad(d.getHours())}:${pad(d.getMinutes())}`;if(Number.isFinite(d.getTime()))time.dateTime=d.toISOString();
         const main=document.createElement('div');main.className='history-main';const strong=document.createElement('strong');strong.textContent=row.intention||T().untitled;strong.title=strong.textContent;const sub=document.createElement('span');sub.textContent=`${T().round} ${row.round||1} · ${T().distractions} ${row.distractions||0}${row.overtimeMs>0?` · ${T().flow} ${formatFlow(row.overtimeMs)}`:''}`;main.append(strong,sub);
-        const actions=document.createElement('div');actions.className='history-actions';const dur=document.createElement('span');dur.className='history-duration';dur.textContent=`${Math.max(1,Math.round((row.durationMs||0)/60000))} ${T().minSuffix}`;actions.appendChild(dur);
+        const actions=document.createElement('div');actions.className='history-actions';const dur=document.createElement('span');dur.className='history-duration';dur.textContent=row.durationMs>0&&row.durationMs<60000?`${Math.max(1,Math.ceil(row.durationMs/1000))} ${T().secSuffix}`:`${Math.round(row.durationMs/60000)} ${T().minSuffix}`;actions.appendChild(dur);
         if(row.intention){const reuse=document.createElement('button');reuse.type='button';reuse.className='small-btn history-reuse';reuse.textContent=T().reuse;reuse.setAttribute('aria-label',`${T().reuse}: ${row.intention}`);reuse.addEventListener('click',()=>reuseIntention(row.id));actions.appendChild(reuse);}
         li.append(time,main,actions);list.appendChild(li);
       }
-      updateHistoryReuse();
+      updateHistoryReuse(true);
     }
 
     function updateIntentionCount(){const value=$('intentionInput').value;$('intentionCount').textContent=`${value.length} / 60`;}
 
-    function startTimer(){const t=state.timer;if(t.running)return;if(t.flowOvertime){t.flowStartAt=now();t.running=true;}else{if(t.remainingMs<=0)t.remainingMs=durationFor(t.mode);t.endAt=now()+t.remainingMs;t.running=true;if(!t.startedAt)t.startedAt=now();}saveState();render();}
-    function pauseTimer(){const t=state.timer;handleExpiry();if(t!==state.timer||!t.running)return;if(t.flowOvertime){t.flowElapsedMs=currentFlowElapsed();t.flowStartAt=null;}else{t.remainingMs=currentRemaining();t.endAt=null;}t.running=false;saveState();render();}
-    function toggleTimer(){state.timer.running?pauseTimer():startTimer();}
+    function startTimer(){const t=state.timer;if(t.running)return;if(t.flowOvertime){t.flowStartAt=now();t.running=true;}else{if(t.remainingMs<=0)t.remainingMs=durationFor(t.mode);t.endAt=now()+t.remainingMs;t.running=true;if(!t.startedAt)t.startedAt=now();}saveStateOrWarn();render();}
+    function pauseTimer(){const t=state.timer;handleExpiry();if(t!==state.timer||!t.running)return;if(t.flowOvertime){t.flowElapsedMs=currentFlowElapsed();t.flowStartAt=null;}else{t.remainingMs=currentRemaining();t.endAt=null;}t.running=false;saveStateOrWarn();render();}
+    function toggleTimer(){unlockAudio();state.timer.running?pauseTimer():startTimer();}
 
-    function addFive(){const t=state.timer;handleExpiry();if(t!==state.timer)return;t.durationAdjusted=true;const add=5*60000;if(t.flowOvertime){const wasRunning=t.running;const overtime=currentFlowElapsed();t.flowOvertime=false;t.flowElapsedMs=overtime;t.flowStartAt=null;t.remainingMs=add;t.plannedMs+=add;t.endAt=wasRunning?now()+add:null;t.running=wasRunning;}else{t.remainingMs=currentRemaining()+add;t.plannedMs+=add;if(t.running)t.endAt=now()+t.remainingMs;}saveState();render();showToast(T().addFive);}
+    function addFive(){const t=state.timer;handleExpiry({quietFlow:true});if(t!==state.timer)return;t.durationAdjusted=true;const add=5*60000;if(t.flowOvertime){const wasRunning=t.running;const overtime=currentFlowElapsed();t.flowOvertime=false;t.flowElapsedMs=overtime;t.flowStartAt=null;t.remainingMs=add;t.plannedMs+=add;t.endAt=wasRunning?now()+add:null;t.running=wasRunning;}else{t.remainingMs=currentRemaining()+add;t.plannedMs+=add;if(t.running)t.endAt=now()+t.remainingMs;}const saved=saveState();render();showToast(saved?T().addFive:T().saveFailed);}
 
-    function enterFlow(){const t=state.timer;if(t.flowOvertime)return;const threshold=t.endAt||now();t.flowOvertime=true;t.flowStartAt=threshold;t.remainingMs=0;t.endAt=null;t.running=true;playChime('focus');notify(T().notificationFlow,T().flowStarted);saveState();render();showToast(T().flowStarted);}
+    function enterFlow({quiet=false}={}){const t=state.timer;if(t.flowOvertime)return;const threshold=t.endAt||now();t.flowOvertime=true;t.flowStartAt=threshold;t.remainingMs=0;t.endAt=null;t.running=true;if(!quiet){playChime('focus');notify(T().notificationFlow,T().flowStarted);}const saved=saveState();render();if(!quiet||!saved)showToast(saved?T().flowStarted:T().saveFailed);}
 
-    function completeFocus({natural=false}={}){const t=state.timer;const elapsed=natural?t.plannedMs+t.flowElapsedMs:currentElapsed();if(elapsed<=0)return;const endedAt=natural?(t.endAt||now()):now();const overtime=t.flowOvertime?currentFlowElapsed():t.flowElapsedMs;state.history.unshift({id:`${now()}-${Math.random().toString(36).slice(2,8)}`,startedAt:t.startedAt||now()-elapsed,endedAt,durationMs:Math.max(0,elapsed),plannedMs:t.plannedMs,overtimeMs:overtime,round:t.round,intention:t.intention.trim(),distractions:t.distractions});state.history=state.history.slice(0,MAX_HISTORY);playChime('focus');notify(T().notificationFocus,t.intention.trim()||T().focusDone);const next=t.round===ROUND_COUNT?'long':'short';loadPhase(next,t.round,false);if(state.settings.autoBreak)startTimer();saveState();renderToday();renderHistory();render();showToast(T().sessionDone);}
+    function completeFocus({natural=false}={}){const t=state.timer;const elapsed=natural?t.plannedMs+t.flowElapsedMs:currentElapsed();if(elapsed<=0)return;const endedAt=natural?(t.endAt||now()):now();const overtime=t.flowOvertime?currentFlowElapsed():t.flowElapsedMs;state.history.unshift({id:`${now()}-${Math.random().toString(36).slice(2,8)}`,startedAt:t.startedAt||now()-elapsed,endedAt,durationMs:Math.max(0,elapsed),plannedMs:t.plannedMs,overtimeMs:overtime,round:t.round,intention:t.intention.trim(),distractions:t.distractions});state.history=state.history.slice(0,MAX_HISTORY);playChime('focus');notify(T().notificationFocus,t.intention.trim()||T().focusDone);const next=t.round===ROUND_COUNT?'long':'short';loadPhase(next,t.round,false);if(state.settings.autoBreak)startTimer();const saved=saveState();renderToday();renderHistory();render();showToast(saved?T().sessionDone:T().saveFailed);}
 
-    function completeBreak(){const oldRound=state.timer.round;playChime('break');notify(T().notificationBreak,T().breakDone);const nextRound=state.timer.mode==='long'?1:clamp(oldRound+1,1,ROUND_COUNT);loadPhase('focus',nextRound,false);if(state.settings.autoFocus)startTimer();saveState();render();showToast(T().breakDone);}
-    function finishCurrent(){const t=state.timer;handleExpiry();if(t!==state.timer||!canFinishCurrent())return;t.mode==='focus'?completeFocus():completeBreak();}
+    function completeBreak(){const oldRound=state.timer.round;playChime('break');notify(T().notificationBreak,T().breakDone);const nextRound=state.timer.mode==='long'?1:clamp(oldRound+1,1,ROUND_COUNT);loadPhase('focus',nextRound,false);if(state.settings.autoFocus)startTimer();const saved=saveState();render();showToast(saved?T().breakDone:T().saveFailed);}
+    function finishCurrent(){const t=state.timer;handleExpiry({quietFlow:true});if(t!==state.timer||!canFinishCurrent())return;t.mode==='focus'?completeFocus():completeBreak();}
 
     function loadPhase(mode,round,keepIntention){const intention=keepIntention?state.timer.intention:'';const planned=durationFor(mode);state.timer={mode,round,running:false,plannedMs:planned,remainingMs:planned,endAt:null,startedAt:null,durationAdjusted:false,flowOvertime:false,flowElapsedMs:0,flowStartAt:null,distractions:0,intention};$('intentionInput').value=intention;updateIntentionCount();}
 
-    function handleExpiry(){const t=state.timer;if(!t.running||t.flowOvertime)return;if(currentRemaining()>0)return;if(t.mode==='focus'){if(state.settings.flow){enterFlow();return;}completeFocus({natural:true});}else completeBreak();}
+    function handleExpiry({quietFlow=false}={}){const t=state.timer;if(!t.running||t.flowOvertime)return;if(currentRemaining()>0)return;if(t.mode==='focus'){if(state.settings.flow){enterFlow({quiet:quietFlow});return;}completeFocus({natural:true});}else completeBreak();}
 
-    function recordDistraction(){if(state.timer.mode!=='focus')return;state.timer.distractions+=1;saveState();render();$('distractionButton').classList.remove('bump');void $('distractionButton').offsetWidth;$('distractionButton').classList.add('bump');let active=true;toastUndo=()=>{if(!active)return;active=false;state.timer.distractions=Math.max(0,state.timer.distractions-1);saveState();render();showToast(T().undoDone);};showToast(T().distractionAdded,T().undo,toastUndo);}
+    function recordDistraction(){if(!canRecordDistraction())return;state.timer.distractions+=1;const saved=saveState();render();$('distractionButton').classList.remove('bump');void $('distractionButton').offsetWidth;$('distractionButton').classList.add('bump');let active=true;toastUndo=()=>{if(!active)return;active=false;state.timer.distractions=Math.max(0,state.timer.distractions-1);const undone=saveState();render();showToast(undone?T().undoDone:T().saveFailed);};showToast(saved?T().distractionAdded:T().saveFailed,saved?T().undo:'',saved?toastUndo:null);}
 
     function showToast(message,actionLabel='',action=null){clearTimeout(toastTimer);toastUndo=action;$('toastMessage').textContent=message;$('toastAction').textContent=actionLabel;$('toastAction').hidden=!action;$('toast').classList.add('show');toastTimer=setTimeout(()=>{$('toast').classList.remove('show');toastUndo=null;},3800);}
 
-    function playChime(kind){if(!state.settings.sound)return;try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();const base=kind==='break'?520:660;[0,.12].forEach((delay,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='sine';o.frequency.value=base+(i*120);g.gain.setValueAtTime(.0001,audioCtx.currentTime+delay);g.gain.exponentialRampToValueAtTime(.055,audioCtx.currentTime+delay+.015);g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+delay+.18);o.connect(g);g.connect(audioCtx.destination);o.start(audioCtx.currentTime+delay);o.stop(audioCtx.currentTime+delay+.2);});}catch(e){}}
+    function playChime(kind){if(!state.settings.sound)return;try{unlockAudio();if(!audioCtx)return;const base=kind==='break'?520:660;[0,.12].forEach((delay,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='sine';o.frequency.value=base+(i*120);g.gain.setValueAtTime(.0001,audioCtx.currentTime+delay);g.gain.exponentialRampToValueAtTime(.055,audioCtx.currentTime+delay+.015);g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+delay+.18);o.connect(g);g.connect(audioCtx.destination);o.start(audioCtx.currentTime+delay);o.stop(audioCtx.currentTime+delay+.2);});}catch(e){}}
     function notify(title,body){if(!state.settings.notify||!('Notification'in window)||Notification.permission!=='granted')return;try{new Notification(title,{body,silent:true});}catch(e){}}
 
-    async function toggleNotification(value){if(!value){state.settings.notify=false;saveState();return;}if(!('Notification'in window)){state.settings.notify=false;$('notifyToggle').checked=false;showToast(T().notificationUnsupported);return;}let permission=Notification.permission;if(permission==='default'){try{permission=await Notification.requestPermission();}catch(e){permission='denied';}}state.settings.notify=permission==='granted';$('notifyToggle').checked=state.settings.notify;saveState();if(!state.settings.notify)showToast(T().notificationDenied);}
+    async function toggleNotification(value){if(!value){state.settings.notify=false;saveStateOrWarn();return;}if(!('Notification'in window)){state.settings.notify=false;$('notifyToggle').checked=false;showToast(T().notificationUnsupported);return;}let permission=Notification.permission;if(permission==='default'){try{permission=await Notification.requestPermission();}catch(e){permission='denied';}}state.settings.notify=permission==='granted';$('notifyToggle').checked=state.settings.notify;const saved=saveState();if(!saved)showToast(T().saveFailed);else if(!state.settings.notify)showToast(T().notificationDenied);}
 
     function pipCapability(){if('documentPictureInPicture'in window&&window.documentPictureInPicture&&typeof window.documentPictureInPicture.requestWindow==='function')return'interactive';const v=$('pipVideo');if(document.pictureInPictureEnabled&&v&&typeof v.requestPictureInPicture==='function')return'fallback';return'none';}
     function renderPipSupport(){const cap=pipCapability(),dot=$('pipSupportDot');dot.className='support-dot '+(cap==='interactive'?'ok':cap==='fallback'?'fallback':'');$('pipSupportText').textContent=cap==='interactive'?T().pipInteractive:cap==='fallback'?T().pipFallback:T().pipUnsupported;$('pipButton').disabled=cap==='none';$('pipButtonText').textContent=(pipWin||document.pictureInPictureElement)?T().pipClose:T().pipOpen;}
 
-    async function togglePip(){try{if(pipWin&&!pipWin.closed){pipWin.close();pipWin=null;pipKind='';renderPipSupport();return;}if(document.pictureInPictureElement){await document.exitPictureInPicture();renderPipSupport();return;}const cap=pipCapability();if(cap==='interactive')await openDocumentPip();else if(cap==='fallback')await openVideoPip();}catch(e){showToast(T().pipUnsupported);}}
+    async function togglePip(){try{if(pipWin&&!pipWin.closed){pipWin.close();pipWin=null;pipKind='';renderPipSupport();return;}if(document.pictureInPictureElement){await document.exitPictureInPicture();renderPipSupport();return;}const cap=pipCapability();if(cap==='interactive'){
+        try{await openDocumentPip();}
+        catch(error){
+          if(pipWin&&!pipWin.closed)pipWin.close();
+          pipWin=null;pipKind='';
+          if(document.pictureInPictureEnabled&&typeof $('pipVideo').requestPictureInPicture==='function')await openVideoPip();
+          else throw error;
+        }
+      }else if(cap==='fallback')await openVideoPip();}catch(e){showToast(T().pipUnsupported);}}
 
     async function openDocumentPip(){
       pipWin=await window.documentPictureInPicture.requestWindow({width:420,height:260});pipKind='document';const d=pipWin.document;d.documentElement.lang=lang;d.title=T().brand;
       d.head.innerHTML=`<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#f7f7f4;color:#20211f;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}body{display:flex;align-items:stretch}.pip{width:100%;min-height:100%;padding:15px 16px;display:grid;grid-template-rows:auto 1fr auto;gap:9px}.top{display:flex;align-items:center;justify-content:space-between;gap:10px}.mode{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:850;letter-spacing:.08em;color:#c35448}.dot{width:6px;height:6px;border-radius:50%;background:currentColor}.round{color:#74766f;font-size:10px}.center{display:grid;align-content:center;justify-items:center;min-width:0}.time{font-size:54px;font-weight:720;letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums}.task{margin-top:8px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#666963;font-size:11px}.actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}button{height:37px;border:1px solid #dadbd6;border-radius:10px;background:#fff;color:#20211f;font:700 11px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer}button.primary{border-color:#16624f;background:#16624f;color:#fff}@media(max-width:250px),(max-height:150px){.pip{padding:9px 10px;grid-template-rows:auto 1fr}.time{font-size:37px}.task,.actions{display:none}}@media(min-width:520px) and (min-height:290px){.pip{padding:18px 20px}.time{font-size:66px}.task{font-size:13px}.actions button{height:42px;font-size:12px}}</style>`;
       d.body.innerHTML=`<div class="pip"><div class="top"><div class="mode" id="pMode"><span class="dot"></span><span></span></div><div class="round" id="pRound"></div></div><div class="center"><div class="time" id="pTime"></div><div class="task" id="pTask"></div></div><div class="actions"><button id="pAdd">+5</button><button class="primary" id="pToggle"></button><button id="pFinish"></button></div></div>`;
-      d.getElementById('pToggle').addEventListener('click',toggleTimer);d.getElementById('pAdd').addEventListener('click',addFive);d.getElementById('pFinish').addEventListener('click',finishCurrent);pipWin.addEventListener('pagehide',()=>{pipWin=null;pipKind='';renderPipSupport();});updateDocumentPip();renderPipSupport();showToast(T().pipOpenedInteractive);
+      d.getElementById('pToggle').addEventListener('click',toggleTimer);d.getElementById('pAdd').addEventListener('click',addFive);d.getElementById('pFinish').addEventListener('click',finishCurrent);const openedWindow=pipWin;pipWin.addEventListener('pagehide',()=>{if(pipWin!==openedWindow)return;pipWin=null;pipKind='';renderPipSupport();});updateDocumentPip();renderPipSupport();showToast(T().pipOpenedInteractive);
     }
 
     function updateDocumentPip(){if(!pipWin||pipWin.closed||pipKind!=='document')return;const d=pipWin.document;const mode=d.getElementById('pMode');if(!mode)return;mode.style.color=state.timer.mode==='focus'?'#c35448':'#28775e';mode.querySelector('span:last-child').textContent=phaseText();d.getElementById('pRound').textContent=`${T().round} ${state.timer.round}/${ROUND_COUNT}`;d.getElementById('pTime').textContent=state.timer.flowOvertime?formatFlow(currentFlowElapsed()):formatMs(currentRemaining());d.getElementById('pTask').textContent=state.timer.intention.trim()||T().pipTaskEmpty;d.getElementById('pToggle').textContent=state.timer.running?T().pause:(currentElapsed()>1200||state.timer.flowOvertime?T().resume:T().start);d.getElementById('pAdd').textContent='+5';d.getElementById('pFinish').textContent=state.timer.mode==='focus'?T().complete:T().skipBreak;d.getElementById('pFinish').disabled=!canFinishCurrent();}
@@ -374,9 +422,9 @@
 
     const AppConfirm={ask({title,message,okLabel}){return new Promise(resolve=>{confirmResolver=resolve;$('confirmTitle').textContent=title;$('confirmMessage').textContent=message;$('confirmOk').textContent=okLabel||T().clear;$('confirmDialog').showModal();});},finish(value){if(!$('confirmDialog').open)return;$('confirmDialog').close();const r=confirmResolver;confirmResolver=null;if(r)r(value);}};
 
-    async function resetCurrent(){if(currentElapsed()<1200&&!state.timer.running&&state.timer.distractions===0){const mode=state.timer.mode,round=state.timer.round;loadPhase(mode,round,true);saveState();render();return;}const ok=await AppConfirm.ask({title:T().resetTitle,message:T().resetMsg,okLabel:T().resetOk});if(!ok)return;const mode=state.timer.mode,round=state.timer.round;loadPhase(mode,round,true);saveState();render();}
+    async function resetCurrent(){if(currentElapsed()<1200&&!state.timer.running&&state.timer.distractions===0){const mode=state.timer.mode,round=state.timer.round;loadPhase(mode,round,true);saveStateOrWarn();render();return;}const ok=await AppConfirm.ask({title:T().resetTitle,message:T().resetMsg,okLabel:T().resetOk});if(!ok)return;const mode=state.timer.mode,round=state.timer.round;loadPhase(mode,round,true);saveStateOrWarn();render();}
 
-    async function clearHistory(){if(!state.history.length)return;const ok=await AppConfirm.ask({title:T().historyClearTitle,message:T().historyClearMsg,okLabel:T().clear});if(!ok)return;state.history=[];saveState();renderToday();renderHistory();}
+    async function clearHistory(){if(!state.history.length)return;const ok=await AppConfirm.ask({title:T().historyClearTitle,message:T().historyClearMsg,okLabel:T().clear});if(!ok)return;state.history=[];saveStateOrWarn();renderToday();renderHistory();}
 
     function exportData(){const payload={schemaVersion:1,exportedAt:new Date().toISOString(),app:{name:APP_CONFIG.name,version:APP_CONFIG.version},data:state};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`pomodoro-${todayKey()}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);showToast(T().exported);}
 
@@ -453,8 +501,8 @@
       $('helpDialog').addEventListener('click',(e)=>{const dialog=e.currentTarget;if(e.target!==dialog)return;const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();});
       $('helpDialog').addEventListener('close',()=>$('helpButton').focus());
       $('mainToggleButton').addEventListener('click',toggleTimer);$('mobileToggleButton').addEventListener('click',toggleTimer);$('addFiveButton').addEventListener('click',addFive);$('mobileAddButton').addEventListener('click',addFive);$('finishButton').addEventListener('click',finishCurrent);$('mobileFinishButton').addEventListener('click',finishCurrent);$('resetTimerButton').addEventListener('click',resetCurrent);$('distractionButton').addEventListener('click',recordDistraction);$('pipButton').addEventListener('click',togglePip);
-      $('intentionInput').addEventListener('input',(e)=>{state.timer.intention=e.target.value;updateIntentionCount();saveState();updatePip();});
-      $('flowToggle').addEventListener('change',(e)=>{state.settings.flow=e.target.checked;saveState();});$('soundToggle').addEventListener('change',(e)=>{state.settings.sound=e.target.checked;saveState();if(e.target.checked)playChime('break');});$('notifyToggle').addEventListener('change',(e)=>toggleNotification(e.target.checked));
+      $('intentionInput').addEventListener('input',(e)=>{state.timer.intention=e.target.value;updateIntentionCount();saveStateOrWarn();updatePip();});
+      $('flowToggle').addEventListener('change',(e)=>{state.settings.flow=e.target.checked;saveStateOrWarn();});$('soundToggle').addEventListener('change',(e)=>{state.settings.sound=e.target.checked;saveStateOrWarn();if(e.target.checked){unlockAudio();playChime('break');}});$('notifyToggle').addEventListener('change',(e)=>toggleNotification(e.target.checked));
       $('durationSetSave').addEventListener('click',saveDurationSet);$('durationSetUndo').addEventListener('click',undoDurationSetRemoval);
       $('settingsButton').addEventListener('click',openSettings);$('settingsClose').addEventListener('click',()=>$('settingsDialog').close());$('settingsCancel').addEventListener('click',()=>$('settingsDialog').close());$('settingsSave').addEventListener('click',saveSettings);$('exportButton').addEventListener('click',exportData);$('clearHistoryButton').addEventListener('click',clearHistory);
       $('confirmCancel').addEventListener('click',()=>AppConfirm.finish(false));$('confirmOk').addEventListener('click',()=>AppConfirm.finish(true));$('confirmDialog').addEventListener('cancel',(e)=>{e.preventDefault();AppConfirm.finish(false)});

@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "sourceFile": "index.html",
-  "sourceBytes": 92057,
-  "sourceSha256": "d70dc6a48bacc6689193952c5b4512b8c3463983bbd4272f67ccc87e2d48f88a",
-  "compressedBytes": 25573,
+  "sourceBytes": 95778,
+  "sourceSha256": "493187633bbec58ca57524395019769bef492fa23fd5a0de64290398a72e0512",
+  "compressedBytes": 26843,
   "encoding": "gzip+base64",
-  "generatedAtUtc": "2026-11-14T00:07:00.8644246Z"
+  "generatedAtUtc": "2026-11-20T15:02:50.7352322Z"
 }
