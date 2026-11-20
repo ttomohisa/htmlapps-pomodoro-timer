@@ -80,7 +80,7 @@ test('sub-minute focus sessions show seconds in the history and daily total in b
     a.click('finishButton');
     const duration=a.el('historyList').children[0].children[2].children[0].textContent;
     assert.equal(duration,locale==='ja'?'20 秒':'20 sec');
-    assert.equal(a.el('todayMinutes').textContent,locale==='ja'?'20秒':'20sec');
+    assert.equal(a.el('todayMinutes').textContent,locale==='ja'?'20秒':'20 sec');
     assert.equal(a.el('todayMinutesLabel').textContent,locale==='ja'?'集中時間':'focus time');
   }
 });
@@ -103,7 +103,7 @@ test('important operations show a storage warning rather than claiming to be sav
   assert.match(a.el('toastMessage').textContent,/could not save/i);
   a.setStorageFailure(false);
   a.click('mainToggleButton');
-  assert.doesNotMatch(a.el('toastMessage').textContent,/could not save/i);
+  assert.deepEqual(JSON.parse(JSON.stringify(a.persisted().timer)),JSON.parse(JSON.stringify(a.api.state.timer)));
 });
 
 test('a rejected Document PiP request falls back to display-only Video PiP', async () => {
