@@ -4,6 +4,9 @@
 
 ## 1.0.5 - 2026-11-20
 
+- Remove the redundant hero title and replace the header/hero copy with concise descriptions of focus, breaks, distractions, and PiP support in Japanese and English.
+- Use 8px-based spacing in the main screen, dialogs, mobile controls, and Document PiP; soften card borders, remove their shadows and the PiP gradient.
+- On a successful main-branch build after merge, create the version tag and GitHub Release with both portable HTML files, skipping existing versions.
 - Prime and resume Web Audio from user actions, and avoid duplicate Flow notifications during a just-expired completion or extension.
 - Reject distractions before focus starts and display sub-minute sessions as seconds in history and the today summary.
 - Sanitize malformed local history rows so corrupted storage does not prevent startup.
