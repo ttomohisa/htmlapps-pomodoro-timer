@@ -137,7 +137,8 @@ If Pages has not been enabled yet, the workflow still builds and uploads the sta
 │  └─ index.self-extract.html    # Generated gzip + Base64 self-extracting app
 └─ .github/workflows/
    ├─ build-standalone.yml       # Pull request build validation
-   └─ deploy-pages.yml           # Automatic Pages deployment from main
+   ├─ deploy-pages.yml           # Automatic Pages deployment from main
+   └─ publish-release.yml        # Main-branch version tags and GitHub Releases
 ```
 
 ### Build
@@ -192,6 +193,10 @@ Use **Export JSON** if you want to keep a backup before clearing browser storage
 - Desktop notifications require browser permission and may be unavailable in some execution contexts.
 - Local history is lost if the browser's site data / LocalStorage is cleared unless it has been exported first.
 - The app intentionally does not include cloud sync, shared tasks, or a full project / ToDo manager.
+
+## Releases
+
+When a PR is merged into `main`, `.github/workflows/publish-release.yml` rebuilds and tests all standalone variants. If `app.config.json` has a new stable SemVer version, the workflow creates an annotated `vX.Y.Z` tag and a GitHub Release with the normal and self-extracting HTML files. Existing version tags are not moved, and re-running the workflow does not create a duplicate release. Version bumps must be included in the PR.
 
 ## Dependencies
 

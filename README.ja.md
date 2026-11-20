@@ -137,7 +137,8 @@ Pagesがまだ有効化されていない場合でも、ワークフローは単
 │  └─ index.self-extract.html    # gzip + Base64の自己解凍版
 └─ .github/workflows/
    ├─ build-standalone.yml       # Pull Request時のビルド検証
-   └─ deploy-pages.yml           # mainからPagesへ自動公開
+   ├─ deploy-pages.yml           # mainからPagesへ自動公開
+   └─ publish-release.yml        # mainの検証後にタグとGitHub Releaseを作成
 ```
 
 ### ビルド
@@ -192,6 +193,10 @@ GitHub Pages版では最初のHTMLを取得する通信だけが発生します�
 - デスクトップ通知はブラウザの許可が必要で、実行環境によっては利用できません。
 - ブラウザのサイトデータ / LocalStorageを削除すると、JSONへ書き出していない履歴は失われます。
 - クラウド同期、共有タスク、本格的なプロジェクト / ToDo管理は意図的に搭載していません。
+
+## リリース
+
+PRを`main`へマージすると、`.github/workflows/publish-release.yml` が単一HTMLを再生成して回帰テストを実行します。`app.config.json` のバージョンが未リリースのSemantic Versioning形式の場合、`vX.Y.Z` タグとGitHub Releaseを作成し、通常版と自己展開版のHTMLを添付します。同じバージョンのタグは付け直さず、Releaseも重複作成しません。次のリリースではPR側でバージョンを更新してください。
 
 ## 使用ライブラリ
 
