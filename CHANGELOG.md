@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+## 1.0.5 - 2026-11-20
+
+- Prime and resume Web Audio from user actions, and avoid duplicate Flow notifications during a just-expired completion or extension.
+- Reject distractions before focus starts and display sub-minute sessions as seconds in history and the today summary.
+- Sanitize malformed local history rows so corrupted storage does not prevent startup.
+- Warn when important timer, history, or quick-setting changes could not be saved locally.
+- Fall back from a rejected Document PiP request to Video PiP when possible; ignore stale PiP closure callbacks.
+- Localize mobile accessibility names and avoid re-creating stable round indicators or history action states each tick.
+- Add targeted regression coverage for these cases.
+
+
 - Help alone uses a flex column and shrinkable body so the existing clipped dialog keeps its final content and moved build metadata reachable; other dialogs are unchanged.
 
 - Standardize the phone informational footer and English local-processing label. Move lower build metadata to the end of Help.
