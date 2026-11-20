@@ -99,11 +99,14 @@ test('important operations show a storage warning rather than claiming to be sav
   const pending=a.click('clearHistoryButton');
   a.click('confirmOk');
   await pending;
-  assert.equal(a.api.state.history.length,0);
+  assert.equal(a.api.state.history.length,1);
   assert.match(a.el('toastMessage').textContent,/could not save/i);
   a.setStorageFailure(false);
   a.click('mainToggleButton');
   assert.deepEqual(JSON.parse(JSON.stringify(a.persisted().timer)),JSON.parse(JSON.stringify(a.api.state.timer)));
+  const retry=a.click('clearHistoryButton');a.click('confirmOk');await retry;
+  assert.equal(a.api.state.history.length,0);
+  assert.equal(a.persisted().history.length,0);
 });
 
 test('a rejected Document PiP request falls back to display-only Video PiP', async () => {
