@@ -177,7 +177,7 @@
   (()=>{
     'use strict';
     const APP_CONFIG={"$schema":"./schemas/app-config.schema.json","name":"Pomodoro Timer","nameJa":"ポモドーロタイマー","slug":"pomodoro-timer","version":"1.0.5","description":"A local-first Pomodoro timer designed around an interactive Picture-in-Picture mini panel.","descriptionJa":"操作できるPicture-in-Pictureミニパネルを中心に設計した、ローカル完結のポモドーロタイマーです。","defaultLanguage":"auto","repository":{"owner":"ttomohisa","name":"htmlapps-pomodoro-timer"},"build":{"output":"dist/index.html","blockRuntimeNetwork":true,"selfExtract":{"enabled":true,"output":"dist/index.self-extract.html"}}};
-    const BUILD_MANIFEST={"schemaVersion":1,"builder":"single-html-app-template-compatible/1.0","generatedAtUtc":"2026-11-20T15:02:50.4830478Z","app":{"name":"Pomodoro Timer","slug":"pomodoro-timer","version":"1.0.5"},"dependencies":[]};
+    const BUILD_MANIFEST={"schemaVersion":1,"builder":"single-html-app-template-compatible/1.0","generatedAtUtc":"2026-11-20T15:03:42.4769096Z","app":{"name":"Pomodoro Timer","slug":"pomodoro-timer","version":"1.0.5"},"dependencies":[]};
     const EMBEDDED_ASSETS_B64="eyJzY2hlbWFWZXJzaW9uIjoxLCJkZXBlbmRlbmNpZXMiOnt9fQ==";
     void EMBEDDED_ASSETS_B64;
 
@@ -289,7 +289,7 @@
         const Ctor=window.AudioContext||window.webkitAudioContext;
         if(!Ctor)return;
         audioCtx=audioCtx||new Ctor();
-        if(audioCtx.state==='suspended'&&typeof audioCtx.resume==='function'){
+        if(audioCtx.state!=='running'&&typeof audioCtx.resume==='function'){
           const promise=audioCtx.resume();
           if(promise&&typeof promise.catch==='function')promise.catch(()=>{});
         }
@@ -383,7 +383,7 @@
 
     function handleExpiry({quietFlow=false}={}){const t=state.timer;if(!t.running||t.flowOvertime)return;if(currentRemaining()>0)return;if(t.mode==='focus'){if(state.settings.flow){enterFlow({quiet:quietFlow});return;}completeFocus({natural:true});}else completeBreak();}
 
-    function recordDistraction(){if(!canRecordDistraction())return;state.timer.distractions+=1;const saved=saveState();render();$('distractionButton').classList.remove('bump');void $('distractionButton').offsetWidth;$('distractionButton').classList.add('bump');let active=true;toastUndo=()=>{if(!active)return;active=false;state.timer.distractions=Math.max(0,state.timer.distractions-1);const undone=saveState();render();showToast(undone?T().undoDone:T().saveFailed);};showToast(saved?T().distractionAdded:T().saveFailed,saved?T().undo:'',saved?toastUndo:null);}
+    function recordDistraction(){if(!canRecordDistraction())return;state.timer.distractions+=1;const saved=saveState();render();$('distractionButton').classList.remove('bump');void $('distractionButton').offsetWidth;$('distractionButton').classList.add('bump');let active=true;toastUndo=()=>{if(!active)return;active=false;state.timer.distractions=Math.max(0,state.timer.distractions-1);const undone=saveState();render();showToast(undone?T().undoDone:T().saveFailed);};showToast(saved?T().distractionAdded:T().saveFailed,T().undo,toastUndo);}
 
     function showToast(message,actionLabel='',action=null){clearTimeout(toastTimer);toastUndo=action;$('toastMessage').textContent=message;$('toastAction').textContent=actionLabel;$('toastAction').hidden=!action;$('toast').classList.add('show');toastTimer=setTimeout(()=>{$('toast').classList.remove('show');toastUndo=null;},3800);}
 
@@ -424,7 +424,7 @@
 
     async function resetCurrent(){if(currentElapsed()<1200&&!state.timer.running&&state.timer.distractions===0){const mode=state.timer.mode,round=state.timer.round;loadPhase(mode,round,true);saveStateOrWarn();render();return;}const ok=await AppConfirm.ask({title:T().resetTitle,message:T().resetMsg,okLabel:T().resetOk});if(!ok)return;const mode=state.timer.mode,round=state.timer.round;loadPhase(mode,round,true);saveStateOrWarn();render();}
 
-    async function clearHistory(){if(!state.history.length)return;const ok=await AppConfirm.ask({title:T().historyClearTitle,message:T().historyClearMsg,okLabel:T().clear});if(!ok)return;state.history=[];saveStateOrWarn();renderToday();renderHistory();}
+    async function clearHistory(){if(!state.history.length)return;const ok=await AppConfirm.ask({title:T().historyClearTitle,message:T().historyClearMsg,okLabel:T().clear});if(!ok)return;const previous=state.history;state.history=[];if(!saveState()){state.history=previous;showToast(T().saveFailed);return;}renderToday();renderHistory();}
 
     function exportData(){const payload={schemaVersion:1,exportedAt:new Date().toISOString(),app:{name:APP_CONFIG.name,version:APP_CONFIG.version},data:state};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`pomodoro-${todayKey()}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);showToast(T().exported);}
 
