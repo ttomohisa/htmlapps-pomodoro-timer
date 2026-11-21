@@ -38,8 +38,14 @@ test('cards are flat and subdued, without the timer stripe or PiP gradient',()=>
   assert.match(styles[0],/\.side-stack>\.card:not\(:first-child\)\{border-top:1px solid var\(--line\)\}/);
   assert.match(styles[0],/\.history-card\{[^}]*border:0;border-radius:0;background:transparent/);
   assert.match(styles[0],/\.history-filters \.small-btn\[aria-pressed="true"\]\{background:transparent/);
-  assert.match(styles[0],/\.pip-button\{[^}]*border-radius:0;background:transparent/);
+  assert.match(styles[0],/\.pip-button\{[^}]*border:1px solid var\(--line-strong\)[^}]*border-radius:8px;background:var\(--surface\)/);
   assert.doesNotMatch(html, /class="btn primary pip-button/);
+  assert.doesNotMatch(html, /class="pip-icon"/);
+  assert.match(html, /<div class="panel-head"><h2 class="panel-title" id="pipTitle">Picture in Picture<\/h2><\/div>/);
+  assert.match(html, /<button class="btn pip-button" id="pipButton" type="button"><span id="pipButtonText">/);
+  assert.match(html, /<footer><div class="build-line"><span id="footerName">Pomodoro Timer<\/span><span>MIT License<\/span><span id="footerPrivacy">/);
+  assert.doesNotMatch(html, /<\/span> · MIT License · /);
+  assert.match(styles[0],/\.build-line>span:not\(:last-child\)::after\{content:"·";margin:0 8px\}/);
 });
 test('the main action has a fill; secondary actions and PiP controls have no boxes',()=>{
   assert.match(styles[0],/\.btn\{[^}]*border:1px solid transparent[^}]*background:transparent/);

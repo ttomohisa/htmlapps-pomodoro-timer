@@ -18,11 +18,15 @@ const design=await page.evaluate(()=>{
   const css=selector=>getComputedStyle(document.querySelector(selector));
   const primary=document.querySelector(innerWidth<=620?'#mobileToggleButton':'#mainToggleButton');
   const p=primary.getBoundingClientRect();
-  return {sidebarBorder:css('.side-stack > .card').borderTopWidth,historyBorder:css('.history-card').borderTopWidth,pipFill:css('#pipButton').backgroundColor,pipBorder:css('#pipButton').borderTopWidth,primaryBackground:css(innerWidth<=620?'#mobileToggleButton':'#mainToggleButton').backgroundColor,secondaryBackground:css(innerWidth<=620?'#mobileAddButton':'#finishButton').backgroundColor,primaryHeight:p.height,dockBorder:css('.mobile-dock').borderTopWidth};
+  return {sidebarBorder:css('.side-stack > .card').borderTopWidth,historyBorder:css('.history-card').borderTopWidth,pipFill:css('#pipButton').backgroundColor,pipBorder:css('#pipButton').borderTopWidth,pipHeight:document.querySelector('#pipButton').getBoundingClientRect().height,pipTitleLeft:document.querySelector('#pipTitle').getBoundingClientRect().left,todayTitleLeft:document.querySelector('#todayTitle').getBoundingClientRect().left,quickTitleLeft:document.querySelector('#quickTitle').getBoundingClientRect().left,pipIconCount:document.querySelectorAll('.pip-card .pip-icon,.pip-card #pipButton svg').length,footerSeparators:[...document.querySelectorAll('footer .build-line>span')].map(x=>getComputedStyle(x,'::after').content),primaryBackground:css(innerWidth<=620?'#mobileToggleButton':'#mainToggleButton').backgroundColor,secondaryBackground:css(innerWidth<=620?'#mobileAddButton':'#finishButton').backgroundColor,primaryHeight:p.height,dockBorder:css('.mobile-dock').borderTopWidth};
 });
 assert.equal(design.sidebarBorder,'0px',label+': sidebar uses headings and rules, not nested cards');
 assert.equal(design.historyBorder,'0px',label+': history rows have no outer box');
-assert.equal(design.pipBorder,'0px',label+': PiP action is an unboxed text control');
+assert.equal(design.pipBorder,'1px',label+': PiP action is recognizably a button');
+assert.ok(design.pipHeight>=44,label+': PiP button has a usable touch target');
+assert.ok(Math.abs(design.pipTitleLeft-design.todayTitleLeft)<1&&Math.abs(design.pipTitleLeft-design.quickTitleLeft)<1,label+': all sidebar headings share the same left edge');
+assert.equal(design.pipIconCount,0,label+': redundant PiP icons removed');
+if(width>cfg.bp)assert.deepEqual(design.footerSeparators,['"·"','"·"','none'],label+': exactly two footer separators');
 assert.ok(design.primaryHeight>=44,label+': start action is touch accessible');
 assert.notEqual(design.primaryBackground,design.secondaryBackground,label+': main and secondary actions have different emphasis');
 if(width<=cfg.bp){assert.equal(design.dockBorder,'1px',label+': dock is grounded with a single top divider');await page.locator('#mobileToggleButton').click();await page.locator('#mobileToggleButton').click();assert.match(await page.locator('#timerTime').textContent(),/\d+:\d+/);}
