@@ -25,7 +25,7 @@ assert.equal(design.historyBorder,'0px',label+': history rows have no outer box'
 assert.equal(design.pipBorder,'0px',label+': PiP action is an unboxed text control');
 assert.ok(design.primaryHeight>=44,label+': start action is touch accessible');
 assert.notEqual(design.primaryBackground,design.secondaryBackground,label+': main and secondary actions have different emphasis');
-if(width<=cfg.bp){assert.equal(design.dockBorder,'1px',label+': dock is grounded with a single top divider');await page.locator('#mobileToggleButton').click();await page.locator('#mobileToggleButton').click();assert.match(await page.locator('#timerTime').textContent(),/\\d+:\\d+/);}
+if(width<=cfg.bp){assert.equal(design.dockBorder,'1px',label+': dock is grounded with a single top divider');await page.locator('#mobileToggleButton').click();await page.locator('#mobileToggleButton').click();assert.match(await page.locator('#timerTime').textContent(),/\d+:\d+/);}
 }
 assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),label+': page width');
 await page.locator(cfg.open).click();const body=page.locator('#helpDialog .dialog-body');await body.evaluate(e=>{e.scrollTop=e.scrollHeight});
