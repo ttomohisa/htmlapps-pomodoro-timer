@@ -40,6 +40,10 @@ test('generated build and configured version match, and release automation valid
  const version=JSON.parse(read('app.config.json')).version;
  const manifest=JSON.parse(read('dist/dependency-manifest.json'));
  assert.equal(manifest.app.version,version);
+ const preflight=read('scripts/check-repository.ps1');
+ assert.match(preflight,/Committed standalone HTML version is stale/);
+ assert.match(preflight,/Portable HTML and committed dist\/index\.html differ/);
+ assert.match(preflight,/verify-self-extract\.ps1/);
  const workflow=read('.github/workflows/release.yml');
  assert.match(workflow,/push:\s*\n\s*branches:\s*\n\s*- main/);
  assert.match(workflow,/needs: validate/);

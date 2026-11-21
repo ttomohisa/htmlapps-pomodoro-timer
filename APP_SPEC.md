@@ -29,7 +29,7 @@ A normal browser timer disappears behind the work it is timing. This app keeps t
 - Start, pause, resume, add five minutes, complete/advance, and reset controls.
 - One-line intention shown in the main UI and interactive PiP.
 - Distraction counter with undo.
-- Optional Flow mode: after focus reaches zero, count overtime upward until the user finishes.
+- Flow mode (enabled by default): after focus reaches zero, count overtime upward until the user finishes; a break is not started solely by reaching zero.
 - Interactive Document Picture-in-Picture when available.
 - Canvas/video Picture-in-Picture fallback when Document PiP is unavailable.
 - Desktop notifications and synthesized local chime are optional.

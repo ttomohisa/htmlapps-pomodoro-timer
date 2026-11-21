@@ -11,7 +11,8 @@
 - Fix notification/audio activation, duplicate Flow completion alerts, idle distraction counts, malformed stored history, short-session display, storage failure messages, and Japanese/English mobile accessibility labels.
 - Keep in-memory focus history intact if clearing it cannot be persisted.
 - Add unit and browser regression tests, and automate the versioned Git tag and GitHub Release after a validated merge to main.
-- Clarify in README, app help and spec that JSON can be exported but not imported; correct build prerequisites and document the release workflow.
+- Clarify in README, app help and spec that JSON can be exported but not imported, and that Flow defaults to ON; correct build prerequisites and document the release workflow.
+- Synchronize committed v1.0.5 standalone assets/manifests, refresh current UI screenshots and add a pre-build consistency check for checked-in distribution files.
 
 ## 1.0.4 - 2026-10-11
 

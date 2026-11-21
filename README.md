@@ -26,7 +26,7 @@ GitHub Pages only delivers the initial HTML. Timer state, focus intentions, sett
 - **Flow overtime** that keeps counting after the planned focus time instead of forcing an immediate break
 - One-tap distraction counter with undo for accidental taps
 - Drift-resistant timing derived from timestamps instead of interval tick counts
-- Automatic short / long break progression
+- Short / long break progression after a focus session ends; with Flow enabled, reaching zero keeps the focus session running until you finish it
 - Desktop notifications and locally generated completion sounds
 - Today summary for focus time, completed sessions, and distractions
 - Recent focus-session history stored in LocalStorage
