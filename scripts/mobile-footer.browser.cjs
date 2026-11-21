@@ -13,7 +13,60 @@ assert.equal((await page.locator(cfg.badge).textContent()).trim(),language==='en
 if(await page.locator(cfg.badge).isVisible()){const r=await page.locator(cfg.badge).boundingBox();assert.ok(r&&r.x>=0&&r.x+r.width<=width,label+': visible badge fits');}
 assert.equal(await page.locator(cfg.footer).isVisible(),width>cfg.bp,label+': informational footer');assert.equal(await page.locator(cfg.nav).isVisible(),width<=cfg.bp,label+': functional controls');if(width<=cfg.bp){const r=await page.locator(cfg.nav).boundingBox();assert.ok(r&&r.x>=0&&r.x+r.width<=width&&r.y>=0&&r.y+r.height<=height,label+': functional bar fits viewport');}
 if(cfg.slug==='text-inspector'){await page.locator('#textInput').fill('Synthetic local text.');assert.equal(await page.locator('#textInput').inputValue(),'Synthetic local text.');}
-if(cfg.slug==='pomodoro-timer'&&width<=cfg.bp){await page.locator('#mobileToggleButton').click();await page.locator('#mobileToggleButton').click();assert.match(await page.locator('#timerTime').textContent(),/\d+:\d+/);}
+if(cfg.slug==='pomodoro-timer'){
+const design=await page.evaluate(()=>{
+  const css=selector=>getComputedStyle(document.querySelector(selector));
+  const primary=document.querySelector(innerWidth<=620?'#mobileToggleButton':'#mainToggleButton');
+  const p=primary.getBoundingClientRect();
+  return {sidebarBorder:css('.side-stack > .card').borderTopWidth,historyBorder:css('.history-card').borderTopWidth,pipFill:css('#pipButton').backgroundColor,pipBorder:css('#pipButton').borderTopWidth,pipHeight:document.querySelector('#pipButton').getBoundingClientRect().height,pipTitleLeft:document.querySelector('#pipTitle').getBoundingClientRect().left,todayTitleLeft:document.querySelector('#todayTitle').getBoundingClientRect().left,quickTitleLeft:document.querySelector('#quickTitle').getBoundingClientRect().left,pipTitleIconCount:document.querySelectorAll('.pip-card .pip-icon').length,pipButtonIconCount:document.querySelectorAll('#pipButton svg').length,footerSeparators:[...document.querySelectorAll('footer .build-line>span')].map(x=>getComputedStyle(x,'::after').content),primaryBackground:css(innerWidth<=620?'#mobileToggleButton':'#mainToggleButton').backgroundColor,secondaryBackground:css(innerWidth<=620?'#mobileAddButton':'#finishButton').backgroundColor,primaryHeight:p.height,dockBorder:css('.mobile-dock').borderTopWidth};
+});
+assert.equal(design.sidebarBorder,'0px',label+': sidebar uses headings and rules, not nested cards');
+assert.equal(design.historyBorder,'0px',label+': history rows have no outer box');
+assert.equal(design.pipBorder,'1px',label+': PiP action is recognizably a button');
+assert.equal(design.pipFill,'rgb(227, 241, 236)',label+': PiP action has a soft green fill, not a transparent or white link-like surface');
+assert.ok(design.pipHeight>=44,label+': PiP button has a usable touch target');
+assert.ok(Math.abs(design.pipTitleLeft-design.todayTitleLeft)<1&&Math.abs(design.pipTitleLeft-design.quickTitleLeft)<1,label+': all sidebar headings share the same left edge');
+assert.equal(design.pipTitleIconCount,0,label+': no decorative section icon');assert.equal(design.pipButtonIconCount,1,label+': button PiP icon restored');
+if(width>cfg.bp)assert.deepEqual(design.footerSeparators,['"·"','"·"','none'],label+': exactly two footer separators');
+assert.ok(design.primaryHeight>=44,label+': start action is touch accessible');
+assert.notEqual(design.primaryBackground,design.secondaryBackground,label+': main and secondary actions have different emphasis');
+if(width<=cfg.bp){assert.equal(design.dockBorder,'1px',label+': dock is grounded with a single top divider');await page.locator('#mobileToggleButton').click();await page.locator('#mobileToggleButton').click();assert.match(await page.locator('#timerTime').textContent(),/\d+:\d+/);}
+}
+if(cfg.slug==='pomodoro-timer'){
+ const disclosure=page.locator('#historyExport'),summary=disclosure.locator('summary');
+ assert.equal(await disclosure.getAttribute('open'),null,label+': exports folded by default');
+ assert.equal((await summary.textContent()).trim(),language==='ja'?'データを書き出す':'Export data',label+': localized menu');
+ await summary.click();
+ assert.notEqual(await disclosure.getAttribute('open'),null,label+': exports expand on click');
+ await page.locator('.history-export-menu').click({position:{x:8,y:8}});
+ assert.notEqual(await disclosure.getAttribute('open'),null,label+': inside-menu click keeps exports open');
+ assert.equal(await page.locator('#exportCsvButton').isVisible(),true,label+': CSV option shown');
+ assert.equal(await page.locator('#exportButton').isVisible(),true,label+': JSON option shown');
+ assert.match((await page.locator('#exportCsvButton').textContent()).trim(),language==='ja'?/表示中.*CSV/:/visible history.*CSV/i);
+ assert.match((await page.locator('#exportButton').textContent()).trim(),language==='ja'?/設定.*全履歴.*JSON/:/settings.*all history.*JSON/i);
+ const options=await page.locator('.history-export-menu').boundingBox();
+ assert.ok(options&&options.x>=0&&options.x+options.width<=width,label+': export menu stays inside viewport');
+ await page.locator('#historyTitle').click();
+ assert.equal(await disclosure.getAttribute('open'),null,label+': clicking outside collapses exports');
+ await summary.click();
+ assert.notEqual(await disclosure.getAttribute('open'),null,label+': exports reopen');
+ await summary.focus();
+ await page.keyboard.press('Escape');
+ assert.equal(await disclosure.getAttribute('open'),null,label+': Escape collapses exports');
+ assert.equal(await summary.evaluate(el=>document.activeElement===el),true,label+': keyboard focus returns to summary');
+ await summary.click();
+ assert.notEqual(await disclosure.getAttribute('open'),null,label+': exports can reopen again');
+ await summary.click();
+ assert.equal(await disclosure.getAttribute('open'),null,label+': exports collapse again');
+}
+if(cfg.slug==='pomodoro-timer'&&file==='dist/index.html'&&language==='en'&&width===1360){
+ await page.locator('#intentionInput').fill('Native CSV and JSON smoke');
+ await page.locator('#mainToggleButton').click();
+ await page.waitForTimeout(1500);
+ await page.locator('#finishButton').click();
+ assert.equal(await page.locator('#exportCsvButton').isEnabled(),true,label+': completed focus enables CSV');
+ await page.locator('#historyExport summary').click();
+}
 assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),label+': page width');
 await page.locator(cfg.open).click();const body=page.locator('#helpDialog .dialog-body');await body.evaluate(e=>{e.scrollTop=e.scrollHeight});
 if(cfg.slug==='pomodoro-timer'){assert.ok(await body.evaluate(e=>e.lastElementChild.contains(document.querySelector('#footerBuild'))));assert.match(await page.locator('#footerBuild').textContent(),/Build .*\d{4}/);assert.match(await page.locator('#footerDeps').textContent(),/Dependencies 0/);}

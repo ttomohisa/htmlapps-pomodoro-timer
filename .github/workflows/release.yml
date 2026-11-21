@@ -1,0 +1,86 @@
+name: Release Pomodoro Timer
+
+'on':
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pomodoro-release-main
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - name: Build and test every standalone variant
+        shell: pwsh
+        run: ./scripts/check-repository.ps1
+      - name: Upload release assets
+        uses: actions/upload-artifact@v7
+        with:
+          name: pomodoro-release-html
+          path: |
+            dist/index.html
+            dist/index.self-extract.html
+            pomodoro-timer.html
+          if-no-files-found: error
+          retention-days: 14
+
+  publish:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - name: Download validated standalone assets
+        uses: actions/download-artifact@v8
+        with:
+          name: pomodoro-release-html
+          path: release-html
+      - name: Tag and publish an untagged version
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./app.config.json').version")"
+          if [[ ! "$version" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
+            echo "::error::app.config.json must contain a stable Semantic Versioning version."
+            exit 1
+          fi
+          tag="v$version"
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release $tag already exists; no new tag or release is needed."
+            exit 0
+          fi
+          if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$tag" --silent >/dev/null 2>&1; then
+            echo "::error::Tag $tag exists but its GitHub Release is missing. Review the existing tag manually."
+            exit 1
+          fi
+          test -s release-html/dist/index.html
+          test -s release-html/dist/index.self-extract.html
+          cp release-html/dist/index.html release-html/pomodoro-timer.html
+          cp release-html/dist/index.self-extract.html release-html/pomodoro-timer-self-extract.html
+          gh release create "$tag" \
+            release-html/pomodoro-timer.html \
+            release-html/pomodoro-timer-self-extract.html \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "Pomodoro Timer $tag" \
+            --generate-notes

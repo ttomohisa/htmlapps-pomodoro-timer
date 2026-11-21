@@ -1,0 +1,52 @@
+'use strict';
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const zlib=require('node:zlib');
+const root=path.join(__dirname,'..');
+const read=filename=>fs.readFileSync(path.join(root,filename),'utf8');
+const appHtml=()=>{const raw=read(process.env.POMODORO_TEST_HTML||'src/index.template.html');const payload=raw.match(/<script id="payload" type="application\/octet-stream">([^<]+)<\/script>/);return payload?zlib.gunzipSync(Buffer.from(payload[1].trim(),'base64')).toString('utf8'):raw;};
+
+test('README guides match current export capabilities, supported build prerequisites and release path',()=>{
+ const en=read('README.md'),ja=read('README.ja.md');
+ assert.doesNotMatch(en,/JSON export and import for local/);
+ assert.doesNotMatch(ja,/JSONで書き出し \/ 読み込み/);
+ assert.doesNotMatch(en,/tar\.exe/);
+ assert.doesNotMatch(ja,/tar\.exe/);
+ assert.match(en,/currently filtered focus history/);
+ assert.match(en,/app cannot import that JSON file/);
+ assert.match(ja,/JSONを読み込んで復元・移行する機能はありません/);
+ assert.match(en,/\.github\/workflows\/release\.yml/);
+ assert.match(ja,/\.github\/workflows\/release\.yml/);
+ assert.match(en,/Node\.js 24/);
+ assert.match(ja,/Node\.js 24/);
+});
+test('spec, app help, license and changelog agree with the published feature set',()=>{
+ const spec=read('APP_SPEC.md'),html=appHtml();
+ const changelog=read('CHANGELOG.md');
+ assert.match(spec,/Current version:\*\* 1\.0\.5/);
+ assert.match(spec,/No JSON import or in-app restore/);
+ assert.match(spec,/failed storage write must not discard the in-memory history/);
+ assert.match(changelog,/history intact if clearing it cannot be persisted/);
+ assert.equal((changelog.match(/^## Unreleased$/gm)||[]).length,1);
+ assert.match(changelog,/## Historical development notes \(previously unversioned\)/);
+ assert.match(read('LICENSE'),/^MIT License/);
+ assert.deepEqual(JSON.parse(read('dependencies.json')).dependencies,[]);
+ assert.match(html,/アプリ内に読み込む機能はありません/);
+ assert.match(html,/this app cannot import the JSON file/);
+});
+test('generated build and configured version match, and release automation validates before tagging',()=>{
+ const version=JSON.parse(read('app.config.json')).version;
+ const manifest=JSON.parse(read('dist/dependency-manifest.json'));
+ assert.equal(manifest.app.version,version);
+ const preflight=read('scripts/check-repository.ps1');
+ assert.match(preflight,/Committed standalone HTML version is stale/);
+ assert.match(preflight,/Portable HTML and committed dist\/index\.html differ/);
+ assert.match(preflight,/verify-self-extract\.ps1/);
+ const workflow=read('.github/workflows/release.yml');
+ assert.match(workflow,/push:\s*\n\s*branches:\s*\n\s*- main/);
+ assert.match(workflow,/needs: validate/);
+ assert.match(workflow,/--generate-notes/);
+ assert.match(workflow,/release-html\/pomodoro-timer-self-extract\.html/);
+});

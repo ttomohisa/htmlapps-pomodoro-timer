@@ -26,11 +26,11 @@ GitHub Pages only delivers the initial HTML. Timer state, focus intentions, sett
 - **Flow overtime** that keeps counting after the planned focus time instead of forcing an immediate break
 - One-tap distraction counter with undo for accidental taps
 - Drift-resistant timing derived from timestamps instead of interval tick counts
-- Automatic short / long break progression
+- Short / long break progression after a focus session ends; with Flow enabled, reaching zero keeps the focus session running until you finish it
 - Desktop notifications and locally generated completion sounds
 - Today summary for focus time, completed sessions, and distractions
 - Recent focus-session history stored in LocalStorage
-- JSON export and import for local settings and history
+- CSV export of the currently filtered focus history, plus JSON export of settings, the current timer, and all history (no JSON import)
 - Japanese and English UI in the same HTML
 - Mobile-first responsive UI with a safe-area-aware bottom control dock
 - Embedded SVG favicon
@@ -58,7 +58,7 @@ The timer works without PiP. PiP is an optional enhancement whose availability d
 3. Copy the generated `dist/index.html` wherever you need it.
 4. Open that one file later without an internet connection.
 
-Python, Node.js, and a local web server are not required for the build. The repository uses Windows PowerShell and the built-in `tar.exe` provided by current Windows versions.
+Python, Node.js, and a local web server are not required to build the standalone HTML. The build uses Windows PowerShell. Node.js 24 is required to run the regression tests.
 
 ## Usage
 
@@ -107,7 +107,7 @@ When the app is opened directly with `file://`, standard timer features still wo
 
 Shortcuts are disabled while a form control has focus.
 
-## Publish with GitHub Pages
+## GitHub Pages and releases
 
 The repository includes a workflow that builds the standalone HTML, verifies it, and deploys it to GitHub Pages.
 
@@ -117,6 +117,8 @@ The repository includes a workflow that builds the standalone HTML, verifies it,
 4. After a successful deployment, the demo is available at `https://ttomohisa.github.io/htmlapps-pomodoro-timer/`.
 
 If Pages has not been enabled yet, the workflow still builds and uploads the standalone artifacts, then skips deployment without failing the build.
+
+After a version change is merged into `main`, `.github/workflows/release.yml` runs repository validation and, if the version's tag and Release do not already exist, creates a `vX.Y.Z` Git tag and GitHub Release. The Release includes the normal standalone HTML and the self-extracting HTML. No release is created merely by opening a PR.
 
 ## Development and build layout
 
@@ -137,7 +139,8 @@ If Pages has not been enabled yet, the workflow still builds and uploads the sta
 │  └─ index.self-extract.html    # Generated gzip + Base64 self-extracting app
 └─ .github/workflows/
    ├─ build-standalone.yml       # Pull request build validation
-   └─ deploy-pages.yml           # Automatic Pages deployment from main
+   ├─ deploy-pages.yml           # Automatic Pages deployment from main
+   └─ release.yml                # Automatic GitHub tag and Release after a main push
 ```
 
 ### Build
@@ -182,7 +185,7 @@ The generated HTML is designed to keep timer data on the device.
 
 The GitHub Pages version requires the initial HTML request to load the app. After that, the timer data handled by the application remains local. To use it with the network fully disconnected, open the generated `dist/index.html` locally.
 
-Use **Export JSON** if you want to keep a backup before clearing browser storage or moving to another browser profile.
+Choose **Export data → Save settings, timer & all history as JSON** if you want an offline copy. **The app cannot import that JSON file**, so exporting does not provide an in-app restore or migration feature.
 
 ## Limitations
 
@@ -190,7 +193,7 @@ Use **Export JSON** if you want to keep a backup before clearing browser storage
 - Video PiP fallback availability also varies by browser and OS.
 - Some browser features can be restricted when the HTML is opened directly with `file://`.
 - Desktop notifications require browser permission and may be unavailable in some execution contexts.
-- Local history is lost if the browser's site data / LocalStorage is cleared unless it has been exported first.
+- Clearing the browser's site data / LocalStorage removes local history. An exported JSON file preserves a copy outside the app, but cannot be imported back into the app.
 - The app intentionally does not include cloud sync, shared tasks, or a full project / ToDo manager.
 
 ## Dependencies
@@ -223,7 +226,7 @@ In **Settings**, enter focus / short break / long break minutes and choose **Sav
 
 - Browse the latest 300 saved sessions with dates, filter Today / All, or search intentions.
 - Use again copies a past intention into an unstarted focus timer without starting it. Reset or finish an active session first.
-- Export CSV downloads only the matching history, including timestamps in UTC and exact fractional minutes. Spreadsheet-formula prefixes are escaped. Export JSON still backs up all local state.
+- Open **Export data** to save only the currently displayed (date/search-filtered) history as CSV. It includes UTC timestamps and fractional minutes, with spreadsheet formula prefixes escaped. The same menu can save all local app data as JSON; there is no JSON import feature.
 - Flow overtime remains counted when adding five minutes, including after pause or reload.
 
 ### Regression tests

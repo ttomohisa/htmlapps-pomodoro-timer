@@ -2,9 +2,17 @@
 
 ## Unreleased
 
-- Help alone uses a flex column and shrinkable body so the existing clipped dialog keeps its final content and moved build metadata reachable; other dialogs are unchanged.
+## 1.0.5
 
-- Standardize the phone informational footer and English local-processing label. Move lower build metadata to the end of Help.
+- Simplify the timer layout: remove the redundant hero title, reduce nested card borders, align right-side sections and history rows, and keep an 8px margin/padding/gap scale.
+- Improve the bilingual feature descriptions. Restore the PiP action icon within a soft-green secondary button while keeping section headings aligned.
+- Fold CSV/JSON export actions under “Export data”, explain each format's scope, and close the menu on outside clicks or Escape.
+- Fix the footer separator duplication and streamline the mobile dock, dialogs, and responsive layout.
+- Fix notification/audio activation, duplicate Flow completion alerts, idle distraction counts, malformed stored history, short-session display, storage failure messages, and Japanese/English mobile accessibility labels.
+- Keep in-memory focus history intact if clearing it cannot be persisted.
+- Add unit and browser regression tests, and automate the versioned Git tag and GitHub Release after a validated merge to main.
+- Clarify in README, app help and spec that JSON can be exported but not imported, and that Flow defaults to ON; correct build prerequisites and document the release workflow.
+- Synchronize committed v1.0.5 standalone assets/manifests, refresh current UI screenshots and add a pre-build consistency check for checked-in distribution files.
 
 ## 1.0.4 - 2026-10-11
 
@@ -21,7 +29,8 @@
 
 - Add a real English catalog screenshot and use it in the English README, preserving app behavior and the supplied icon.
 
-## Unreleased
+
+## Historical development notes (previously unversioned)
 
 - Keep EN / JA target-language controls consistent with localized accessible names and tooltips; localize the Help action.
 - Standardize the Japanese privacy badge as 完全ローカル処理.
@@ -49,4 +58,5 @@
 - Added one-line session intention, distraction counter with undo, and Flow overtime.
 - Added local history, today summary, notification/sound options, JSON export, and bilingual UI.
 - Added mobile control dock and responsive app-like layout.
+
 

@@ -128,7 +128,9 @@ test('storage failure on Settings Save is truthful and runtime settings remain u
 test('custom-duration session and Flow copy contains no hard-coded 25 in Japanese or English', () => {
   for(const locale of ['ja','en']){
     const a=makeApp({locale});open(a);draft(a);a.click('settingsSave');
-    for(const id of ['introTitle','intentionLabel','flowDesc','helpBody'])assert.doesNotMatch(a.el(id).textContent,/25/);
+    for(const id of ['intentionLabel','flowDesc','helpBody'])assert.doesNotMatch(a.el(id).textContent,/25/);
+    // The introduction names the editable default 25-minute preset, not the active session.
+    assert.match(a.el('introText').textContent,/25/);
     a.click('mainToggleButton');a.advance(40*minute);a.tick();assert.equal(a.api.state.timer.flowOvertime,true);assert.doesNotMatch(a.el('toastMessage').textContent,/25/);
   }
 });

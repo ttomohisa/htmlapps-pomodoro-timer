@@ -98,5 +98,5 @@ test('interactive PiP shares the finish guard across idle focus, active focus an
   const a=makeApp();await a.api.openDocumentPip();assert.equal(a.pipEl('pFinish').disabled,true);a.click('mainToggleButton');assert.equal(a.pipEl('pFinish').disabled,false);a.advance(minute);a.pipEl('pFinish').click();assert.equal(a.api.state.history.length,1);assert.equal(a.pipEl('pFinish').disabled,false);a.pipEl('pFinish').click();assert.equal(a.pipEl('pFinish').disabled,true);
 });
 test('Japanese history controls remain localized with filter and empty-state feedback', () => {
-  const a=makeApp({locale:'ja'});assert.equal(a.el('historyAllButton').textContent,'すべて');assert.equal(a.el('exportCsvButton').textContent,'CSVを書き出す');finish(a,'集中');a.input('historySearchInput','missing');assert.equal(a.el('historyCount').textContent,'0件');assert.match(a.el('historyEmpty').textContent,/一致/);
+  const a=makeApp({locale:'ja'});assert.equal(a.el('historyAllButton').textContent,'すべて');assert.equal(a.el('historyExportSummary').textContent,'データを書き出す');assert.equal(a.el('exportCsvButton').textContent,'表示中の履歴をCSVで保存');assert.equal(a.el('exportButton').textContent,'設定・タイマー・全履歴をJSONで保存');finish(a,'集中');a.input('historySearchInput','missing');assert.equal(a.el('historyCount').textContent,'0件');assert.match(a.el('historyEmpty').textContent,/一致/);
 });
