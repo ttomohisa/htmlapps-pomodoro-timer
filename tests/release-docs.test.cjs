@@ -3,8 +3,10 @@ const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
+const zlib=require('node:zlib');
 const root=path.join(__dirname,'..');
 const read=filename=>fs.readFileSync(path.join(root,filename),'utf8');
+const appHtml=()=>{const raw=read(process.env.POMODORO_TEST_HTML||'src/index.template.html');const payload=raw.match(/<script id="payload" type="application\\/octet-stream">([^<]+)<\\/script>/);return payload?zlib.gunzipSync(Buffer.from(payload[1].trim(),'base64')).toString('utf8'):raw;};
 
 test('README guides match current export capabilities, supported build prerequisites and release path',()=>{
  const en=read('README.md'),ja=read('README.ja.md');
@@ -21,7 +23,7 @@ test('README guides match current export capabilities, supported build prerequis
  assert.match(ja,/Node\.js 24/);
 });
 test('spec, app help, license and changelog agree with the published feature set',()=>{
- const spec=read('APP_SPEC.md'),html=read(process.env.POMODORO_TEST_HTML||'src/index.template.html');
+ const spec=read('APP_SPEC.md'),html=appHtml();
  const changelog=read('CHANGELOG.md');
  assert.match(spec,/Current version:\*\* 1\.0\.5/);
  assert.match(spec,/No JSON import or in-app restore/);
