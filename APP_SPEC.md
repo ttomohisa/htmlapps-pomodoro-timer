@@ -2,7 +2,7 @@
 
 ## 1. Product identity
 
-- **Current version:** 1.0.4
+- **Current version:** 1.0.5
 - **Working name:** Pomodoro Timer / ポモドーロタイマー
 - **One-sentence purpose:** Keep the current focus session visible and controllable in a small Picture-in-Picture window while the user works elsewhere.
 - **Primary users:** People who work in browser tabs, editors, spreadsheets, and desktop apps and want a lightweight focus timer without an account.

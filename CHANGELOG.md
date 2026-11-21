@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 1.0.5
+
+- Remove the hero title and replace the tagline and introduction with bilingual descriptions of focus, breaks, adjustable durations, and optional Picture-in-Picture.
+- Apply an 8px spacing scale to regular, mobile, dialog, and PiP layouts; soften cards and remove nonessential shadows/gradients.
+- Fix audio activation, Flow-completion duplicate notifications, malformed history loading, idle distraction recording, sub-minute history display, storage-failure feedback, and accessible mobile labels.
+- Add automated regression coverage and merge-triggered tag/GitHub Release publication for the next app version.
+
 - Help alone uses a flex column and shrinkable body so the existing clipped dialog keeps its final content and moved build metadata reachable; other dialogs are unchanged.
 
 - Standardize the phone informational footer and English local-processing label. Move lower build metadata to the end of Help.
