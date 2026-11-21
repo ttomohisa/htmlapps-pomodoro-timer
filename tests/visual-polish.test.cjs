@@ -35,6 +35,13 @@ test('cards are flat and subdued, without the timer stripe or PiP gradient',()=>
   assert.doesNotMatch(styles[0],/\.pip-card\{[^}]*linear-gradient/);
   assert.match(styles[0],/\.metric:last-child\{border-right:0\}/);
 });
+test('fixed mobile controls, notification and dialogs follow the same outer spacing',()=>{
+  const css=styles[0];
+  assert.match(css,/\\.mobile-dock\\{[^}]*left:16px;right:16px;bottom:max\\(16px,/);
+  assert.match(css,/\\.toast\\{[^}]*right:16px;bottom:16px/);
+  assert.match(css,/\\.toast\\{left:16px;right:16px;bottom:calc\\(96px/);
+  assert.match(css,/dialog\\{width:min\\(650px,calc\\(100% - 32px\\)\\)/);
+});
 test('merge-triggered release validates artifacts and safely skips published versions',()=>{
   const workflow=read('.github/workflows/release.yml');
   assert.match(workflow,/push:\s*\n\s*branches:\s*\n\s*- main/);
