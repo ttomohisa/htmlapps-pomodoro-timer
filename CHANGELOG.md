@@ -4,6 +4,9 @@
 
 ## 1.0.5
 
+- Simplify visual hierarchy: keep the main timer surface, replace outlined sidebar cards with quiet sections and dividers, present history as a table-like list, and distinguish the primary Start/Pause button from low-emphasis actions on desktop, mobile, and PiP.
+- Remove nested badge/button fills around the timer and refine the mobile bottom control bar.
+
 - Remove the hero title and replace the tagline and introduction with bilingual descriptions of focus, breaks, adjustable durations, and optional Picture-in-Picture.
 - Apply an 8px spacing scale to regular, mobile, dialog, and PiP layouts; soften cards and remove nonessential shadows/gradients.
 - Fix audio activation, Flow-completion duplicate notifications, malformed history loading, idle distraction recording, sub-minute history display, storage-failure feedback, and accessible mobile labels.

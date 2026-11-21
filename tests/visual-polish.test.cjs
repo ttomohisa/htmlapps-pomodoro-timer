@@ -34,12 +34,26 @@ test('cards are flat and subdued, without the timer stripe or PiP gradient',()=>
   assert.doesNotMatch(styles[0],/\.timer-card::before/);
   assert.doesNotMatch(styles[0],/\.pip-card\{[^}]*linear-gradient/);
   assert.match(styles[0],/\.metric:last-child\{border-right:0\}/);
+  assert.match(styles[0],/\.side-stack>\.card\{border:0;border-radius:0;background:transparent/);
+  assert.match(styles[0],/\.side-stack>\.card:not\(:first-child\)\{border-top:1px solid var\(--line\)\}/);
+  assert.match(styles[0],/\.history-card\{[^}]*border:0;border-radius:0;background:transparent/);
+  assert.match(styles[0],/\.history-filters \.small-btn\[aria-pressed="true"\]\{background:transparent/);
+  assert.match(styles[0],/\.pip-button\{[^}]*border-radius:0;background:transparent/);
+  assert.doesNotMatch(html, /class="btn primary pip-button/);
+});
+test('the main action has a fill; secondary actions and PiP controls have no boxes',()=>{
+  assert.match(styles[0],/\.btn\{[^}]*border:1px solid transparent[^}]*background:transparent/);
+  assert.match(styles[0],/\.btn\.primary\{[^}]*background:var\(--accent\)/);
+  assert.match(styles[0],/\.small-btn\{[^}]*border:1px solid transparent/);
+  assert.match(styles[0],/\.distraction-btn\{[^}]*background:transparent/);
+  assert.match(styles[1],/button\{[^}]*border:0[^}]*background:transparent/);
 });
 test('fixed mobile controls, notification and dialogs follow the same outer spacing',()=>{
   const css=styles[0];
-  assert.match(css,/\.mobile-dock\{[^}]*left:16px;right:16px;bottom:max\(16px,/);
+  assert.match(css,/\.mobile-dock\{[^}]*left:0;right:0;bottom:0/);
+  assert.match(css,/\.mobile-dock\{[^}]*border-top:1px solid var\(--line\)[^}]*border-radius:0/);
   assert.match(css,/\.toast\{[^}]*right:16px;bottom:16px/);
-  assert.match(css,/\.toast\{left:16px;right:16px;bottom:calc\(96px/);
+  assert.match(css,/\.toast\{left:16px;right:16px;bottom:calc\(80px/);
   assert.match(css,/dialog\{width:min\(650px,calc\(100% - 32px\)\)/);
 });
 test('merge-triggered release validates artifacts and safely skips published versions',()=>{

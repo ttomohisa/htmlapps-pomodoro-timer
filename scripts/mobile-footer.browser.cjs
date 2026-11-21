@@ -13,7 +13,20 @@ assert.equal((await page.locator(cfg.badge).textContent()).trim(),language==='en
 if(await page.locator(cfg.badge).isVisible()){const r=await page.locator(cfg.badge).boundingBox();assert.ok(r&&r.x>=0&&r.x+r.width<=width,label+': visible badge fits');}
 assert.equal(await page.locator(cfg.footer).isVisible(),width>cfg.bp,label+': informational footer');assert.equal(await page.locator(cfg.nav).isVisible(),width<=cfg.bp,label+': functional controls');if(width<=cfg.bp){const r=await page.locator(cfg.nav).boundingBox();assert.ok(r&&r.x>=0&&r.x+r.width<=width&&r.y>=0&&r.y+r.height<=height,label+': functional bar fits viewport');}
 if(cfg.slug==='text-inspector'){await page.locator('#textInput').fill('Synthetic local text.');assert.equal(await page.locator('#textInput').inputValue(),'Synthetic local text.');}
-if(cfg.slug==='pomodoro-timer'&&width<=cfg.bp){await page.locator('#mobileToggleButton').click();await page.locator('#mobileToggleButton').click();assert.match(await page.locator('#timerTime').textContent(),/\d+:\d+/);}
+if(cfg.slug==='pomodoro-timer'){
+const design=await page.evaluate(()=>{
+  const css=selector=>getComputedStyle(document.querySelector(selector));
+  const primary=document.querySelector('#mainToggleButton');
+  const p=primary.getBoundingClientRect();
+  return {sidebarBorder:css('.side-stack > .card').borderTopWidth,historyBorder:css('.history-card').borderTopWidth,pipFill:css('#pipButton').backgroundColor,pipBorder:css('#pipButton').borderTopWidth,primaryBackground:css('#mainToggleButton').backgroundColor,secondaryBackground:css('#finishButton').backgroundColor,primaryHeight:p.height,dockBorder:css('.mobile-dock').borderTopWidth};
+});
+assert.equal(design.sidebarBorder,'0px',label+': sidebar uses headings and rules, not nested cards');
+assert.equal(design.historyBorder,'0px',label+': history rows have no outer box');
+assert.equal(design.pipBorder,'0px',label+': PiP action is an unboxed text control');
+assert.ok(design.primaryHeight>=44,label+': start action is touch accessible');
+assert.notEqual(design.primaryBackground,design.secondaryBackground,label+': main and secondary actions have different emphasis');
+if(width<=cfg.bp){assert.equal(design.dockBorder,'1px',label+': dock is grounded with a single top divider');await page.locator('#mobileToggleButton').click();await page.locator('#mobileToggleButton').click();assert.match(await page.locator('#timerTime').textContent(),/\\d+:\\d+/);}
+}
 assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),label+': page width');
 await page.locator(cfg.open).click();const body=page.locator('#helpDialog .dialog-body');await body.evaluate(e=>{e.scrollTop=e.scrollHeight});
 if(cfg.slug==='pomodoro-timer'){assert.ok(await body.evaluate(e=>e.lastElementChild.contains(document.querySelector('#footerBuild'))));assert.match(await page.locator('#footerBuild').textContent(),/Build .*\d{4}/);assert.match(await page.locator('#footerDeps').textContent(),/Dependencies 0/);}
