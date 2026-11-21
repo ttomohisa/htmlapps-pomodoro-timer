@@ -6,7 +6,7 @@ const path=require('node:path');
 const zlib=require('node:zlib');
 const root=path.join(__dirname,'..');
 const read=filename=>fs.readFileSync(path.join(root,filename),'utf8');
-const appHtml=()=>{const raw=read(process.env.POMODORO_TEST_HTML||'src/index.template.html');const payload=raw.match(/<script id="payload" type="application\\/octet-stream">([^<]+)<\\/script>/);return payload?zlib.gunzipSync(Buffer.from(payload[1].trim(),'base64')).toString('utf8'):raw;};
+const appHtml=()=>{const raw=read(process.env.POMODORO_TEST_HTML||'src/index.template.html');const payload=raw.match(/<script id="payload" type="application\/octet-stream">([^<]+)<\/script>/);return payload?zlib.gunzipSync(Buffer.from(payload[1].trim(),'base64')).toString('utf8'):raw;};
 
 test('README guides match current export capabilities, supported build prerequisites and release path',()=>{
  const en=read('README.md'),ja=read('README.ja.md');
