@@ -38,7 +38,8 @@ test('cards are flat and subdued, without the timer stripe or PiP gradient',()=>
   assert.match(styles[0],/\.side-stack>\.card:not\(:first-child\)\{border-top:1px solid var\(--line\)\}/);
   assert.match(styles[0],/\.history-card\{[^}]*border:0;border-radius:0;background:transparent/);
   assert.match(styles[0],/\.history-filters \.small-btn\[aria-pressed="true"\]\{background:transparent/);
-  assert.match(styles[0],/\.pip-button\{[^}]*border:1px solid var\(--line-strong\)[^}]*border-radius:8px;background:var\(--surface\)/);
+  assert.match(styles[0],/\.pip-button\{[^}]*border:1px solid var\(--line\)[^}]*border-radius:8px;background:transparent;color:var\(--text\)/);
+  assert.match(styles[0],/\.pip-button svg\{color:var\(--accent\)\}/);
   assert.doesNotMatch(html, /class="btn primary pip-button/);
   assert.doesNotMatch(html, /class="pip-icon"/);
   assert.match(html, /<div class="panel-head"><h2 class="panel-title" id="pipTitle">Picture in Picture<\/h2><\/div>/);
@@ -62,6 +63,11 @@ test('export actions start folded, and explain the scope of CSV versus JSON',()=
   assert.match(html, /<button class="small-btn danger" id="clearHistoryButton"/);
   assert.match(html, /function exportHistoryCsv\(\)\{const rows=filteredHistory\(\)/);
   assert.match(html, /function exportData\(\)\{const payload=\{schemaVersion:1,exportedAt:new Date\(\)\.toISOString\(\),app:\{name:APP_CONFIG\.name,version:APP_CONFIG\.version\},data:state\}/);
+});
+test('export closes when clicked outside, stays open for inside clicks, and Escape works',()=>{
+  assert.match(html, /document\.addEventListener\('click',\(e\)=>\{const exportMenu=\$\('historyExport'\);if\(exportMenu\.open&&!exportMenu\.contains\(e\.target\)\)exportMenu\.open=false;\}\)/);
+  assert.match(html, /document\.addEventListener\('keydown',\(e\)=>\{if\(e\.key!=='Escape'\|\|!\$\('historyExport'\)\.open\)return;/);
+  assert.match(html, /tag==='summary'\|\|e\.target\?\.closest\?\.\('#historyExport'\)/);
 });
 test('the main action has a fill; secondary actions and PiP controls have no boxes',()=>{
   assert.match(styles[0],/\.btn\{[^}]*border:1px solid transparent[^}]*background:transparent/);

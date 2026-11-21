@@ -37,12 +37,24 @@ if(cfg.slug==='pomodoro-timer'){
  assert.equal((await summary.textContent()).trim(),language==='ja'?'データを書き出す':'Export data',label+': localized menu');
  await summary.click();
  assert.notEqual(await disclosure.getAttribute('open'),null,label+': exports expand on click');
+ await page.locator('.history-export-menu').click({position:{x:8,y:8}});
+ assert.notEqual(await disclosure.getAttribute('open'),null,label+': inside-menu click keeps exports open');
  assert.equal(await page.locator('#exportCsvButton').isVisible(),true,label+': CSV option shown');
  assert.equal(await page.locator('#exportButton').isVisible(),true,label+': JSON option shown');
  assert.match((await page.locator('#exportCsvButton').textContent()).trim(),language==='ja'?/表示中.*CSV/:/visible history.*CSV/i);
  assert.match((await page.locator('#exportButton').textContent()).trim(),language==='ja'?/設定.*全履歴.*JSON/:/settings.*all history.*JSON/i);
  const options=await page.locator('.history-export-menu').boundingBox();
  assert.ok(options&&options.x>=0&&options.x+options.width<=width,label+': export menu stays inside viewport');
+ await page.locator('#historyTitle').click();
+ assert.equal(await disclosure.getAttribute('open'),null,label+': clicking outside collapses exports');
+ await summary.click();
+ assert.notEqual(await disclosure.getAttribute('open'),null,label+': exports reopen');
+ await summary.focus();
+ await page.keyboard.press('Escape');
+ assert.equal(await disclosure.getAttribute('open'),null,label+': Escape collapses exports');
+ assert.equal(await summary.evaluate(el=>document.activeElement===el),true,label+': keyboard focus returns to summary');
+ await summary.click();
+ assert.notEqual(await disclosure.getAttribute('open'),null,label+': exports can reopen again');
  await summary.click();
  assert.equal(await disclosure.getAttribute('open'),null,label+': exports collapse again');
 }

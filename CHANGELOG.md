@@ -4,6 +4,9 @@
 
 ## 1.0.5
 
+- Close the export disclosure when clicking outside or pressing Escape, preserve inside clicks, and keep the menu accessible by keyboard.
+- Tone down the PiP action to a neutral outlined secondary button, while retaining the SVG pictogram, clear hit area, and brand accent on its icon.
+
 - Restore the PiP pictogram inside its outlined action button while keeping the section heading icon-free.
 - Move CSV and JSON export actions into a collapsed-by-default disclosure. Clarify that CSV exports the currently filtered focus history, while JSON exports settings, the current timer and all stored history; keep history deletion separate.
 
