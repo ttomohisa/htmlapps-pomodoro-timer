@@ -77,3 +77,15 @@ test('mobile timer controls have localized accessible names in both languages', 
     assert.equal(a.el('mobileAddButton').attributes['aria-label'],add);
   }
 });
+
+test('failed writes after add-five and reuse never show a success toast', () => {
+  const a=makeApp();a.setStorageFailure(true);a.click('addFiveButton');
+  assert.match(a.el('toastMessage').textContent,/Could not save/);
+  const seed=makeApp().persisted();
+  seed.history=[{id:'reusable',endedAt:Date.parse('2026-10-04T11:30:00Z'),durationMs:minute,intention:'Reuse task'}];
+  const b=makeApp({saved:seed});
+  b.setStorageFailure(true);
+  b.el('historyList').querySelectorAll('.history-reuse')[0].click();
+  assert.equal(b.el('intentionInput').value,'Reuse task');
+  assert.match(b.el('toastMessage').textContent,/Could not save/);
+});
