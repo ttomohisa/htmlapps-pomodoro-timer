@@ -18,18 +18,33 @@ const design=await page.evaluate(()=>{
   const css=selector=>getComputedStyle(document.querySelector(selector));
   const primary=document.querySelector(innerWidth<=620?'#mobileToggleButton':'#mainToggleButton');
   const p=primary.getBoundingClientRect();
-  return {sidebarBorder:css('.side-stack > .card').borderTopWidth,historyBorder:css('.history-card').borderTopWidth,pipFill:css('#pipButton').backgroundColor,pipBorder:css('#pipButton').borderTopWidth,pipHeight:document.querySelector('#pipButton').getBoundingClientRect().height,pipTitleLeft:document.querySelector('#pipTitle').getBoundingClientRect().left,todayTitleLeft:document.querySelector('#todayTitle').getBoundingClientRect().left,quickTitleLeft:document.querySelector('#quickTitle').getBoundingClientRect().left,pipIconCount:document.querySelectorAll('.pip-card .pip-icon,.pip-card #pipButton svg').length,footerSeparators:[...document.querySelectorAll('footer .build-line>span')].map(x=>getComputedStyle(x,'::after').content),primaryBackground:css(innerWidth<=620?'#mobileToggleButton':'#mainToggleButton').backgroundColor,secondaryBackground:css(innerWidth<=620?'#mobileAddButton':'#finishButton').backgroundColor,primaryHeight:p.height,dockBorder:css('.mobile-dock').borderTopWidth};
+  return {sidebarBorder:css('.side-stack > .card').borderTopWidth,historyBorder:css('.history-card').borderTopWidth,pipFill:css('#pipButton').backgroundColor,pipBorder:css('#pipButton').borderTopWidth,pipHeight:document.querySelector('#pipButton').getBoundingClientRect().height,pipTitleLeft:document.querySelector('#pipTitle').getBoundingClientRect().left,todayTitleLeft:document.querySelector('#todayTitle').getBoundingClientRect().left,quickTitleLeft:document.querySelector('#quickTitle').getBoundingClientRect().left,pipTitleIconCount:document.querySelectorAll('.pip-card .pip-icon').length,pipButtonIconCount:document.querySelectorAll('#pipButton svg').length,footerSeparators:[...document.querySelectorAll('footer .build-line>span')].map(x=>getComputedStyle(x,'::after').content),primaryBackground:css(innerWidth<=620?'#mobileToggleButton':'#mainToggleButton').backgroundColor,secondaryBackground:css(innerWidth<=620?'#mobileAddButton':'#finishButton').backgroundColor,primaryHeight:p.height,dockBorder:css('.mobile-dock').borderTopWidth};
 });
 assert.equal(design.sidebarBorder,'0px',label+': sidebar uses headings and rules, not nested cards');
 assert.equal(design.historyBorder,'0px',label+': history rows have no outer box');
 assert.equal(design.pipBorder,'1px',label+': PiP action is recognizably a button');
 assert.ok(design.pipHeight>=44,label+': PiP button has a usable touch target');
 assert.ok(Math.abs(design.pipTitleLeft-design.todayTitleLeft)<1&&Math.abs(design.pipTitleLeft-design.quickTitleLeft)<1,label+': all sidebar headings share the same left edge');
-assert.equal(design.pipIconCount,0,label+': redundant PiP icons removed');
+assert.equal(design.pipTitleIconCount,0,label+': no decorative section icon');assert.equal(design.pipButtonIconCount,1,label+': button PiP icon restored');
 if(width>cfg.bp)assert.deepEqual(design.footerSeparators,['"·"','"·"','none'],label+': exactly two footer separators');
 assert.ok(design.primaryHeight>=44,label+': start action is touch accessible');
 assert.notEqual(design.primaryBackground,design.secondaryBackground,label+': main and secondary actions have different emphasis');
 if(width<=cfg.bp){assert.equal(design.dockBorder,'1px',label+': dock is grounded with a single top divider');await page.locator('#mobileToggleButton').click();await page.locator('#mobileToggleButton').click();assert.match(await page.locator('#timerTime').textContent(),/\d+:\d+/);}
+}
+if(cfg.slug==='pomodoro-timer'){
+ const disclosure=page.locator('#historyExport'),summary=disclosure.locator('summary');
+ assert.equal(await disclosure.getAttribute('open'),null,label+': exports folded by default');
+ assert.equal((await summary.textContent()).trim(),language==='ja'?'データを書き出す':'Export data',label+': localized menu');
+ await summary.click();
+ assert.notEqual(await disclosure.getAttribute('open'),null,label+': exports expand on click');
+ assert.equal(await page.locator('#exportCsvButton').isVisible(),true,label+': CSV option shown');
+ assert.equal(await page.locator('#exportButton').isVisible(),true,label+': JSON option shown');
+ assert.match((await page.locator('#exportCsvButton').textContent()).trim(),language==='ja'?/表示中.*CSV/:/visible history.*CSV/i);
+ assert.match((await page.locator('#exportButton').textContent()).trim(),language==='ja'?/設定.*全履歴.*JSON/:/settings.*all history.*JSON/i);
+ const options=await page.locator('.history-export-menu').boundingBox();
+ assert.ok(options&&options.x>=0&&options.x+options.width<=width,label+': export menu stays inside viewport');
+ await summary.click();
+ assert.equal(await disclosure.getAttribute('open'),null,label+': exports collapse again');
 }
 assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),label+': page width');
 await page.locator(cfg.open).click();const body=page.locator('#helpDialog .dialog-body');await body.evaluate(e=>{e.scrollTop=e.scrollHeight});

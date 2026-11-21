@@ -4,6 +4,9 @@
 
 ## 1.0.5
 
+- Restore the PiP pictogram inside its outlined action button while keeping the section heading icon-free.
+- Move CSV and JSON export actions into a collapsed-by-default disclosure. Clarify that CSV exports the currently filtered focus history, while JSON exports settings, the current timer and all stored history; keep history deletion separate.
+
 - Align the PiP section heading with Today and Focus style, remove redundant PiP icons, restore a clear outlined PiP button, and ensure footer separators appear exactly once.
 
 - Simplify visual hierarchy: keep the main timer surface, replace outlined sidebar cards with quiet sections and dividers, present history as a table-like list, and distinguish the primary Start/Pause button from low-emphasis actions on desktop, mobile, and PiP.

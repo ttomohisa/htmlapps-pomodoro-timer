@@ -42,10 +42,25 @@ test('cards are flat and subdued, without the timer stripe or PiP gradient',()=>
   assert.doesNotMatch(html, /class="btn primary pip-button/);
   assert.doesNotMatch(html, /class="pip-icon"/);
   assert.match(html, /<div class="panel-head"><h2 class="panel-title" id="pipTitle">Picture in Picture<\/h2><\/div>/);
-  assert.match(html, /<button class="btn pip-button" id="pipButton" type="button"><span id="pipButtonText">/);
+  assert.match(html, /<button class="btn pip-button icon-text" id="pipButton" type="button"><svg[^>]*aria-hidden="true"/);
+  assert.match(html, /<rect x="12" y="11" width="7" height="6" rx="1" fill="currentColor"\/>/);
   assert.match(html, /<footer><div class="build-line"><span id="footerName">Pomodoro Timer<\/span><span>MIT License<\/span><span id="footerPrivacy">/);
   assert.doesNotMatch(html, /<\/span> · MIT License · /);
   assert.match(styles[0],/\.build-line>span:not\(:last-child\)::after\{content:"·";margin:0 8px\}/);
+});
+test('export actions start folded, and explain the scope of CSV versus JSON',()=>{
+  assert.match(html, /<details class="history-export" id="historyExport"><summary>/);
+  assert.doesNotMatch(html, /<details class="history-export" id="historyExport" open/);
+  assert.match(html, /id="historyExportSummary">データを書き出す/);
+  assert.match(html, /id="exportCsvButton" type="button">表示中の履歴をCSVで保存/);
+  assert.match(html, /id="exportButton" type="button">設定・タイマー・全履歴をJSONで保存/);
+  assert.match(html, /historyExportSummary:'Export data',exportCsv:'Save visible history as CSV'/);
+  assert.match(html, /export:'Save settings, timer & all history as JSON'/);
+  assert.match(html, /\$\('historyExportSummary'\)\.textContent=t\.historyExportSummary/);
+  assert.match(styles[0], /\.history-export-menu\{position:absolute;z-index:12/);
+  assert.match(html, /<button class="small-btn danger" id="clearHistoryButton"/);
+  assert.match(html, /function exportHistoryCsv\(\)\{const rows=filteredHistory\(\)/);
+  assert.match(html, /function exportData\(\)\{const payload=\{schemaVersion:1,exportedAt:new Date\(\)\.toISOString\(\),app:\{name:APP_CONFIG\.name,version:APP_CONFIG\.version\},data:state\}/);
 });
 test('the main action has a fill; secondary actions and PiP controls have no boxes',()=>{
   assert.match(styles[0],/\.btn\{[^}]*border:1px solid transparent[^}]*background:transparent/);
