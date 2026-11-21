@@ -45,5 +45,6 @@ test('merge-triggered release validates artifacts and safely skips published ver
   assert.match(workflow,/gh release create/);
   assert.match(workflow,/--target "\$GITHUB_SHA"/);
   assert.match(workflow,/pomodoro-timer-self-extract\.html/);
+  assert.match(workflow,/cp release-html\/dist\/index\.html release-html\/pomodoro-timer\.html/);
   assert.equal(JSON.parse(read('app.config.json')).version,'1.0.5');
 });

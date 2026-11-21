@@ -49,7 +49,7 @@ jobs:
         with:
           node-version: 24
       - name: Download validated standalone assets
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: pomodoro-release-html
           path: release-html
@@ -75,9 +75,11 @@ jobs:
           fi
           test -s release-html/dist/index.html
           test -s release-html/dist/index.self-extract.html
+          cp release-html/dist/index.html release-html/pomodoro-timer.html
+          cp release-html/dist/index.self-extract.html release-html/pomodoro-timer-self-extract.html
           gh release create "$tag" \
-            "release-html/dist/index.html#pomodoro-timer.html" \
-            "release-html/dist/index.self-extract.html#pomodoro-timer-self-extract.html" \
+            release-html/pomodoro-timer.html \
+            release-html/pomodoro-timer-self-extract.html \
             --repo "$GITHUB_REPOSITORY" \
             --target "$GITHUB_SHA" \
             --title "Pomodoro Timer $tag" \
