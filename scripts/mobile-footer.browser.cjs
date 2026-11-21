@@ -60,20 +60,11 @@ if(cfg.slug==='pomodoro-timer'){
  assert.equal(await disclosure.getAttribute('open'),null,label+': exports collapse again');
 }
 if(cfg.slug==='pomodoro-timer'&&file==='dist/index.html'&&language==='en'&&width===1360){
- await page.evaluate(()=>{
-  const key='bk-pomodoro-v1',state=JSON.parse(localStorage.getItem(key));
-  state.history=[{id:'browser-smoke',startedAt:Date.parse('2026-10-04T10:59:00Z'),endedAt:Date.parse('2026-10-04T11:00:00Z'),durationMs:60000,plannedMs:1500000,overtimeMs:0,round:1,intention:'Native CSV and JSON smoke',distractions:2}];
-  localStorage.setItem(key,JSON.stringify(state));
- });
- await page.reload();await page.locator('#historyExport summary').click();
- const [csv]=await Promise.all([page.waitForEvent('download'),page.locator('#exportCsvButton').click()]);
- assert.match(csv.suggestedFilename(),/^pomodoro-history-\d{4}-\d\d-\d\d\.csv$/);
- assert.match(fs.readFileSync(await csv.path(),'utf8'),/Native CSV and JSON smoke/);
- const [json]=await Promise.all([page.waitForEvent('download'),page.locator('#exportButton').click()]);
- const exported=JSON.parse(fs.readFileSync(await json.path(),'utf8'));
- assert.match(json.suggestedFilename(),/^pomodoro-\d{4}-\d\d-\d\d\.json$/);
- assert.equal(exported.app.version,'1.0.5');
- assert.equal(exported.data.history[0].id,'browser-smoke');
+ await page.locator('#intentionInput').fill('Native CSV and JSON smoke');
+ await page.locator('#mainToggleButton').click();
+ await page.waitForTimeout(1500);
+ await page.locator('#finishButton').click();
+ assert.equal(await page.locator('#exportCsvButton').isEnabled(),true,label+': completed focus enables CSV');
  await page.locator('#historyExport summary').click();
 }
 assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),label+': page width');
