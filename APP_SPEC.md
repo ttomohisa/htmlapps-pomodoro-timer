@@ -25,7 +25,7 @@ A normal browser timer disappears behind the work it is timing. This app keeps t
 ## 4. Functional requirements
 
 - Default cycle: focus 25 min, short break 5 min, long break 15 min, long break after 4 focus rounds.
-- Customizable focus, short-break, and long-break durations.
+- Customizable focus, short-break, and long-break durations, plus up to three locally stored duration sets.
 - Start, pause, resume, add five minutes, complete/advance, and reset controls.
 - One-line intention shown in the main UI and interactive PiP.
 - Distraction counter with undo.
@@ -33,15 +33,15 @@ A normal browser timer disappears behind the work it is timing. This app keeps t
 - Interactive Document Picture-in-Picture when available.
 - Canvas/video Picture-in-Picture fallback when Document PiP is unavailable.
 - Desktop notifications and synthesized local chime are optional.
-- Local history and today summary stored in `localStorage`.
-- JSON export of local data.
+- Local history (up to 300 focus sessions), a Today summary, date/search filters and intention reuse, stored in `localStorage`.
+- CSV export of the currently filtered focus history and JSON export of settings, active timer state, and all history. No JSON import or in-app restore.
 - Japanese/English UI without reload.
 - Keyboard shortcuts when focus is not inside a form control.
 
 ## 5. Data and privacy
 
 - All settings, history, and the current intention remain in browser storage.
-- The app performs no runtime network request.
+- The app performs no runtime network request. HTML served over GitHub Pages requires the initial download, while standalone files can run offline.
 - No login, analytics, telemetry, advertising SDK, or server-side storage is included.
 
 ## 6. Non-goals
@@ -68,7 +68,7 @@ A normal browser timer disappears behind the work it is timing. This app keeps t
 
 - First interaction works without network access.
 - Timer stays accurate after background throttling or sleep by calculating from timestamps.
-- Re-rendering is limited to small timer/status regions.
+- Frequent updates recalculate timer/status and PiP display from timestamps. History rendering is reserved for history/filter changes or language updates.
 
 ## 9. Browser target
 
@@ -84,7 +84,10 @@ Current stable desktop/mobile Chromium, Firefox, and Safari for the normal timer
 - Main actions stay usable at 360 px width.
 - Document PiP controls can pause/resume, add five minutes, and finish/advance when the API is available.
 - Fallback video PiP shows mode, time, round, and intention.
-- Local data can be exported as JSON and cleared only after confirmation.
+- Currently displayed history can be exported as CSV; all app data can be exported as JSON. There is no JSON importer.
+- Export controls are collapsed by default and dismiss when clicked outside or when Escape is pressed.
+- Focus history is cleared only after confirmation; a failed storage write must not discard the in-memory history.
+- A version bump merged into `main` validates and publishes a new Git tag and GitHub Release with the normal and self-extracting HTML files, unless already published.
 
 ## In-app help
 

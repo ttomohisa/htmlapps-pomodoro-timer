@@ -4,27 +4,14 @@
 
 ## 1.0.5
 
-- Give the PiP action a light green filled secondary-button treatment, legible green text/icon and a distinct hover state, without competing with the solid green Start action.
-
-- Close the export disclosure when clicking outside or pressing Escape, preserve inside clicks, and keep the menu accessible by keyboard.
-- Tone down the PiP action to a neutral outlined secondary button, while retaining the SVG pictogram, clear hit area, and brand accent on its icon.
-
-- Restore the PiP pictogram inside its outlined action button while keeping the section heading icon-free.
-- Move CSV and JSON export actions into a collapsed-by-default disclosure. Clarify that CSV exports the currently filtered focus history, while JSON exports settings, the current timer and all stored history; keep history deletion separate.
-
-- Align the PiP section heading with Today and Focus style, remove redundant PiP icons, restore a clear outlined PiP button, and ensure footer separators appear exactly once.
-
-- Simplify visual hierarchy: keep the main timer surface, replace outlined sidebar cards with quiet sections and dividers, present history as a table-like list, and distinguish the primary Start/Pause button from low-emphasis actions on desktop, mobile, and PiP.
-- Remove nested badge/button fills around the timer and refine the mobile bottom control bar.
-
-- Remove the hero title and replace the tagline and introduction with bilingual descriptions of focus, breaks, adjustable durations, and optional Picture-in-Picture.
-- Apply an 8px spacing scale to regular, mobile, dialog, and PiP layouts; soften cards and remove nonessential shadows/gradients.
-- Fix audio activation, Flow-completion duplicate notifications, malformed history loading, idle distraction recording, sub-minute history display, storage-failure feedback, and accessible mobile labels.
-- Add automated regression coverage and merge-triggered tag/GitHub Release publication for the next app version.
-
-- Help alone uses a flex column and shrinkable body so the existing clipped dialog keeps its final content and moved build metadata reachable; other dialogs are unchanged.
-
-- Standardize the phone informational footer and English local-processing label. Move lower build metadata to the end of Help.
+- Simplify the timer layout: remove the redundant hero title, reduce nested card borders, align right-side sections and history rows, and keep an 8px margin/padding/gap scale.
+- Improve the bilingual feature descriptions. Restore the PiP action icon within a soft-green secondary button while keeping section headings aligned.
+- Fold CSV/JSON export actions under “Export data”, explain each format's scope, and close the menu on outside clicks or Escape.
+- Fix the footer separator duplication and streamline the mobile dock, dialogs, and responsive layout.
+- Fix notification/audio activation, duplicate Flow completion alerts, idle distraction counts, malformed stored history, short-session display, storage failure messages, and Japanese/English mobile accessibility labels.
+- Keep in-memory focus history intact if clearing it cannot be persisted.
+- Add unit and browser regression tests, and automate the versioned Git tag and GitHub Release after a validated merge to main.
+- Clarify in README, app help and spec that JSON can be exported but not imported; correct build prerequisites and document the release workflow.
 
 ## 1.0.4 - 2026-10-11
 
@@ -41,7 +28,8 @@
 
 - Add a real English catalog screenshot and use it in the English README, preserving app behavior and the supplied icon.
 
-## Unreleased
+
+## Historical development notes (previously unversioned)
 
 - Keep EN / JA target-language controls consistent with localized accessible names and tooltips; localize the Help action.
 - Standardize the Japanese privacy badge as 完全ローカル処理.
@@ -69,4 +57,5 @@
 - Added one-line session intention, distraction counter with undo, and Flow overtime.
 - Added local history, today summary, notification/sound options, JSON export, and bilingual UI.
 - Added mobile control dock and responsive app-like layout.
+
 

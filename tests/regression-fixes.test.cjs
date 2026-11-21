@@ -89,3 +89,18 @@ test('failed writes after add-five and reuse never show a success toast', () => 
   assert.equal(b.el('intentionInput').value,'Reuse task');
   assert.match(b.el('toastMessage').textContent,/Could not save/);
 });
+
+test('failed history deletion preserves both the displayed and persisted sessions', async () => {
+  const seed=makeApp().persisted();
+  seed.history=[{id:'kept',startedAt:Date.parse('2026-10-04T10:59:00Z'),endedAt:Date.parse('2026-10-04T11:00:00Z'),durationMs:60000,plannedMs:25*60000,overtimeMs:0,round:1,intention:'Keep me',distractions:0}];
+  const a=makeApp({saved:seed});
+  const snapshot=JSON.stringify(a.api.state.history);
+  a.setStorageFailure(true);
+  const pending=a.click('clearHistoryButton');
+  a.click('confirmOk');
+  await pending;
+  assert.equal(JSON.stringify(a.api.state.history),snapshot);
+  assert.equal(JSON.stringify(a.persisted().history),snapshot);
+  assert.equal(a.el('historyList').children.length,1);
+  assert.match(a.el('toastMessage').textContent,/save|stored|could not/i);
+});
