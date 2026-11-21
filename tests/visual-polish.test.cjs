@@ -58,6 +58,7 @@ test('export actions start folded, and explain the scope of CSV versus JSON',()=
   assert.match(html, /export:'Save settings, timer & all history as JSON'/);
   assert.match(html, /\$\('historyExportSummary'\)\.textContent=t\.historyExportSummary/);
   assert.match(styles[0], /\.history-export-menu\{position:absolute;z-index:12/);
+  assert.match(styles[0],/@media\(max-width:620px\)\{\.section-head\{[^}]*\}\.history-export-menu\{left:0;right:auto\}/);
   assert.match(html, /<button class="small-btn danger" id="clearHistoryButton"/);
   assert.match(html, /function exportHistoryCsv\(\)\{const rows=filteredHistory\(\)/);
   assert.match(html, /function exportData\(\)\{const payload=\{schemaVersion:1,exportedAt:new Date\(\)\.toISOString\(\),app:\{name:APP_CONFIG\.name,version:APP_CONFIG\.version\},data:state\}/);
