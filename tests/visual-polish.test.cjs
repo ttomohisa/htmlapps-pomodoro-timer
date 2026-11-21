@@ -38,7 +38,7 @@ test('cards are flat and subdued, without the timer stripe or PiP gradient',()=>
   assert.match(styles[0],/\.side-stack>\.card:not\(:first-child\)\{border-top:1px solid var\(--line\)\}/);
   assert.match(styles[0],/\.history-card\{[^}]*border:0;border-radius:0;background:transparent/);
   assert.match(styles[0],/\.history-filters \.small-btn\[aria-pressed="true"\]\{background:transparent/);
-  assert.match(styles[0],/\.pip-button\{[^}]*border:1px solid var\(--line\)[^}]*border-radius:8px;background:transparent;color:var\(--text\)/);
+  assert.match(styles[0],/\.pip-button\{[^}]*border:1px solid color-mix\(in srgb,var\(--accent\) 32%,var\(--line\)\)[^}]*border-radius:8px;background:var\(--accent-soft\);color:var\(--accent\)/);
   assert.match(styles[0],/\.pip-button svg\{color:var\(--accent\)\}/);
   assert.doesNotMatch(html, /class="btn primary pip-button/);
   assert.doesNotMatch(html, /class="pip-icon"/);

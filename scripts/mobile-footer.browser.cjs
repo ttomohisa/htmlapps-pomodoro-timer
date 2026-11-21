@@ -23,6 +23,7 @@ const design=await page.evaluate(()=>{
 assert.equal(design.sidebarBorder,'0px',label+': sidebar uses headings and rules, not nested cards');
 assert.equal(design.historyBorder,'0px',label+': history rows have no outer box');
 assert.equal(design.pipBorder,'1px',label+': PiP action is recognizably a button');
+assert.equal(design.pipFill,'rgb(227, 241, 236)',label+': PiP action has a soft green fill, not a transparent or white link-like surface');
 assert.ok(design.pipHeight>=44,label+': PiP button has a usable touch target');
 assert.ok(Math.abs(design.pipTitleLeft-design.todayTitleLeft)<1&&Math.abs(design.pipTitleLeft-design.quickTitleLeft)<1,label+': all sidebar headings share the same left edge');
 assert.equal(design.pipTitleIconCount,0,label+': no decorative section icon');assert.equal(design.pipButtonIconCount,1,label+': button PiP icon restored');

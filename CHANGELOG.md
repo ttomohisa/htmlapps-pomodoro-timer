@@ -4,6 +4,8 @@
 
 ## 1.0.5
 
+- Give the PiP action a light green filled secondary-button treatment, legible green text/icon and a distinct hover state, without competing with the solid green Start action.
+
 - Close the export disclosure when clicking outside or pressing Escape, preserve inside clicks, and keep the menu accessible by keyboard.
 - Tone down the PiP action to a neutral outlined secondary button, while retaining the SVG pictogram, clear hit area, and brand accent on its icon.
 
