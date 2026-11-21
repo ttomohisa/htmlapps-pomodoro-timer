@@ -16,9 +16,9 @@ if(cfg.slug==='text-inspector'){await page.locator('#textInput').fill('Synthetic
 if(cfg.slug==='pomodoro-timer'){
 const design=await page.evaluate(()=>{
   const css=selector=>getComputedStyle(document.querySelector(selector));
-  const primary=document.querySelector('#mainToggleButton');
+  const primary=document.querySelector(innerWidth<=620?'#mobileToggleButton':'#mainToggleButton');
   const p=primary.getBoundingClientRect();
-  return {sidebarBorder:css('.side-stack > .card').borderTopWidth,historyBorder:css('.history-card').borderTopWidth,pipFill:css('#pipButton').backgroundColor,pipBorder:css('#pipButton').borderTopWidth,primaryBackground:css('#mainToggleButton').backgroundColor,secondaryBackground:css('#finishButton').backgroundColor,primaryHeight:p.height,dockBorder:css('.mobile-dock').borderTopWidth};
+  return {sidebarBorder:css('.side-stack > .card').borderTopWidth,historyBorder:css('.history-card').borderTopWidth,pipFill:css('#pipButton').backgroundColor,pipBorder:css('#pipButton').borderTopWidth,primaryBackground:css(innerWidth<=620?'#mobileToggleButton':'#mainToggleButton').backgroundColor,secondaryBackground:css(innerWidth<=620?'#mobileAddButton':'#finishButton').backgroundColor,primaryHeight:p.height,dockBorder:css('.mobile-dock').borderTopWidth};
 });
 assert.equal(design.sidebarBorder,'0px',label+': sidebar uses headings and rules, not nested cards');
 assert.equal(design.historyBorder,'0px',label+': history rows have no outer box');
